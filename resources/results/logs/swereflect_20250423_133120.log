@@ -1,0 +1,35 @@
+2025-04-23 13:31:20,972 [INFO] root (logging_utils.py:45): Logging initialized at /Users/jeanpool.pereyrap/Downloads/gpt_aitis/resources/results/logs/swereflect_20250423_133120.log
+2025-04-23 13:31:20,972 [INFO] __main__ (rag_runner.py:27): Listing and indexing policy documents...
+2025-04-23 13:31:20,972 [INFO] utils (utils.py:35): List pdf paths: /Users/jeanpool.pereyrap/Downloads/gpt_aitis/resources/documents/policies/
+2025-04-23 13:31:20,974 [INFO] assistant_manager (assistant_manager.py:25): Creating vector store
+2025-04-23 13:31:21,707 [INFO] httpx (_client.py:1025): HTTP Request: POST https://api.openai.com/v1/vector_stores "HTTP/1.1 200 OK"
+2025-04-23 13:31:22,722 [INFO] httpx (_client.py:1025): HTTP Request: POST https://api.openai.com/v1/files "HTTP/1.1 200 OK"
+2025-04-23 13:31:23,133 [INFO] httpx (_client.py:1025): HTTP Request: POST https://api.openai.com/v1/files "HTTP/1.1 200 OK"
+2025-04-23 13:31:24,052 [INFO] httpx (_client.py:1025): HTTP Request: POST https://api.openai.com/v1/vector_stores/vs_6808cf895bf881919407656617fc97ca/file_batches "HTTP/1.1 200 OK"
+2025-04-23 13:31:24,361 [INFO] httpx (_client.py:1025): HTTP Request: GET https://api.openai.com/v1/vector_stores/vs_6808cf895bf881919407656617fc97ca/file_batches/vsfb_c924c93323b04c9291104f28fedaba16 "HTTP/1.1 200 OK"
+2025-04-23 13:31:25,711 [INFO] httpx (_client.py:1025): HTTP Request: GET https://api.openai.com/v1/vector_stores/vs_6808cf895bf881919407656617fc97ca/file_batches/vsfb_c924c93323b04c9291104f28fedaba16 "HTTP/1.1 200 OK"
+2025-04-23 13:31:27,024 [INFO] httpx (_client.py:1025): HTTP Request: GET https://api.openai.com/v1/vector_stores/vs_6808cf895bf881919407656617fc97ca/file_batches/vsfb_c924c93323b04c9291104f28fedaba16 "HTTP/1.1 200 OK"
+2025-04-23 13:31:27,025 [INFO] assistant_manager (assistant_manager.py:33):   File Batch Status: completed
+2025-04-23 13:31:27,025 [INFO] assistant_manager (assistant_manager.py:34):   File Batch Counts: FileCounts(cancelled=0, completed=2, failed=0, in_progress=0, total=2)
+2025-04-23 13:31:27,025 [INFO] __main__ (rag_runner.py:30): Created vector store: AITIS_main
+2025-04-23 13:31:27,025 [INFO] assistant_manager (assistant_manager.py:50): Creating assistant
+2025-04-23 13:31:27,843 [INFO] httpx (_client.py:1025): HTTP Request: POST https://api.openai.com/v1/assistants "HTTP/1.1 200 OK"
+2025-04-23 13:31:27,852 [INFO] assistant_manager (assistant_manager.py:66): Update assistant vector
+2025-04-23 13:31:28,971 [INFO] httpx (_client.py:1025): HTTP Request: POST https://api.openai.com/v1/assistants/asst_0HU7IYoreoFcw7z5ZzmlSFuT "HTTP/1.1 200 OK"
+2025-04-23 13:31:28,975 [INFO] __main__ (rag_runner.py:34): Created and linked assistant: Insurance Expert Assistant
+2025-04-23 13:31:28,975 [INFO] utils (utils.py:21): Read question path: /Users/jeanpool.pereyrap/Downloads/gpt_aitis/resources/questions/questions.xlsx
+2025-04-23 13:31:29,378 [INFO] httpx (_client.py:1025): HTTP Request: POST https://api.openai.com/v1/threads "HTTP/1.1 200 OK"
+2025-04-23 13:31:29,382 [INFO] __main__ (rag_runner.py:41): Processing 1 questions...
+2025-04-23 13:31:29,382 [INFO] __main__ (rag_runner.py:43): Question 1: I am at the airport and my bag has been derouted, can I obtain a reimbursement?
+2025-04-23 13:31:30,005 [INFO] httpx (_client.py:1025): HTTP Request: POST https://api.openai.com/v1/threads/thread_eWJRHYmqVItjvLKcYvcrb4Rb/messages "HTTP/1.1 200 OK"
+2025-04-23 13:31:31,734 [INFO] httpx (_client.py:1025): HTTP Request: POST https://api.openai.com/v1/threads/thread_eWJRHYmqVItjvLKcYvcrb4Rb/runs "HTTP/1.1 200 OK"
+2025-04-23 13:31:32,144 [INFO] httpx (_client.py:1025): HTTP Request: GET https://api.openai.com/v1/threads/thread_eWJRHYmqVItjvLKcYvcrb4Rb/runs/run_nzuOFRaKKSg5sEZoOKEAKsN3 "HTTP/1.1 200 OK"
+2025-04-23 13:31:33,577 [INFO] httpx (_client.py:1025): HTTP Request: GET https://api.openai.com/v1/threads/thread_eWJRHYmqVItjvLKcYvcrb4Rb/runs/run_nzuOFRaKKSg5sEZoOKEAKsN3 "HTTP/1.1 200 OK"
+2025-04-23 13:31:35,112 [INFO] httpx (_client.py:1025): HTTP Request: GET https://api.openai.com/v1/threads/thread_eWJRHYmqVItjvLKcYvcrb4Rb/runs/run_nzuOFRaKKSg5sEZoOKEAKsN3 "HTTP/1.1 200 OK"
+2025-04-23 13:31:36,649 [INFO] httpx (_client.py:1025): HTTP Request: GET https://api.openai.com/v1/threads/thread_eWJRHYmqVItjvLKcYvcrb4Rb/runs/run_nzuOFRaKKSg5sEZoOKEAKsN3 "HTTP/1.1 200 OK"
+2025-04-23 13:31:38,288 [INFO] httpx (_client.py:1025): HTTP Request: GET https://api.openai.com/v1/threads/thread_eWJRHYmqVItjvLKcYvcrb4Rb/runs/run_nzuOFRaKKSg5sEZoOKEAKsN3 "HTTP/1.1 200 OK"
+2025-04-23 13:31:39,653 [INFO] httpx (_client.py:1025): HTTP Request: GET https://api.openai.com/v1/threads/thread_eWJRHYmqVItjvLKcYvcrb4Rb/runs/run_nzuOFRaKKSg5sEZoOKEAKsN3 "HTTP/1.1 200 OK"
+2025-04-23 13:31:39,858 [INFO] httpx (_client.py:1025): HTTP Request: GET https://api.openai.com/v1/threads/thread_eWJRHYmqVItjvLKcYvcrb4Rb/messages "HTTP/1.1 200 OK"
+2025-04-23 13:31:39,861 [ERROR] __main__ (rag_runner.py:61): ✗ Failed to parse response: Expecting value: line 1 column 1 (char 0)
+2025-04-23 13:31:39,861 [INFO] __main__ (rag_runner.py:64): Saving results to /Users/jeanpool.pereyrap/Downloads/gpt_aitis/resources/results/run_output_1.tsv
+2025-04-23 13:31:39,864 [INFO] __main__ (rag_runner.py:66): Run completed successfully.

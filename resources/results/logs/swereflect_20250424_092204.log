@@ -1,0 +1,6 @@
+2025-04-24 09:22:04,589 [INFO] root (logging_utils.py:45): Logging initialized at /Users/jeanpool.pereyrap/Downloads/gpt_aitis/resources/results/logs/swereflect_20250424_092204.log
+2025-04-24 09:22:04,590 [INFO] utils (utils.py:35): List pdf paths: /Users/jeanpool.pereyrap/Downloads/gpt_aitis/resources/documents/policies/
+2025-04-24 09:28:34,053 [WARNING] accelerate.big_modeling (big_modeling.py:439): Some parameters are on the meta device because they were offloaded to the disk.
+2025-04-24 09:28:37,145 [INFO] utils (utils.py:21): Read question path: /Users/jeanpool.pereyrap/Downloads/gpt_aitis/resources/questions/questions.xlsx
+2025-04-24 09:28:37,232 [INFO] rag_runner (rag_runner.py:53): Processing 1 questions with model 'microsoft/phi-4' from provider 'hf'...
+2025-04-24 09:28:37,232 [INFO] rag_runner (rag_runner.py:57): → Querying: I am at the airport and my bag has been derouted, can I obtain a reimbursement?

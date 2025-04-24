@@ -1,0 +1,42 @@
+{
+  "name": "Insurance_response",
+  "strict": true,
+  "schema": {
+    "type": "object",
+    "properties": {
+      "answer": {
+        "type": "object",
+        "properties": {
+          "eligibility": {
+            "type": "boolean",
+            "description": "Is the question is eligible regarding the policy"
+          },
+          "eligibility_policy": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Line from the policy to explain the eligibility"
+          },
+          "amount_policy": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Line from the policy to explain how much the client can be reimbursed"
+          }
+        },
+        "required": [
+          "eligibility",
+          "eligibility_policy",
+          "amount_policy"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "required": [
+      "answer"
+    ],
+    "additionalProperties": false
+  }
+}

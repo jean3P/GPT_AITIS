@@ -1,0 +1,17 @@
+2025-04-23 13:49:13,157 [INFO] root (logging_utils.py:45): Logging initialized at /Users/jeanpool.pereyrap/Downloads/gpt_aitis/resources/results/logs/swereflect_20250423_134913.log
+2025-04-23 13:49:13,157 [INFO] __main__ (rag_runner.py:27): Listing and indexing policy documents...
+2025-04-23 13:49:13,158 [INFO] utils (utils.py:35): List pdf paths: /Users/jeanpool.pereyrap/Downloads/gpt_aitis/resources/documents/policies/
+2025-04-23 13:49:13,158 [INFO] assistant_manager (assistant_manager.py:27): Creating vector store
+2025-04-23 13:49:13,562 [INFO] httpx (_client.py:1025): HTTP Request: POST https://api.openai.com/v1/vector_stores "HTTP/1.1 200 OK"
+2025-04-23 13:49:14,614 [INFO] httpx (_client.py:1025): HTTP Request: POST https://api.openai.com/v1/files "HTTP/1.1 200 OK"
+2025-04-23 13:49:14,794 [INFO] httpx (_client.py:1025): HTTP Request: POST https://api.openai.com/v1/files "HTTP/1.1 200 OK"
+2025-04-23 13:49:15,514 [INFO] httpx (_client.py:1025): HTTP Request: POST https://api.openai.com/v1/vector_stores/vs_6808d3b97060819194d9bb370941e3cd/file_batches "HTTP/1.1 200 OK"
+2025-04-23 13:49:16,252 [INFO] httpx (_client.py:1025): HTTP Request: GET https://api.openai.com/v1/vector_stores/vs_6808d3b97060819194d9bb370941e3cd/file_batches/vsfb_ba08fbd3ef6f453fa6e2d415ccdd1aaa "HTTP/1.1 200 OK"
+2025-04-23 13:49:17,583 [INFO] httpx (_client.py:1025): HTTP Request: GET https://api.openai.com/v1/vector_stores/vs_6808d3b97060819194d9bb370941e3cd/file_batches/vsfb_ba08fbd3ef6f453fa6e2d415ccdd1aaa "HTTP/1.1 200 OK"
+2025-04-23 13:49:19,323 [INFO] httpx (_client.py:1025): HTTP Request: GET https://api.openai.com/v1/vector_stores/vs_6808d3b97060819194d9bb370941e3cd/file_batches/vsfb_ba08fbd3ef6f453fa6e2d415ccdd1aaa "HTTP/1.1 200 OK"
+2025-04-23 13:49:19,325 [INFO] assistant_manager (assistant_manager.py:35):   File Batch Status: completed
+2025-04-23 13:49:19,325 [INFO] assistant_manager (assistant_manager.py:36):   File Batch Counts: FileCounts(cancelled=0, completed=2, failed=0, in_progress=0, total=2)
+2025-04-23 13:49:19,325 [INFO] __main__ (rag_runner.py:30): Created vector store: AITIS_main
+2025-04-23 13:49:19,325 [INFO] assistant_manager (assistant_manager.py:52): Creating assistant
+2025-04-23 13:49:19,326 [INFO] utils (utils.py:48): Load response schema: /Users/jeanpool.pereyrap/Downloads/gpt_aitis/resources/response_formats/travel_insurance_agent.json
+2025-04-23 13:49:19,505 [INFO] httpx (_client.py:1025): HTTP Request: POST https://api.openai.com/v1/assistants "HTTP/1.1 400 Bad Request"

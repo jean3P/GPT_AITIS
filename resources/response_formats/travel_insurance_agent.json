@@ -1,0 +1,44 @@
+{
+  "name": "Insurance_response",
+  "strict": true,
+  "schema": {
+    "type": "object",
+    "properties": {
+      "answer": {
+        "type": "object",
+        "properties": {
+          "eligibility": {
+            "type": "string",
+            "enum": [
+              "Yes - it's covered",
+              "No - not relevant",
+              "No - not covered"
+            ],
+            "description": "Whether the question is eligible under the policy"
+          },
+          "eligibility_policy": {
+            "type": ["string", "null"],
+            "description": "Quoted line from the policy justifying the eligibility answer"
+          },
+          "amount_policy": {
+            "type": ["string", "null"],
+            "description": "Maximum amount the policy covers (e.g., '1000 CHF')"
+          },
+          "amount_policy_line": {
+            "type": ["string", "null"],
+            "description": "Quoted line from the policy justifying the amount"
+          }
+        },
+        "required": [
+          "eligibility",
+          "eligibility_policy",
+          "amount_policy",
+          "amount_policy_line"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "required": ["answer"],
+    "additionalProperties": false
+  }
+}
