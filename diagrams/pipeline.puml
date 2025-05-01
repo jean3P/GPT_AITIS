@@ -1,0 +1,99 @@
+@startuml
+skinparam backgroundColor white
+skinparam handwritten false
+skinparam DefaultFontName Arial
+skinparam ArrowColor #2C3E50
+skinparam ActivityBorderColor #2980B9
+skinparam ActivityBackgroundColor #ECF0F1
+skinparam ActivityDiamondBorderColor #2980B9
+skinparam ActivityDiamondBackgroundColor #ECF0F1
+skinparam NoteBackgroundColor #FEF9E7
+skinparam NoteBorderColor #F39C12
+
+title Insurance Policy Analysis Pipeline with Phi-4
+
+|#AliceBlue|Input Processing|
+start
+:PDF Insurance Policies;
+:Extract and Process Text;
+:Create Text Chunks;
+:Generate Vector Embeddings;
+:Store with Metadata;
+
+|#E5F8FF|Query Processing|
+:Insurance Question;
+fork
+  :Rule-Based Persona Extraction;
+  note right
+    Extracts key information:
+    - policy_user
+    - affected_person
+    - location
+    - is_abroad
+    - relationship_to_policyholder
+    - is_affected_covered
+    - mentioned_people
+    - total_count
+    - claimant_count
+    - relationship
+  end note
+  if (Successful?) then (yes)
+    :Use Rule-Based Results;
+  else (no)
+    :LLM-Based Persona Extraction;
+    :Parse Phi-4 Persona JSON;
+  endif
+fork again
+  :Create Question Embedding;
+  :Calculate Cosine Similarity;
+  :Retrieve Top-K Policy Chunks;
+  note right
+    k = 3 chunks are retrieved
+    by default to provide
+    sufficient context without
+    overwhelming the model
+  end note
+end fork
+:Combine Context, Question & Persona;
+
+|#E5F5FD|Model Inference|
+:Construct Final Prompt;
+note right
+  Includes:
+  - System prompt
+  - Retrieved policy context
+  - Question
+  - Persona information
+  - JSON format instructions
+end note
+:Phi-4 Model Inference;
+note right
+  Parameters:
+  - max_new_tokens=768
+  - do_sample=False
+  - num_return_sequences=1
+end note
+
+|#D0F0C0|Response Processing|
+:Generate Model Output;
+:Try Extract JSON from Solution Block;
+if (Success?) then (yes)
+else (no)
+  :Try Extract JSON from Code Block;
+  if (Success?) then (yes)
+  else (no)
+    :Try Generic JSON Extraction;
+  endif
+endif
+:Validate JSON Structure;
+:Return Structured Response;
+note right
+  JSON Format:
+  - request_id
+  - question
+  - outcome
+  - outcome_justification
+  - payment_justification
+end note
+stop
+@enduml

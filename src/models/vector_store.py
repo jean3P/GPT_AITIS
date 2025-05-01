@@ -3,7 +3,7 @@
 import logging
 import numpy as np
 import os
-from typing import List, Dict, Tuple, Optional
+from typing import List, Dict, Optional
 from sentence_transformers import SentenceTransformer
 from PyPDF2 import PdfReader
 
