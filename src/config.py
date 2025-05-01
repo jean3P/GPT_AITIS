@@ -41,6 +41,7 @@ DOCUMENT_DIR: str = os.path.join(base_dir, "resources/documents/policies/")
 RESULT_PATH: str = os.path.join(base_dir, f"resources/results/run_output_{MAX_QUESTIONS}.tsv")
 RESPONSE_FORMAT_PATH: str = os.path.join(base_dir, "resources/response_formats/travel_insurance_agent.json")
 LOG_DIR: str = os.path.join(base_dir, "resources/results/logs")
+JSON_PATH: str = os.path.join(base_dir, "resources/results/json_output")
 
 VECTOR_STORE_EXPIRATION_DAYS: int = 15
 VECTOR_NAME_PREFIX: str = "AITIS_"

@@ -1,13 +1,67 @@
+# src/main.py
+
 from config import LOG_DIR
 from logging_utils import setup_logging
-from rag_runner import run_rag
+from rag_runner import run_rag, run_batch_rag
+from prompts.insurance_prompts import InsurancePrompts
+import argparse
+import logging
+
+logger = logging.getLogger(__name__)
 
 if __name__ == "__main__":
+    # Get available prompt names for the help message
+    available_prompts = ", ".join([
+        "standard", "detailed", "exclusions", "simplified", "phi_optimized"
+    ])
+
+    # Parse command-line arguments
+    parser = argparse.ArgumentParser(description="Run RAG system for insurance policy analysis")
+    parser.add_argument("--model", choices=["openai", "hf"], default="hf", help="Model provider (openai or hf)")
+    parser.add_argument("--model-name", default="microsoft/phi-4", help="Name of the model to use")
+    parser.add_argument("--batch", action="store_true", help="Process all policies in a single batch")
+    parser.add_argument("--num-questions", type=int, default=None,
+                        help="Number of questions to process (default: all available questions)")
+    parser.add_argument("--output-dir", default=None,
+                        help="Directory to save JSON output files (default: resources/results/json_output)")
+    parser.add_argument("--prompt", default="standard",
+                        help=f"Prompt template to use. Available: {available_prompts}")
+    parser.add_argument("--log-level", choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
+                        default="INFO", help="Set the logging level")
+    args = parser.parse_args()
+
+    # Set up logging with the specified log level
     setup_logging({
         "logging": {
             "log_dir": LOG_DIR,
-            "log_level": "INFO"
+            "log_level": args.log_level
         }
     })
-    # run_rag()
-    run_rag(model_provider="hf", model_name="microsoft/phi-4")
+
+    logger.info(f"Starting RAG pipeline with model: {args.model}/{args.model_name}")
+    logger.info(f"Using prompt template: {args.prompt}")
+    logger.info(f"Log level set to: {args.log_level}")
+    if args.num_questions:
+        logger.info(f"Processing {args.num_questions} questions")
+    else:
+        logger.info("Processing all available questions")
+
+    # Run the appropriate RAG function with all parameters
+    if args.batch:
+        run_batch_rag(
+            model_provider=args.model,
+            model_name=args.model_name,
+            max_questions=args.num_questions,
+            output_dir=args.output_dir,
+            prompt_name=args.prompt
+        )
+    else:
+        run_rag(
+            model_provider=args.model,
+            model_name=args.model_name,
+            max_questions=args.num_questions,
+            output_dir=args.output_dir,
+            prompt_name=args.prompt
+        )
+
+    logger.info("RAG pipeline completed successfully")

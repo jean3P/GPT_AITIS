@@ -2,7 +2,8 @@
 
 import logging
 import numpy as np
-from typing import List
+import os
+from typing import List, Dict, Tuple, Optional
 from sentence_transformers import SentenceTransformer
 from PyPDF2 import PdfReader
 
@@ -28,10 +29,32 @@ class LocalVectorStore:
             # Initialize storage for embeddings and text chunks
             self.embeddings = None
             self.text_chunks = []
+            self.chunk_metadata = []  # To store source file for each chunk
 
         except Exception as e:
             logger.error(f"Error loading embedding model {model_name}: {e}")
             raise RuntimeError(f"Failed to load embedding model: {e}")
+
+    def extract_policy_id(self, path: str) -> str:
+        """
+        Extract policy ID from the PDF filename.
+        Example: "10_nobis_policy.pdf" -> "10"
+
+        Args:
+            path: Path to the PDF file
+
+        Returns:
+            The policy ID as a string
+        """
+        filename = os.path.basename(path)
+        import re
+        match = re.match(r'^(\d+)_', filename)
+        if match:
+            return match.group(1)
+        else:
+            logger.warning(f"Could not extract policy ID from filename: {filename}")
+            # Return the filename without extension as fallback
+            return os.path.splitext(filename)[0]
 
     def extract_text_from_pdf(self, path: str) -> str:
         """Extract text from a PDF file."""
@@ -50,7 +73,6 @@ class LocalVectorStore:
 
         current_chunk = ""
         for paragraph in paragraphs:
-            logger.info(f"Paragraph: {paragraph}")
             if len(current_chunk) + len(paragraph) < max_length:
                 current_chunk += paragraph + "\n\n"
             else:
@@ -64,7 +86,6 @@ class LocalVectorStore:
         # Fallback to word-based chunking if no paragraphs
         if not chunks:
             words = text.split()
-            logger.info(f"Words: {words}")
             chunks = [" ".join(words[i:i + max_length]) for i in range(0, len(words), max_length)]
 
         return chunks
@@ -86,6 +107,8 @@ class LocalVectorStore:
         """Index PDF documents by extracting text and creating embeddings."""
         logger.info(f"Indexing {len(pdf_paths)} documents")
         all_chunks = []
+        self.text_chunks = []
+        self.chunk_metadata = []
 
         for path in pdf_paths:
             try:
@@ -95,9 +118,27 @@ class LocalVectorStore:
                     logger.warning(f"No text extracted from {path}")
                     continue
 
+                # Get policy ID for metadata
+                policy_id = self.extract_policy_id(path)
+                filename = os.path.basename(path)
+
+                # Add prefix to each chunk to help identify source
                 chunks = self.chunk_text(text)
-                self.text_chunks.extend(chunks)
-                all_chunks.extend(chunks)
+                source_prefixed_chunks = [
+                    f"[Policy {policy_id}]: {chunk}" for chunk in chunks
+                ]
+
+                self.text_chunks.extend(source_prefixed_chunks)
+                all_chunks.extend(source_prefixed_chunks)
+
+                # Store metadata for each chunk
+                for _ in chunks:
+                    self.chunk_metadata.append({
+                        "policy_id": policy_id,
+                        "source_file": path,
+                        "filename": filename
+                    })
+
             except Exception as e:
                 logger.error(f"Error processing document {path}: {e}")
 
@@ -129,8 +170,18 @@ class LocalVectorStore:
         # Compute similarity
         return np.dot(a_normalized, b_normalized.T)
 
-    def retrieve(self, query: str, k: int = 3) -> List[str]:
-        """Retrieve the k most relevant text chunks for a query."""
+    def retrieve(self, query: str, k: int = 3, policy_id: Optional[str] = None) -> List[str]:
+        """
+        Retrieve the k most relevant text chunks for a query.
+
+        Args:
+            query: The search query
+            k: Number of chunks to retrieve
+            policy_id: Optional policy ID to filter results by
+
+        Returns:
+            List of relevant text chunks
+        """
         if self.embeddings is None or self.embeddings.size == 0:
             logger.warning("No embeddings available for retrieval")
             return []
@@ -155,6 +206,20 @@ class LocalVectorStore:
 
         similarities = similarities[0]  # Get the first row
 
+        # Filter by policy if specified
+        if policy_id:
+            # Create mask for chunks from the specified policy
+            policy_mask = np.array([
+                meta["policy_id"] == policy_id for meta in self.chunk_metadata
+            ])
+
+            # Apply mask to similarities (set others to -1 to exclude them)
+            filtered_similarities = np.where(policy_mask, similarities, -1)
+
+            # If we have at least one chunk from the specified policy
+            if np.max(filtered_similarities) > -1:
+                similarities = filtered_similarities
+
         # Get top k indices
         if len(similarities) < k:
             k = len(similarities)
@@ -163,3 +228,60 @@ class LocalVectorStore:
 
         # Return the text chunks
         return [self.text_chunks[i] for i in top_indices]
+
+    def retrieve_by_policy(self, query: str, k_per_policy: int = 3) -> Dict[str, List[str]]:
+        """
+        Retrieve chunks for each policy, organized by policy_id.
+
+        Args:
+            query: The search query
+            k_per_policy: Number of chunks to retrieve per policy
+
+        Returns:
+            Dictionary mapping policy_ids to lists of relevant chunks
+        """
+        if self.embeddings is None or self.embeddings.size == 0:
+            logger.warning("No embeddings available for retrieval")
+            return {}
+
+        if not self.text_chunks:
+            logger.warning("No text chunks available for retrieval")
+            return {}
+
+        logger.info(f"Retrieving top {k_per_policy} chunks per policy for query: {query}")
+        query_embedding = self.embed([query])
+
+        if query_embedding.size == 0:
+            logger.warning("Failed to create query embedding")
+            return {}
+
+        # Compute similarity for all chunks
+        similarities = self.cosine_similarity(query_embedding, self.embeddings)[0]
+
+        # Group by policy_id
+        policy_chunks = {}
+
+        # Get unique policy IDs
+        unique_policies = set(meta["policy_id"] for meta in self.chunk_metadata)
+
+        # For each policy, get the top k chunks
+        for pid in unique_policies:
+            # Find indices for this policy
+            policy_indices = [
+                i for i, meta in enumerate(self.chunk_metadata)
+                if meta["policy_id"] == pid
+            ]
+
+            # Get similarities for this policy's chunks
+            policy_similarities = [(i, similarities[i]) for i in policy_indices]
+
+            # Sort by similarity (descending)
+            policy_similarities.sort(key=lambda x: x[1], reverse=True)
+
+            # Take top k
+            top_k_indices = [idx for idx, _ in policy_similarities[:k_per_policy]]
+
+            # Store the chunks
+            policy_chunks[pid] = [self.text_chunks[i] for i in top_k_indices]
+
+        return policy_chunks
