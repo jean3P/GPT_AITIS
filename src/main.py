@@ -9,4 +9,5 @@ if __name__ == "__main__":
             "log_level": "INFO"
         }
     })
+    # run_rag()
     run_rag(model_provider="hf", model_name="microsoft/phi-4")

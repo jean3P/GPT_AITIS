@@ -10,7 +10,7 @@ def get_model_client(provider: str, model_name: str, sys_prompt: str):
     if provider == "openai":
         return OpenAIModelClient(model_name, sys_prompt, file_paths)
     elif provider == "hf":
-        return HuggingFaceModelClient(model_name)
+        return HuggingFaceModelClient(model_name, sys_prompt)
     else:
         raise ValueError(f"Unknown provider: {provider}")
 
