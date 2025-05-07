@@ -49,7 +49,8 @@ nvidia-smi
 # Run the RAG pipeline
 echo "Starting RAG pipeline at $(date)"
 $VENV_PYTHON src/main.py --model hf --model-name microsoft/phi-4 --prompt standard --log-level DEBUG --batch
-#$VENV_PYTHON src/main.py --model hf --model-name microsoft/phi-4 --num-questions 1 --prompt standard --log-level DEBUG --batch
+#$VENV_PYTHON src/main.py --model hf --model-name microsoft/phi-4 --num-questions 3 --policy-id 20 --prompt standard --log-level DEBUG --batch
+#$VENV_PYTHON src/main.py --model hf --model-name microsoft/phi-4 --questions 1,2,3,4,5,6,7,8,12,13,16,17,18,10,19,26,9,11,14,39  --policy-id 20 --prompt standard --log-level DEBUG --persona --batch
 
 # Print completion time
 echo "Job finished at $(date)"

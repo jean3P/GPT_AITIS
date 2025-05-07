@@ -110,7 +110,7 @@ class HuggingFaceModelClient(BaseModelClient):
             Format the output EXACTLY in the following JSON schema WITHOUT ANY ADDITIONAL TEXT BEFORE OR AFTER:
             {
               "answer": {
-                "eligibility": "Yes - it's covered | No - not relevant | No - not covered | No - condition(s) not met | Maybe",
+                "eligibility": "Yes | No - Unrelated event | No - condition(s) not met | Maybe",
                 "eligibility_policy": "Quoted text from policy",
                 "amount_policy": "Amount like '1000 CHF' or null",
                 "amount_policy_line": "Quoted policy text or null"
@@ -218,25 +218,30 @@ class HuggingFaceModelClient(BaseModelClient):
             logger.error(error_msg)
             return self._create_error_response(error_msg)
 
-    def query(self, question: str, context_files: List[str]) -> Dict[str, Any]:
+    def query(self, question: str, context_files: List[str], use_persona: bool = False) -> Dict[str, Any]:
         """
         Process a query and return the model's response.
 
         Args:
             question: The question to answer
             context_files: List of relevant policy files
+            use_persona: Whether to extract and use persona information (default: False)
 
         Returns:
             Dictionary containing the answer
         """
         logger.info(f"Querying model with question: {question}")
 
-        # Extract personas from the question
-        personas_info = self.persona_extractor.extract_personas(question)
-        logger.info(f"Extracted personas: {personas_info}")
-
-        # Format the persona information
-        persona_text = self.persona_extractor.format_persona_text(personas_info)
+        # Extract personas from the question if use_persona is True
+        persona_text = ""
+        if use_persona:
+            personas_info = self.persona_extractor.extract_personas(question)
+            logger.info(f"Extracted personas: {personas_info}")
+            # Format the persona information
+            persona_text = self.persona_extractor.format_persona_text(personas_info)
+            logger.info("Using persona information in prompt")
+        else:
+            logger.info("Skipping persona extraction (--persona flag not used)")
 
         # Format context information
         context_text = self._format_context_text(context_files)

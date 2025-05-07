@@ -4,6 +4,7 @@ import os
 import re
 import json
 import logging
+import datetime
 from typing import Dict, List, Any
 
 logger = logging.getLogger(__name__)
@@ -82,9 +83,11 @@ def save_policy_json(policy_json: Dict[str, Any], output_dir: str) -> str:
     # Create output directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
 
+    timestamp = datetime.datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
+
     # Define output file path
     policy_id = policy_json["policy_id"]
-    output_path = os.path.join(output_dir, f"policy_{policy_id}.json")
+    output_path = os.path.join(output_dir, f"policy_id-{policy_id}__{timestamp}.json")
 
     # Save JSON to file
     with open(output_path, 'w', encoding='utf-8') as f:

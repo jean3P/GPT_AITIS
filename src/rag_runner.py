@@ -1,7 +1,6 @@
 # src/rag_runner.py
 
 import logging
-import os
 from typing import Optional
 
 from config import *
@@ -19,7 +18,10 @@ def run_rag(
         model_name: str = "gpt-4o",
         max_questions: Optional[int] = None,
         output_dir: Optional[str] = None,
-        prompt_name: str = "standard"
+        prompt_name: str = "standard",
+        use_persona: bool = False,
+        question_ids: Optional[list] = None,
+        policy_id: Optional[str] = None
 ) -> None:
     """
     Executes the RAG pipeline using a modular model client, either OpenAI or HuggingFace.
@@ -31,6 +33,9 @@ def run_rag(
         max_questions (Optional[int]): Maximum number of questions to process (None = all questions).
         output_dir (Optional[str]): Directory to save JSON output files.
         prompt_name (str): Name of the prompt template to use.
+        use_persona (bool): Whether to use persona extraction for the queries (default: False).
+        question_ids (Optional[list]): List of question IDs to process (None = all questions).
+        policy_id (Optional[str]): Filter to only process a specific policy ID (None = all policies).
     """
     # Select the prompt template
     try:
@@ -53,17 +58,38 @@ def run_rag(
     if not pdf_paths:
         logger.error("No PDF policies found in directory")
         return
+    # Filter policies by ID if specified
+    if policy_id:
+        filtered_paths = []
+        for path in pdf_paths:
+            if extract_policy_id(path) == policy_id:
+                filtered_paths.append(path)
+                logger.info(f"Found policy with ID {policy_id}: {os.path.basename(path)}")
+
+        if not filtered_paths:
+            logger.warning(f"No policy found with ID {policy_id}. Check if the policy exists and ID is correct.")
+            return
+
+        pdf_paths = filtered_paths
+        logger.info(f"Filtered to {len(pdf_paths)} policies matching ID {policy_id}")
 
     # Read questions (use max_questions if provided, otherwise use all questions)
     questions_df = read_questions(DATASET_PATH)
-    if max_questions is None:
-        # Use all questions
+
+    # First filter by question_ids if provided
+    if question_ids:
+        questions_df = questions_df[questions_df["Id"].astype(str).isin(question_ids)]
+        logger.info(f"Filtered to {len(questions_df)} questions by ID: {', '.join(question_ids)}")
+
+    # Then apply max_questions limit
+    if max_questions is not None:
+        # Limit to specified number of questions
+        questions = questions_df[["Id", "Questions"]].to_numpy()[:max_questions]
+        logger.info(f"Processing {len(questions)} out of {len(questions_df)} questions (limited by --num-questions)")
+    else:
+        # Use all questions (or all filtered by ID)
         questions = questions_df[["Id", "Questions"]].to_numpy()
         logger.info(f"Processing all {len(questions)} questions")
-    else:
-        # Use limited number of questions
-        questions = questions_df[["Id", "Questions"]].to_numpy()[:max_questions]
-        logger.info(f"Processing {len(questions)} out of {len(questions_df)} questions")
 
     # Process each policy
     for pdf_path in pdf_paths:
@@ -101,7 +127,7 @@ def run_rag(
                         logger.error(f"Error retrieving context: {e}")
 
                 # Query the model with the question and context
-                response = model_client.query(question, context_files=context_texts)
+                response = model_client.query(question, context_files=context_texts, use_persona=use_persona)
 
                 result_row = [
                     model_name,
@@ -130,7 +156,10 @@ def run_batch_rag(
         model_name: str = "gpt-4o",
         max_questions: Optional[int] = None,
         output_dir: Optional[str] = None,
-        prompt_name: str = "standard"
+        prompt_name: str = "standard",
+        use_persona: bool = False,
+        question_ids: Optional[list] = None,
+        policy_id: Optional[str] = None
 ) -> None:
     """
     Alternative implementation that processes all policies together and then
@@ -142,6 +171,9 @@ def run_batch_rag(
         max_questions (Optional[int]): Maximum number of questions to process (None = all questions).
         output_dir (Optional[str]): Directory to save JSON output files.
         prompt_name (str): Name of the prompt template to use.
+        use_persona (bool): Whether to use persona extraction for the queries (default: False).
+        question_ids (Optional[list]): List of question IDs to process (None = all questions).
+        policy_id (Optional[str]): Filter to only process a specific policy ID (None = all policies).
     """
     # Select the prompt template
     try:
@@ -158,6 +190,21 @@ def run_batch_rag(
 
     # List all policy PDFs
     pdf_paths = list_pdf_paths(DOCUMENT_DIR)
+
+    # Filter policies by ID if specified
+    if policy_id:
+        filtered_paths = []
+        for path in pdf_paths:
+            if extract_policy_id(path) == policy_id:
+                filtered_paths.append(path)
+                logger.info(f"Found policy with ID {policy_id}: {os.path.basename(path)}")
+
+        if not filtered_paths:
+            logger.warning(f"No policy found with ID {policy_id}. Check if the policy exists and ID is correct.")
+            return
+
+        pdf_paths = filtered_paths
+        logger.info(f"Filtered to {len(pdf_paths)} policies matching ID {policy_id}")
 
     # Structure to store results by policy
     policy_results = {}
@@ -180,16 +227,21 @@ def run_batch_rag(
             logger.error(f"Error initializing vector store: {e}")
             logger.info("Continuing without vector store")
 
-    # Read questions (use max_questions if provided, otherwise use all questions)
     questions_df = read_questions(DATASET_PATH)
-    if max_questions is None:
-        # Use all questions
+    # First filter by question_ids if provided
+    if question_ids:
+        questions_df = questions_df[questions_df["Id"].astype(str).isin(question_ids)]
+        logger.info(f"Filtered to {len(questions_df)} questions by ID: {', '.join(question_ids)}")
+
+    # Then apply max_questions limit
+    if max_questions is not None:
+        # Limit to specified number of questions
+        questions = questions_df[["Id", "Questions"]].to_numpy()[:max_questions]
+        logger.info(f"Processing {len(questions)} out of {len(questions_df)} questions (limited by --num-questions)")
+    else:
+        # Use all questions (or all filtered by ID)
         questions = questions_df[["Id", "Questions"]].to_numpy()
         logger.info(f"Processing all {len(questions)} questions")
-    else:
-        # Use limited number of questions
-        questions = questions_df[["Id", "Questions"]].to_numpy()[:max_questions]
-        logger.info(f"Processing {len(questions)} out of {len(questions_df)} questions")
 
     # Initialize policy result dictionaries
     for pdf_path in pdf_paths:
@@ -220,8 +272,7 @@ def run_batch_rag(
                         logger.error(f"Error retrieving context: {e}")
 
                 # Query the model with the question and context
-                response = model_client.query(question, context_files=context_texts)
-
+                response = model_client.query(question, context_files=context_texts, use_persona=use_persona)
                 result_row = [
                     model_name,
                     str(q_id),

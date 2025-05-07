@@ -1,0 +1,356 @@
+# src/scripts/evaluate_results.py
+
+import os
+import json
+import pandas as pd
+import numpy as np
+from config import JSON_PATH, GT_PATH
+from datetime import datetime
+
+
+def normalize_edit_distance(str1, str2):
+    """Calculate normalized edit distance between two strings."""
+    # Treat empty strings as None for comparison purposes
+    if str1 is None or str1 == "":
+        str1 = None
+    if str2 is None or str2 == "":
+        str2 = None
+
+    if str1 is None and str2 is None:
+        return 0.0  # Both are None or empty, so perfect match
+    if str1 is None:
+        str1 = ""
+    if str2 is None:
+        str2 = ""
+
+    # Convert to strings if they aren't already
+    str1 = str(str1)
+    str2 = str(str2)
+
+    # Calculate edit distance
+    distance = editdistance.eval(str1, str2)
+
+    # Normalize by maximum length to get a value between 0 and 1
+    max_len = max(len(str1), len(str2))
+    if max_len == 0:
+        return 0.0  # Both empty, so perfect match
+
+    return distance / max_len
+
+
+def numpy_to_python(obj):
+    """Convert numpy types to native Python types for JSON serialization."""
+    if isinstance(obj, np.integer):
+        return int(obj)
+    elif isinstance(obj, np.floating):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+    elif isinstance(obj, dict):
+        return {k: numpy_to_python(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [numpy_to_python(item) for item in obj]
+    return obj
+
+
+def get_latest_output_files(json_path):
+    """Find the most recent output file for each policy ID."""
+    # Get all output files
+    all_files = [f for f in os.listdir(json_path) if f.startswith("policy_id-") and f.endswith(".json")]
+
+    # Group files by policy ID
+    policy_files = {}
+    for file in all_files:
+        # Extract policy ID from the new naming pattern
+        parts = file.split("__")
+        if len(parts) >= 1:
+            policy_id_part = parts[0]
+            policy_id = policy_id_part.replace("policy_id-", "")
+
+            # Add to dictionary, keeping track of all files for each policy ID
+            if policy_id not in policy_files:
+                policy_files[policy_id] = []
+            policy_files[policy_id].append(file)
+
+    # For each policy ID, find the most recent file
+    latest_files = []
+    for policy_id, files in policy_files.items():
+        # Sort files by timestamp (which is after the double underscore)
+        sorted_files = sorted(files, key=lambda x: x.split("__")[1].split(".")[0], reverse=True)
+        if sorted_files:
+            latest_files.append(sorted_files[0])
+
+    print(f"Found {len(latest_files)} latest output files")
+    return latest_files
+
+
+def evaluate_outputs():
+    """Evaluate system outputs against ground truth files."""
+    # Lists to store evaluation results
+    all_results = []
+
+    # Lists to store outcome classifications for confusion matrix
+    y_true = []
+    y_pred = []
+
+    # Valid outcome categories
+    valid_outcomes = [
+        "Yes",
+        "No - Unrelated event",
+        "No - condition(s) not met",
+        "Maybe"
+    ]
+
+    # Get the latest output file for each policy ID
+    output_files = get_latest_output_files(JSON_PATH)
+
+    # Get all ground truth files
+    gt_files = [f for f in os.listdir(GT_PATH) if f.startswith("GT_policy_") and f.endswith(".json")]
+
+    if not output_files:
+        print("Error: No output files found in", JSON_PATH)
+        return None, None
+
+    if not gt_files:
+        print("Error: No ground truth files found in", GT_PATH)
+        return None, None
+
+    # Map policy IDs to GT files for easier lookup
+    gt_file_map = {f.split("_")[2].split(".")[0]: f for f in gt_files}
+
+    print(f"Found {len(output_files)} output files and {len(gt_files)} ground truth files")
+
+    total_output_questions = 0
+    total_evaluated_questions = 0
+
+    for output_file in output_files:
+        # Extract policy ID from the new filename pattern
+        policy_id = output_file.split("__")[0].replace("policy_id-", "")
+
+        # Find corresponding ground truth file
+        if policy_id not in gt_file_map:
+            print(f"Warning: No ground truth file found for policy {policy_id}")
+            continue
+
+        gt_file_name = gt_file_map[policy_id]
+        gt_file_path = os.path.join(GT_PATH, gt_file_name)
+
+        # Load files
+        try:
+            with open(os.path.join(JSON_PATH, output_file), 'r', encoding='utf-8') as f:
+                output_data = json.load(f)
+
+            with open(gt_file_path, 'r', encoding='utf-8') as f:
+                gt_data = json.load(f)
+        except json.JSONDecodeError as e:
+            print(f"Error loading JSON file: {e}")
+            continue
+        except UnicodeDecodeError as e:
+            print(f"Error decoding file: {e}")
+            continue
+
+        # Create lookup dictionaries for faster access
+        output_questions = output_data.get("questions", [])
+        gt_questions_dict = {q["request_id"]: q for q in gt_data.get("questions", [])}
+
+        # Count total questions in this output file
+        questions_in_file = len(output_questions)
+        total_output_questions += questions_in_file
+
+        print(f"Policy {policy_id}: Found {questions_in_file} questions in output")
+
+        # Compare each output question with ground truth
+        for output_question in output_questions:
+            request_id = output_question.get("request_id")
+
+            if request_id not in gt_questions_dict:
+                print(f"Warning: Policy {policy_id}, Request {request_id} not found in ground truth")
+                continue
+
+            gt_question = gt_questions_dict[request_id]
+            total_evaluated_questions += 1
+
+            # Get the outcome values
+            output_outcome = output_question.get("outcome", "")
+            gt_outcome = gt_question.get("outcome", "")
+
+            # Check if outcomes are in the valid list - standardize if needed
+            if output_outcome not in valid_outcomes:
+                # Standardize the output outcome if possible or log warning
+                print(
+                    f"Warning: Policy {policy_id}, Request {request_id} has non-standard output outcome: {output_outcome}")
+
+            if gt_outcome not in valid_outcomes:
+                # Standardize the ground truth outcome if possible or log warning
+                print(
+                    f"Warning: Policy {policy_id}, Request {request_id} has non-standard ground truth outcome: {gt_outcome}")
+
+            # Add to lists for classification metrics
+            y_true.append(gt_outcome)
+            y_pred.append(output_outcome)
+
+            # Calculate exact match for outcome (0 = match, 1 = no match)
+            outcome_match = 0 if output_outcome == gt_outcome else 1
+
+            # Calculate edit distances only for justifications
+            output_justification = output_question.get("outcome_justification")
+            gt_justification = gt_question.get("outcome_justification")
+
+            # Handle the case where GT uses "" instead of null
+            if gt_justification == "":
+                gt_justification = None
+
+            justification_distance = normalize_edit_distance(
+                output_justification,
+                gt_justification
+            )
+
+            # Same for payment justification
+            output_payment = output_question.get("payment_justification")
+            gt_payment = gt_question.get("payment_justification")
+
+            # Handle the case where GT uses "" instead of null
+            if gt_payment == "":
+                gt_payment = None
+
+            payment_distance = normalize_edit_distance(
+                output_payment,
+                gt_payment
+            )
+
+            # Add to results
+            all_results.append({
+                "policy_id": policy_id,
+                "request_id": request_id,
+                "question": gt_question.get("question", "")[:50] + "..." if len(
+                    gt_question.get("question", "")) > 50 else gt_question.get("question", ""),
+                "output_outcome": output_outcome,
+                "gt_outcome": gt_outcome,
+                "outcome_match": outcome_match,
+                "justification_distance": justification_distance,
+                "payment_distance": payment_distance,
+                "avg_justification_distance": (justification_distance + payment_distance) / 2
+            })
+
+    if not all_results:
+        print("No matching questions found for evaluation")
+        return None, None
+
+    # Create DataFrame for results
+    results_df = pd.DataFrame(all_results)
+
+    # Calculate classification metrics
+    outcome_accuracy = accuracy_score(y_true, y_pred)
+    conf_matrix = confusion_matrix(y_true, y_pred, labels=valid_outcomes)
+    class_report = classification_report(y_true, y_pred, labels=valid_outcomes, output_dict=True)
+
+    # Calculate per-category accuracy
+    category_metrics = {}
+    for category in valid_outcomes:
+        if category in class_report:
+            category_metrics[category] = {
+                "precision": class_report[category]["precision"],
+                "recall": class_report[category]["recall"],
+                "f1-score": class_report[category]["f1-score"],
+                "support": class_report[category]["support"]
+            }
+
+    # Calculate summary statistics
+    summary = {
+        "total_output_questions": total_output_questions,
+        "total_evaluated_questions": total_evaluated_questions,
+        "outcome_classification": {
+            "accuracy": float(outcome_accuracy),
+            "category_metrics": category_metrics
+        },
+        "exact_outcome_matches": int((results_df["outcome_match"] == 0).sum()),
+        "exact_outcome_match_percentage": float((results_df["outcome_match"] == 0).mean() * 100),
+        "avg_justification_distance": float(results_df["justification_distance"].mean()),
+        "avg_payment_distance": float(results_df["payment_distance"].mean()),
+        "avg_overall_justification_distance": float(results_df["avg_justification_distance"].mean())
+    }
+
+    # Convert numpy types to native Python types for JSON serialization
+    summary = numpy_to_python(summary)
+
+    # Print results
+    print("\n=== EVALUATION RESULTS ===\n")
+
+    # Print summary statistics
+    print("Summary Statistics:")
+    print(f"Total Questions in Output: {summary['total_output_questions']}")
+    print(f"Total Questions Evaluated: {summary['total_evaluated_questions']}")
+    print(
+        f"Outcome Classification Accuracy: {summary['outcome_classification']['accuracy']:.4f} ({summary['exact_outcome_match_percentage']:.2f}%)")
+    print(f"Average Justification Distance: {summary['avg_justification_distance']:.4f}")
+    print(f"Average Payment Distance: {summary['avg_payment_distance']:.4f}")
+    print(f"Average Overall Justification Distance: {summary['avg_overall_justification_distance']:.4f}\n")
+
+    # Print confusion matrix
+    print("Confusion Matrix:")
+    conf_df = pd.DataFrame(conf_matrix, index=valid_outcomes, columns=valid_outcomes)
+    print(conf_df)
+    print()
+
+    # Print classification report
+    print("Classification Report:")
+    print(classification_report(y_true, y_pred, labels=valid_outcomes))
+
+    # Print results table with nice formatting
+    pd.set_option('display.max_columns', None)
+    pd.set_option('display.width', 200)
+    pd.set_option('display.float_format', '{:.4f}'.format)
+
+    print("Detailed Results:")
+    print(results_df.sort_values(["policy_id", "request_id"])[
+              ["policy_id", "request_id", "output_outcome", "gt_outcome",
+               "outcome_match", "justification_distance", "payment_distance"]
+          ].to_string(index=False))
+
+    # Save results to CSV
+    results_dir = os.path.join(os.path.dirname(JSON_PATH), "evaluation_results")
+    os.makedirs(results_dir, exist_ok=True)
+
+    # Generate timestamped filename in European format
+    timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
+    csv_filename = os.path.join(results_dir, f"evaluation_results_{timestamp}.csv")
+    results_df.to_csv(csv_filename, index=False)
+
+    # Also save summary statistics
+    summary_filename = os.path.join(results_dir, f"evaluation_summary_{timestamp}.json")
+    with open(summary_filename, 'w', encoding='utf-8') as f:
+        json.dump(summary, f, indent=2)
+
+    # Save confusion matrix and classification report
+    metrics_filename = os.path.join(results_dir, f"classification_metrics_{timestamp}.json")
+    metrics_data = {
+        "confusion_matrix": numpy_to_python(conf_matrix),
+        "classification_report": class_report
+    }
+    with open(metrics_filename, 'w', encoding='utf-8') as f:
+        json.dump(metrics_data, f, indent=2)
+
+    print(f"\nResults saved to {csv_filename}")
+    print(f"Summary saved to {summary_filename}")
+    print(f"Classification metrics saved to {metrics_filename}")
+
+    return results_df, summary
+
+
+if __name__ == "__main__":
+    # Make sure required libraries are installed
+    try:
+        import editdistance
+        from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+    except ImportError as e:
+        print(f"Installing missing library: {e.name}...")
+        import pip
+
+        pip.main(["install", e.name])
+        if e.name == "editdistance":
+            import editdistance
+        elif e.name == "scikit-learn":
+            from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+    # Run evaluation
+    evaluate_outputs()

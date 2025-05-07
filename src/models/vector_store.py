@@ -7,6 +7,8 @@ from typing import List, Dict, Optional
 from sentence_transformers import SentenceTransformer
 from PyPDF2 import PdfReader
 
+from config import CACHE_EMBEDDINGS, EMBEDDINGS_DIR
+
 logger = logging.getLogger(__name__)
 
 
@@ -110,8 +112,54 @@ class LocalVectorStore:
         self.text_chunks = []
         self.chunk_metadata = []
 
+        # Try to load embeddings from cache first
+        all_cached = True
+        for path in pdf_paths:
+            policy_id = self.extract_policy_id(path)
+            cache_path = os.path.join(EMBEDDINGS_DIR, f"policy_{policy_id}_embeddings.npz")
+
+            if not os.path.exists(cache_path) or not CACHE_EMBEDDINGS:
+                all_cached = False
+                break
+
+        # If all embeddings are cached, load them
+        if all_cached and CACHE_EMBEDDINGS:
+            try:
+                logger.info("Loading embeddings from cache")
+                # Load first policy to initialize metadata structure
+                policy_id = self.extract_policy_id(pdf_paths[0])
+                cache_path = os.path.join(EMBEDDINGS_DIR, f"policy_{policy_id}_embeddings.npz")
+                cached_data = np.load(cache_path, allow_pickle=True)
+
+                self.text_chunks = cached_data['text_chunks'].tolist()
+                self.chunk_metadata = cached_data['chunk_metadata'].tolist()
+                self.embeddings = cached_data['embeddings']
+
+                # Load and append additional policies if more than one
+                for i, path in enumerate(pdf_paths[1:], 1):
+                    policy_id = self.extract_policy_id(path)
+                    cache_path = os.path.join(EMBEDDINGS_DIR, f"policy_{policy_id}_embeddings.npz")
+                    cached_data = np.load(cache_path, allow_pickle=True)
+
+                    self.text_chunks.extend(cached_data['text_chunks'].tolist())
+                    self.chunk_metadata.extend(cached_data['chunk_metadata'].tolist())
+
+                    # Concatenate embeddings
+                    if i == 1:  # First additional policy
+                        self.embeddings = np.vstack([self.embeddings, cached_data['embeddings']])
+                    else:  # Subsequent policies
+                        self.embeddings = np.vstack([self.embeddings, cached_data['embeddings']])
+
+                logger.info(f"Successfully loaded cached embeddings for {len(pdf_paths)} policies")
+                return
+            except Exception as e:
+                logger.error(f"Error loading cached embeddings: {e}")
+                logger.info("Falling back to generating embeddings")
+
+        # If cache loading failed or some embeddings weren't cached, process all documents
         for path in pdf_paths:
             try:
+                policy_id = self.extract_policy_id(path)
                 logger.info(f"Processing document: {path}")
                 text = self.extract_text_from_pdf(path)
                 if not text:
@@ -119,7 +167,6 @@ class LocalVectorStore:
                     continue
 
                 # Get policy ID for metadata
-                policy_id = self.extract_policy_id(path)
                 filename = os.path.basename(path)
 
                 # Add prefix to each chunk to help identify source
@@ -150,6 +197,41 @@ class LocalVectorStore:
         self.embeddings = self.embed(all_chunks)
         logger.info(
             f"Indexed {len(all_chunks)} chunks with embedding shape {self.embeddings.shape if self.embeddings is not None else 'None'}")
+
+        # Save embeddings to cache for each policy separately
+        if CACHE_EMBEDDINGS:
+            self._save_embeddings_to_cache(pdf_paths)
+
+    def _save_embeddings_to_cache(self, pdf_paths: List[str]):
+        """Save embeddings to cache for each policy."""
+        try:
+            for path in pdf_paths:
+                policy_id = self.extract_policy_id(path)
+                cache_path = os.path.join(EMBEDDINGS_DIR, f"policy_{policy_id}_embeddings.npz")
+
+                # Filter chunks and embeddings for this policy
+                policy_indices = [i for i, meta in enumerate(self.chunk_metadata) if meta["policy_id"] == policy_id]
+
+                if not policy_indices:
+                    logger.warning(f"No chunks found for policy {policy_id}, skipping cache")
+                    continue
+
+                policy_chunks = [self.text_chunks[i] for i in policy_indices]
+                policy_metadata = [self.chunk_metadata[i] for i in policy_indices]
+                policy_embeddings = self.embeddings[policy_indices]
+
+                # Save to file
+                np.savez_compressed(
+                    cache_path,
+                    text_chunks=np.array(policy_chunks, dtype=object),
+                    chunk_metadata=np.array(policy_metadata, dtype=object),
+                    embeddings=policy_embeddings
+                )
+
+                logger.info(f"Cached embeddings for policy {policy_id} at {cache_path}")
+        except Exception as e:
+            logger.error(f"Error saving embeddings to cache: {e}")
+            logger.info("Continuing without saving cache")
 
     def cosine_similarity(self, a: np.ndarray, b: np.ndarray) -> np.ndarray:
         """Compute cosine similarity between a query vector and all document vectors."""

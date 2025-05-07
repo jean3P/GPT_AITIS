@@ -43,5 +43,16 @@ RESPONSE_FORMAT_PATH: str = os.path.join(base_dir, "resources/response_formats/t
 LOG_DIR: str = os.path.join(base_dir, "resources/results/logs")
 JSON_PATH: str = os.path.join(base_dir, "resources/results/json_output")
 
-VECTOR_STORE_EXPIRATION_DAYS: int = 15
+RAW_GT_PATH: str = os.path.join(base_dir, "resources/raw_ground_truth/")
+GT_PATH: str = os.path.join(base_dir, "resources/ground_truth/")
+
+VECTOR_STORE_EXPIRATION_DAYS: int = 30
 VECTOR_NAME_PREFIX: str = "AITIS_"
+EVALUATION_RESULTS_PATH: str = os.path.join(base_dir, "resources/results/")
+EVALUATION_RESULTS_FILES_PATH: str = os.path.join(base_dir, "resources/results/evaluation_results/")
+DASHBOARD_PATH: str = os.path.join(base_dir, "resources/results/dashboard.html")
+
+
+# New constants for embedding caching
+EMBEDDINGS_DIR: str = os.path.join(base_dir, "resources/embeddings")
+CACHE_EMBEDDINGS: bool = True  # Can be set to False to force re-embedding

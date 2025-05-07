@@ -29,18 +29,16 @@ class InsurancePrompts:
 
             1. Determine if the case is covered:
                - Answer with one of the following:
-                 - "Yes - it's covered"
-                 - "No - not relevant"
-                 - "No - not covered"
+                 - "Yes"
+                 - "No - Unrelated event"
                  _ "No - condition(s) not met"
                  - "Maybe"
-            2. If the answer is "Yes - it's covered" or "No - not covered":
+            2. If the answer is "Yes" then always:
                - Quote the exact sentence(s) from the policy that support your decision.
-            3. If the answer is "Yes - it's covered":
-               - State the **maximum amount** the policy will cover in this case.
                - Quote the exact sentence from the policy that specifies this amount.
-            4. Is the answer is "No - not relevant":
-               - Use when the question asks about something the policy doesn't address at all
+            4. Is the answer is "No - Unrelated event":
+               - Use when the question asks about something the policy doesn't address at all,
+               - Then, quote the exact sentence(s) from the policy that justify your decision.
             5. If the answer is "No - condition(s) not met":
                - Use when coverage exists but specific required conditions aren't satisfied.
             6. If the answer is "Maybe":
@@ -49,7 +47,7 @@ class InsurancePrompts:
             Return the answer in JSON format with the following fields:
             {
               "answer": {
-                "eligibility": "Yes - it's covered | No - not relevant | No - not covered | No - condition(s) not met | Maybe",
+                "eligibility": "Yes | No - Unrelated event | No - condition(s) not met | Maybe",
                 "eligibility_policy": "Quoted text from policy",
                 "amount_policy": "Amount like '1000 CHF' or null",
                 "amount_policy_line": "Quoted policy text or null"
