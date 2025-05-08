@@ -67,30 +67,110 @@ class LocalVectorStore:
             logger.error(f"Error extracting text from PDF {path}: {e}")
             return ""
 
-    def chunk_text(self, text: str, max_length: int = 512) -> List[str]:
-        """Split text into smaller chunks."""
-        # Simple paragraph-based chunking
-        paragraphs = text.split('\n\n')
-        chunks = []
+    def chunk_text(self, text: str, max_length: int = 100, overlap: int = 20) -> List[str]:
+        """
+        Split text into smaller chunks with improved handling of special characters and more
+        robust chunking strategies.
 
+        Args:
+            text: The text to chunk
+            max_length: Maximum length of each chunk
+            overlap: Number of characters to overlap between chunks
+
+        Returns:
+            List of text chunks
+        """
+        # Normalize whitespace characters (including NBSP)
+        import re
+        text = re.sub(r'\s+', ' ', text)  # Replace all whitespace sequences with a single space
+        text = text.replace('\xa0', ' ')  # Replace NBSP with regular space
+
+        # First attempt paragraph-based chunking (split on double newlines)
+        paragraphs = re.split(r'\n\s*\n', text)
+        paragraphs = [p.strip() for p in paragraphs if p.strip()]
+
+        # If we have extremely long paragraphs, split them into sentences
+        for i, para in enumerate(paragraphs):
+            if len(para) > max_length:
+                # Replace paragraph with sentences
+                sentences = re.split(r'(?<=[.!?])\s+', para)
+                paragraphs[i:i + 1] = sentences
+
+        # Now create chunks from our units (paragraphs/sentences)
+        chunks = []
         current_chunk = ""
-        for paragraph in paragraphs:
-            if len(current_chunk) + len(paragraph) < max_length:
-                current_chunk += paragraph + "\n\n"
+
+        for unit in paragraphs:
+            # If this unit alone exceeds max_length, we need to split it further
+            if len(unit) > max_length:
+                # If current_chunk is not empty, add it to chunks
+                if current_chunk:
+                    chunks.append(current_chunk.strip())
+                    current_chunk = ""
+
+                # Split long unit by character count with overlap
+                for i in range(0, len(unit), max_length - overlap):
+                    if i > 0:
+                        start = i - overlap
+                    else:
+                        start = 0
+
+                    chunk = unit[start:start + max_length]
+
+                    # Don't add tiny final chunks
+                    if len(chunk) < max_length / 4 and chunks and i > 0:
+                        # Append to the previous chunk if it would fit
+                        if len(chunks[-1]) + len(chunk) <= max_length:
+                            chunks[-1] = chunks[-1] + " " + chunk
+                        else:
+                            chunks.append(chunk)
+                    else:
+                        chunks.append(chunk)
+
+            # Normal case: try to add the unit to current_chunk
+            elif len(current_chunk) + len(unit) + 1 <= max_length:
+                if current_chunk:
+                    current_chunk += " " + unit
+                else:
+                    current_chunk = unit
+
+            # If adding would exceed max_length, save current chunk and start a new one
             else:
                 if current_chunk:
                     chunks.append(current_chunk.strip())
-                current_chunk = paragraph + "\n\n"
+                current_chunk = unit
 
+        # Add the last chunk if it's not empty
         if current_chunk:
             chunks.append(current_chunk.strip())
 
-        # Fallback to word-based chunking if no paragraphs
-        if not chunks:
-            words = text.split()
-            chunks = [" ".join(words[i:i + max_length]) for i in range(0, len(words), max_length)]
+        # Add policy ID prefix to each chunk (moved this out to the index_documents method)
 
-        return chunks
+        # Ensure no chunk exceeds max_length
+        final_chunks = []
+        for chunk in chunks:
+            if len(chunk) <= max_length:
+                final_chunks.append(chunk)
+            else:
+                # Split further if needed (should rarely happen at this point)
+                words = chunk.split()
+                temp = ""
+                for word in words:
+                    if len(temp) + len(word) + 1 <= max_length:
+                        if temp:
+                            temp += " " + word
+                        else:
+                            temp = word
+                    else:
+                        final_chunks.append(temp)
+                        temp = word
+                if temp:
+                    final_chunks.append(temp)
+
+        # Final verification - any chunk still too long gets truncated (safety measure)
+        final_chunks = [chunk[:max_length] for chunk in final_chunks]
+
+        return final_chunks
 
     def embed(self, texts: List[str]) -> np.ndarray:
         """Create embeddings for a list of text chunks using sentence-transformers."""
@@ -252,7 +332,7 @@ class LocalVectorStore:
         # Compute similarity
         return np.dot(a_normalized, b_normalized.T)
 
-    def retrieve(self, query: str, k: int = 3, policy_id: Optional[str] = None) -> List[str]:
+    def retrieve(self, query: str, k: int = 1, policy_id: Optional[str] = None) -> List[str]:
         """
         Retrieve the k most relevant text chunks for a query.
 
@@ -307,6 +387,8 @@ class LocalVectorStore:
             k = len(similarities)
 
         top_indices = np.argsort(similarities)[-k:][::-1]
+
+        result_chunks = [self.text_chunks[i] for i in top_indices]
 
         # Return the text chunks
         return [self.text_chunks[i] for i in top_indices]

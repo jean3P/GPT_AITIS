@@ -193,7 +193,7 @@ class HuggingFaceModelClient(BaseModelClient):
             # Generate text with appropriate parameters for JSON output
             outputs = self.pipe(
                 prompt,
-                max_new_tokens=768,
+                max_new_tokens=2048,
                 do_sample=False,
                 num_return_sequences=1,
                 return_full_text=False

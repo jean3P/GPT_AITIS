@@ -13,17 +13,19 @@ logger = logging.getLogger(__name__)
 def extract_policy_id(pdf_path: str) -> str:
     """
     Extract policy ID from the PDF filename.
-    Example: "10_nobis_policy.pdf" -> "10"
+    Examples:
+    - "10_nobis_policy.pdf" -> "10"
+    - "10-1_AXA 20220316 DIP AGGIUNTIVO ALI@TOP.pdf" -> "10-1"
 
     Args:
         pdf_path: Path to the PDF file
-
     Returns:
         The policy ID as a string
     """
     filename = os.path.basename(pdf_path)
     # Extract policy ID from the filename using regex
-    match = re.match(r'^(\d+)_', filename)
+    # Updated to handle hyphens in policy IDs
+    match = re.match(r'^([\d-]+)_', filename)
     if match:
         return match.group(1)
     else:

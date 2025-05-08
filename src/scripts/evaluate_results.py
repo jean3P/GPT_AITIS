@@ -8,8 +8,8 @@ from config import JSON_PATH, GT_PATH
 from datetime import datetime
 
 
-def normalize_edit_distance(str1, str2):
-    """Calculate normalized edit distance between two strings."""
+def calculate_similarity_score(str1, str2):
+    """Calculate similarity score between two strings (1 = identical, 0 = completely different)."""
     # Treat empty strings as None for comparison purposes
     if str1 is None or str1 == "":
         str1 = None
@@ -17,7 +17,7 @@ def normalize_edit_distance(str1, str2):
         str2 = None
 
     if str1 is None and str2 is None:
-        return 0.0  # Both are None or empty, so perfect match
+        return 1.0  # Both are None or empty, so perfect match
     if str1 is None:
         str1 = ""
     if str2 is None:
@@ -33,9 +33,10 @@ def normalize_edit_distance(str1, str2):
     # Normalize by maximum length to get a value between 0 and 1
     max_len = max(len(str1), len(str2))
     if max_len == 0:
-        return 0.0  # Both empty, so perfect match
+        return 1.0  # Both empty, so perfect match
 
-    return distance / max_len
+    # Convert to similarity score (1 - normalized distance)
+    return 1.0 - (distance / max_len)
 
 
 def numpy_to_python(obj):
@@ -192,7 +193,7 @@ def evaluate_outputs():
             # Calculate exact match for outcome (0 = match, 1 = no match)
             outcome_match = 0 if output_outcome == gt_outcome else 1
 
-            # Calculate edit distances only for justifications
+            # Calculate similarity scores for justifications (higher is better)
             output_justification = output_question.get("outcome_justification")
             gt_justification = gt_question.get("outcome_justification")
 
@@ -200,7 +201,7 @@ def evaluate_outputs():
             if gt_justification == "":
                 gt_justification = None
 
-            justification_distance = normalize_edit_distance(
+            justification_similarity = calculate_similarity_score(
                 output_justification,
                 gt_justification
             )
@@ -213,12 +214,12 @@ def evaluate_outputs():
             if gt_payment == "":
                 gt_payment = None
 
-            payment_distance = normalize_edit_distance(
+            payment_similarity = calculate_similarity_score(
                 output_payment,
                 gt_payment
             )
 
-            # Add to results
+            # Add to results with actual justification and payment texts
             all_results.append({
                 "policy_id": policy_id,
                 "request_id": request_id,
@@ -227,13 +228,23 @@ def evaluate_outputs():
                 "output_outcome": output_outcome,
                 "gt_outcome": gt_outcome,
                 "outcome_match": outcome_match,
-                "justification_distance": justification_distance,
-                "payment_distance": payment_distance,
-                "avg_justification_distance": (justification_distance + payment_distance) / 2
+                "output_justification": output_justification,  # Include actual output justification
+                "gt_justification": gt_justification,  # Include actual GT justification
+                "output_payment": output_payment,  # Include actual output payment
+                "gt_payment": gt_payment,  # Include actual GT payment
+                "justification_similarity": justification_similarity,
+                "payment_similarity": payment_similarity,
+                "avg_justification_similarity": (
+                                                            justification_similarity + payment_similarity) / 2 if justification_similarity is not None and payment_similarity is not None else None
             })
 
     if not all_results:
         print("No matching questions found for evaluation")
+        return None, None
+
+    # Check if we have any data to analyze
+    if len(y_true) == 0 or len(y_pred) == 0:
+        print("Warning: No data to calculate classification metrics")
         return None, None
 
     # Create DataFrame for results
@@ -242,7 +253,7 @@ def evaluate_outputs():
     # Calculate classification metrics
     outcome_accuracy = accuracy_score(y_true, y_pred)
     conf_matrix = confusion_matrix(y_true, y_pred, labels=valid_outcomes)
-    class_report = classification_report(y_true, y_pred, labels=valid_outcomes, output_dict=True)
+    class_report = classification_report(y_true, y_pred, labels=valid_outcomes, output_dict=True, zero_division=0)
 
     # Calculate per-category accuracy
     category_metrics = {}
@@ -265,9 +276,11 @@ def evaluate_outputs():
         },
         "exact_outcome_matches": int((results_df["outcome_match"] == 0).sum()),
         "exact_outcome_match_percentage": float((results_df["outcome_match"] == 0).mean() * 100),
-        "avg_justification_distance": float(results_df["justification_distance"].mean()),
-        "avg_payment_distance": float(results_df["payment_distance"].mean()),
-        "avg_overall_justification_distance": float(results_df["avg_justification_distance"].mean())
+        "avg_justification_similarity": float(results_df["justification_similarity"].mean()),
+        "avg_payment_similarity": float(results_df["payment_similarity"].mean()),
+        "avg_combined_justification_similarity": float(
+            results_df["avg_justification_similarity"].dropna().mean() if not results_df[
+                "avg_justification_similarity"].dropna().empty else 0)
     }
 
     # Convert numpy types to native Python types for JSON serialization
@@ -282,9 +295,9 @@ def evaluate_outputs():
     print(f"Total Questions Evaluated: {summary['total_evaluated_questions']}")
     print(
         f"Outcome Classification Accuracy: {summary['outcome_classification']['accuracy']:.4f} ({summary['exact_outcome_match_percentage']:.2f}%)")
-    print(f"Average Justification Distance: {summary['avg_justification_distance']:.4f}")
-    print(f"Average Payment Distance: {summary['avg_payment_distance']:.4f}")
-    print(f"Average Overall Justification Distance: {summary['avg_overall_justification_distance']:.4f}\n")
+    print(f"Average Justification Similarity: {summary['avg_justification_similarity']:.4f}")
+    print(f"Average Payment Similarity: {summary['avg_payment_similarity']:.4f}")
+    print(f"Average Combined Justification Similarity: {summary['avg_combined_justification_similarity']:.4f}\n")
 
     # Print confusion matrix
     print("Confusion Matrix:")
@@ -302,10 +315,12 @@ def evaluate_outputs():
     pd.set_option('display.float_format', '{:.4f}'.format)
 
     print("Detailed Results:")
-    print(results_df.sort_values(["policy_id", "request_id"])[
-              ["policy_id", "request_id", "output_outcome", "gt_outcome",
-               "outcome_match", "justification_distance", "payment_distance"]
-          ].to_string(index=False))
+    detailed_columns = ["policy_id", "request_id", "output_outcome", "gt_outcome",
+                        "outcome_match", "output_justification", "gt_justification",
+                        "output_payment", "gt_payment", "justification_similarity",
+                        "payment_similarity"]
+
+    print(results_df.sort_values(["policy_id", "request_id"])[detailed_columns].to_string(index=False))
 
     # Save results to CSV
     results_dir = os.path.join(os.path.dirname(JSON_PATH), "evaluation_results")
