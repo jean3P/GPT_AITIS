@@ -136,7 +136,6 @@ def run_rag(
                     response.get("answer", {}).get("eligibility", ""),
                     response.get("answer", {}).get("eligibility_policy", ""),
                     response.get("answer", {}).get("amount_policy", ""),
-                    response.get("answer", {}).get("amount_policy_line", "")
                 ]
                 policy_results.append(result_row)
                 logger.info(f"✓ Processed question {q_id} for policy {policy_id}")
@@ -266,7 +265,7 @@ def run_batch_rag(
                 if context_provider:
                     try:
                         # Try to retrieve context specifically for this policy
-                        context_texts = context_provider.retrieve(query=question, k=3, policy_id=policy_id)
+                        context_texts = context_provider.retrieve(query=question, k=5, policy_id=policy_id)
                         logger.info(f"Retrieved {len(context_texts)} context chunks for policy {policy_id}")
                     except Exception as e:
                         logger.error(f"Error retrieving context: {e}")
@@ -279,8 +278,7 @@ def run_batch_rag(
                     question,
                     response.get("answer", {}).get("eligibility", ""),
                     response.get("answer", {}).get("eligibility_policy", ""),
-                    response.get("answer", {}).get("amount_policy", ""),
-                    response.get("answer", {}).get("amount_policy_line", "")
+                    response.get("answer", {}).get("amount_policy", "")
                 ]
                 policy_results[policy_id]["results"].append(result_row)
                 logger.info(f"✓ Processed question {q_id} for policy {policy_id}")

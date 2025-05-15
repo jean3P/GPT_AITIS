@@ -1,20 +1,31 @@
-# src/scripts/evaluate_results.py
-
 import os
 import json
+import re
+
 import pandas as pd
 import numpy as np
 from config import JSON_PATH, GT_PATH
 from datetime import datetime
 
 
+def normalize_field(value):
+    """Normalize a field value to handle None, empty strings, and whitespace consistently."""
+    if value is None:
+        return None
+    if isinstance(value, str):
+        # Strip whitespace
+        value = value.strip()
+        # Convert empty strings to None
+        if value == "" or value.lower() in ["null", "none"]:
+            return None
+    return value
+
+
 def calculate_similarity_score(str1, str2):
     """Calculate similarity score between two strings (1 = identical, 0 = completely different)."""
-    # Treat empty strings as None for comparison purposes
-    if str1 is None or str1 == "":
-        str1 = None
-    if str2 is None or str2 == "":
-        str2 = None
+    # Normalize inputs
+    str1 = normalize_field(str1)
+    str2 = normalize_field(str2)
 
     if str1 is None and str2 is None:
         return 1.0  # Both are None or empty, so perfect match
@@ -37,6 +48,47 @@ def calculate_similarity_score(str1, str2):
 
     # Convert to similarity score (1 - normalized distance)
     return 1.0 - (distance / max_len)
+
+
+def calculate_text_iou(text1, text2):
+    """Calculate Intersection over Union (IoU) for text strings based on word sets."""
+    # Normalize inputs
+    text1 = normalize_field(text1)
+    text2 = normalize_field(text2)
+
+    # Handle None and empty cases
+    if text1 is None:
+        text1 = ""
+    if text2 is None:
+        text2 = ""
+
+    # If both are empty, return 1.0 (perfect match)
+    if text1 == "" and text2 == "":
+        return 1.0
+
+    # If one is empty and the other is not, return 0.0
+    if (text1 == "" and text2 != "") or (text1 != "" and text2 == ""):
+        return 0.0
+
+    # Simple tokenization: split by whitespace and remove punctuation, convert to lowercase
+    def tokenize(text):
+        # Remove punctuation and convert to lowercase, then split
+        tokens = re.findall(r'\b\w+\b', text.lower())
+        return set(tokens)
+
+    tokens1 = tokenize(str(text1))
+    tokens2 = tokenize(str(text2))
+
+    # Calculate intersection and union
+    intersection = tokens1.intersection(tokens2)
+    union = tokens1.union(tokens2)
+
+    # Calculate IoU
+    if len(union) == 0:
+        return 1.0  # Both have no tokens after processing
+
+    iou = len(intersection) / len(union)
+    return iou
 
 
 def numpy_to_python(obj):
@@ -94,12 +146,11 @@ def evaluate_outputs():
     y_true = []
     y_pred = []
 
-    # Valid outcome categories
+    # Valid outcome categories (removed "Maybe")
     valid_outcomes = [
         "Yes",
         "No - Unrelated event",
-        "No - condition(s) not met",
-        "Maybe"
+        "No - condition(s) not met"
     ]
 
     # Get the latest output file for each policy ID
@@ -171,9 +222,13 @@ def evaluate_outputs():
             gt_question = gt_questions_dict[request_id]
             total_evaluated_questions += 1
 
-            # Get the outcome values
-            output_outcome = output_question.get("outcome", "")
-            gt_outcome = gt_question.get("outcome", "")
+            # Get the outcome values and normalize them
+            output_outcome = normalize_field(output_question.get("outcome", ""))
+            gt_outcome = normalize_field(gt_question.get("outcome", ""))
+
+            # Convert None to empty string for outcome comparison
+            output_outcome = output_outcome if output_outcome is not None else ""
+            gt_outcome = gt_outcome if gt_outcome is not None else ""
 
             # Check if outcomes are in the valid list - standardize if needed
             if output_outcome not in valid_outcomes:
@@ -193,26 +248,25 @@ def evaluate_outputs():
             # Calculate exact match for outcome (0 = match, 1 = no match)
             outcome_match = 0 if output_outcome == gt_outcome else 1
 
-            # Calculate similarity scores for justifications (higher is better)
-            output_justification = output_question.get("outcome_justification")
-            gt_justification = gt_question.get("outcome_justification")
+            # Get and normalize justification fields
+            output_justification = normalize_field(output_question.get("outcome_justification"))
+            gt_justification = normalize_field(gt_question.get("outcome_justification"))
 
-            # Handle the case where GT uses "" instead of null
-            if gt_justification == "":
-                gt_justification = None
-
+            # Calculate similarity scores for justifications
             justification_similarity = calculate_similarity_score(
                 output_justification,
                 gt_justification
             )
 
-            # Same for payment justification
-            output_payment = output_question.get("payment_justification")
-            gt_payment = gt_question.get("payment_justification")
+            # Calculate IoU for outcome_justification
+            justification_iou = calculate_text_iou(
+                output_justification,
+                gt_justification
+            )
 
-            # Handle the case where GT uses "" instead of null
-            if gt_payment == "":
-                gt_payment = None
+            # Get and normalize payment justification fields
+            output_payment = normalize_field(output_question.get("payment_justification"))
+            gt_payment = normalize_field(gt_question.get("payment_justification"))
 
             payment_similarity = calculate_similarity_score(
                 output_payment,
@@ -220,6 +274,7 @@ def evaluate_outputs():
             )
 
             # Add to results with actual justification and payment texts
+            # Convert None to empty string for CSV output
             all_results.append({
                 "policy_id": policy_id,
                 "request_id": request_id,
@@ -228,14 +283,15 @@ def evaluate_outputs():
                 "output_outcome": output_outcome,
                 "gt_outcome": gt_outcome,
                 "outcome_match": outcome_match,
-                "output_justification": output_justification,  # Include actual output justification
-                "gt_justification": gt_justification,  # Include actual GT justification
-                "output_payment": output_payment,  # Include actual output payment
-                "gt_payment": gt_payment,  # Include actual GT payment
+                "output_justification": output_justification if output_justification is not None else "",
+                "gt_justification": gt_justification if gt_justification is not None else "",
+                "output_payment": output_payment if output_payment is not None else "",
+                "gt_payment": gt_payment if gt_payment is not None else "",
                 "justification_similarity": justification_similarity,
+                "justification_iou": justification_iou,
                 "payment_similarity": payment_similarity,
                 "avg_justification_similarity": (
-                                                            justification_similarity + payment_similarity) / 2 if justification_similarity is not None and payment_similarity is not None else None
+                                                        justification_similarity + payment_similarity) / 2 if justification_similarity is not None and payment_similarity is not None else None
             })
 
     if not all_results:
@@ -266,7 +322,7 @@ def evaluate_outputs():
                 "support": class_report[category]["support"]
             }
 
-    # Calculate summary statistics
+    # Calculate summary statistics with NaN handling
     summary = {
         "total_output_questions": total_output_questions,
         "total_evaluated_questions": total_evaluated_questions,
@@ -277,6 +333,7 @@ def evaluate_outputs():
         "exact_outcome_matches": int((results_df["outcome_match"] == 0).sum()),
         "exact_outcome_match_percentage": float((results_df["outcome_match"] == 0).mean() * 100),
         "avg_justification_similarity": float(results_df["justification_similarity"].mean()),
+        "avg_justification_iou": float(results_df["justification_iou"].mean()),
         "avg_payment_similarity": float(results_df["payment_similarity"].mean()),
         "avg_combined_justification_similarity": float(
             results_df["avg_justification_similarity"].dropna().mean() if not results_df[
@@ -296,6 +353,7 @@ def evaluate_outputs():
     print(
         f"Outcome Classification Accuracy: {summary['outcome_classification']['accuracy']:.4f} ({summary['exact_outcome_match_percentage']:.2f}%)")
     print(f"Average Justification Similarity: {summary['avg_justification_similarity']:.4f}")
+    print(f"Average Justification IoU: {summary['avg_justification_iou']:.4f}")
     print(f"Average Payment Similarity: {summary['avg_payment_similarity']:.4f}")
     print(f"Average Combined Justification Similarity: {summary['avg_combined_justification_similarity']:.4f}\n")
 
@@ -318,7 +376,7 @@ def evaluate_outputs():
     detailed_columns = ["policy_id", "request_id", "output_outcome", "gt_outcome",
                         "outcome_match", "output_justification", "gt_justification",
                         "output_payment", "gt_payment", "justification_similarity",
-                        "payment_similarity"]
+                        "justification_iou", "payment_similarity"]
 
     print(results_df.sort_values(["policy_id", "request_id"])[detailed_columns].to_string(index=False))
 
@@ -329,7 +387,7 @@ def evaluate_outputs():
     # Generate timestamped filename in European format
     timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
     csv_filename = os.path.join(results_dir, f"evaluation_results_{timestamp}.csv")
-    results_df.to_csv(csv_filename, index=False)
+    results_df.to_csv(csv_filename, index=False, na_rep='')  # Use empty string for NaN values in CSV
 
     # Also save summary statistics
     summary_filename = os.path.join(results_dir, f"evaluation_summary_{timestamp}.json")

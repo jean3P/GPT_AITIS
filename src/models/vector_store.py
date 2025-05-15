@@ -1,6 +1,8 @@
 # src/models/vector_store.py
 
 import logging
+import re
+
 import numpy as np
 import os
 from typing import List, Dict, Optional
@@ -81,7 +83,6 @@ class LocalVectorStore:
             List of text chunks
         """
         # Normalize whitespace characters (including NBSP)
-        import re
         text = re.sub(r'\s+', ' ', text)  # Replace all whitespace sequences with a single space
         text = text.replace('\xa0', ' ')  # Replace NBSP with regular space
 

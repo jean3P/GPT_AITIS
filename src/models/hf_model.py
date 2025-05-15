@@ -110,10 +110,9 @@ class HuggingFaceModelClient(BaseModelClient):
             Format the output EXACTLY in the following JSON schema WITHOUT ANY ADDITIONAL TEXT BEFORE OR AFTER:
             {
               "answer": {
-                "eligibility": "Yes | No - Unrelated event | No - condition(s) not met | Maybe",
+                "eligibility": "Yes | No - Unrelated event | No - condition(s) not met",
                 "eligibility_policy": "Quoted text from policy",
-                "amount_policy": "Amount like '1000 CHF' or null",
-                "amount_policy_line": "Quoted policy text or null"
+                "amount_policy": "Amount like '1000 CHF' or null"
               }
             }
             """
@@ -154,11 +153,11 @@ class HuggingFaceModelClient(BaseModelClient):
         context_text += ("""
                         WARNING: Some of the following context may contain "SECTION DEFINITIONS" of terms or general "
                         "information that does not directly indicate coverage. Please carefully distinguish "
-                        "between definitions and actual coverage provisions.\n\n
+                        "between definitions, exclusions and actual coverage provisions.\n\n
                         """)
 
         for i, ctx in enumerate(context_files, 1):
-            context_text += f"Policy context {i}:\n{ctx}\n\n"
+            context_text += f"Policy context {i}:\n{ctx.strip()}\n\n"
 
         return context_text
 
@@ -174,9 +173,13 @@ class HuggingFaceModelClient(BaseModelClient):
         Returns:
             Complete prompt for the model
         """
-        json_solution = "Then the json Solution is:\n\n"
-        full_prompt = f"{self.base_prompt}\n\n{context_text}\n\nQuestion: {question}\n\n{persona_text}\n\n{self.json_format}\n\n{json_solution}"
-        logger.debug(f"Full prompt: {full_prompt}")
+        prompt_final = "\nThen the json Solution is:\n\n"
+        if persona_text:
+            full_prompt = f"{self.base_prompt}\n\n{context_text}\n\nQuestion: {question}\n\n{persona_text}\n\n{self.json_format}\n\n{prompt_final}"
+            logger.debug(f"Full prompt: {full_prompt}")
+        else:
+            full_prompt = f"{self.base_prompt}\n\n{context_text}\n\nQuestion: {question}\n\n{self.json_format}\n\n{prompt_final}"
+            logger.debug(f"Full prompt: {full_prompt}")
         return full_prompt
 
     def _generate_model_output(self, prompt: str) -> Dict[str, Any]:

@@ -615,6 +615,13 @@
             border-radius: 3px;
         }
 
+        /* IoU metric display styles */
+        .iou-metric {
+            display: inline-block;
+            margin-left: 1rem;
+            font-weight: normal;
+        }
+
         @media (max-width: 768px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
@@ -700,6 +707,11 @@
                             <div class="metric-value" id="avg-justification-similarity">-</div>
                             <div class="similarity-interpretation" id="avg-similarity-interpretation"></div>
                         </div>
+                        <div class="metric-card">
+                            <div class="metric-title">Avg Justification IoU</div>
+                            <div class="metric-value" id="avg-justification-iou">-</div>
+                            <div class="similarity-interpretation" id="avg-iou-interpretation"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -754,8 +766,7 @@
                                         <th>Request ID</th>
                                         <th>Output Outcome</th>
                                         <th>Ground Truth</th>
-                                        <th>Match</th>
-                                        <th>Justification Similarities</th>
+                                        <th>Justification Metrics</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -776,13 +787,12 @@
                                 <!-- Confusion matrix will be loaded here -->
                                 <tr>
                                     <th colspan="2" rowspan="2"></th>
-                                    <th colspan="4">Predicted</th>
+                                    <th colspan="3">Predicted</th>
                                 </tr>
                                 <tr>
                                     <th>Yes</th>
                                     <th>No - Unrelated event</th>
                                     <th>No - condition(s) not met</th>
-                                    <th>Maybe</th>
                                 </tr>
                                 <!-- Rows will be added here -->
                             </table>
@@ -804,12 +814,6 @@
                             <div class="classification-card">
                                 <div class="classification-title">Category: No - condition(s) not met</div>
                                 <table class="metrics-table" id="no-conditions-metrics">
-                                    <!-- Metrics will be loaded here -->
-                                </table>
-                            </div>
-                            <div class="classification-card">
-                                <div class="classification-title">Category: Maybe</div>
-                                <table class="metrics-table" id="maybe-metrics">
                                     <!-- Metrics will be loaded here -->
                                 </table>
                             </div>
@@ -863,8 +867,8 @@
         const EVALUATION_RESULTS_PATH = "{{ evaluation_results_path }}";
         console.log("Using evaluation results path:", EVALUATION_RESULTS_PATH);
 
-        // Define possible outcome values for analysis
-        const OUTCOME_VALUES = ["Yes", "No - Unrelated event", "No - condition(s) not met", "Maybe"];
+        // Define possible outcome values for analysis (removed "Maybe")
+        const OUTCOME_VALUES = ["Yes", "No - Unrelated event", "No - condition(s) not met"];
 
         // Function to determine match class based on similarity
         function getSimilarityClass(similarity) {
@@ -914,6 +918,223 @@
             if (similarity >= 0.4) return `rgba(255, 193, 7, ${alpha})`;  // moderate
             if (similarity >= 0.2) return `rgba(253, 126, 20, ${alpha})`;  // low
             return `rgba(220, 53, 69, ${alpha})`;  // very-low
+        }
+
+        // Function to convert European date format to standard format and handle time
+        function parseEuropeanDateTime(dateStr, timeStr) {
+            // dateStr is in format dd-mm-yyyy
+            // timeStr is in format HH-MM-SS
+
+            const [day, month, year] = dateStr.split('-');
+            const [hours, minutes, seconds] = timeStr.split('-');
+
+            // Create a date object in UTC to avoid timezone issues
+            const dateTime = new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds));
+
+            // If there's a 2-hour offset, we adjust here
+            // This might be due to timezone differences between server and client
+            // Uncomment and adjust as needed based on your timezone situation
+            // dateTime.setHours(dateTime.getHours() + 2);
+
+            return dateTime;
+        }
+
+        // Function to format date for display
+        function formatDateTime(dateTime) {
+            const day = String(dateTime.getDate()).padStart(2, '0');
+            const month = String(dateTime.getMonth() + 1).padStart(2, '0');
+            const year = dateTime.getFullYear();
+            const hours = String(dateTime.getHours()).padStart(2, '0');
+            const minutes = String(dateTime.getMinutes()).padStart(2, '0');
+            const seconds = String(dateTime.getSeconds()).padStart(2, '0');
+
+            return {
+                date: `${day}-${month}-${year}`,
+                time: `${hours}:${minutes}:${seconds}`
+            };
+        }
+
+        // Function to initialize the dashboard
+        function initDashboard() {
+            // Set up tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs and content
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+                    // Add active class to clicked tab and corresponding content
+                    this.classList.add('active');
+                    const tabName = this.getAttribute('data-tab');
+                    document.getElementById(tabName).classList.add('active');
+                });
+            });
+
+            // Set up filters
+            document.getElementById('policy-filter').addEventListener('change', filterEvaluations);
+            document.getElementById('date-filter').addEventListener('change', filterEvaluations);
+            document.getElementById('search-input').addEventListener('input', filterEvaluations);
+
+            // Set up file input
+            document.getElementById('file-input').addEventListener('change', handleFileUpload);
+
+            // Set up pagination controls
+            document.getElementById('prev-page').addEventListener('click', function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    displayComparisonPage();
+                }
+            });
+
+            document.getElementById('next-page').addEventListener('click', function() {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    displayComparisonPage();
+                }
+            });
+
+            // Initialize empty results table with fixed searching and sorting
+            resultsTable = $('#results-table').DataTable({
+                responsive: true,
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+                lengthMenu: [10, 25, 50, 100],
+                columns: [
+                    { data: 'policy_id' },
+                    { data: 'request_id' },
+                    { data: 'output_outcome' },
+                    { data: 'gt_outcome' },
+                    {
+                        data: null,
+                        render: function(data) {
+                            // Check if we have similarity scores or distance scores
+                            const hasSimilarity = 'justification_similarity' in data;
+                            const hasIoU = 'justification_iou' in data;
+
+                            // Get the outcome match value
+                            const matchValue = parseFloat(data.outcome_match);
+                            let matchBadge = '';
+                            if (matchValue === 0) {
+                                matchBadge = '<div><span class="badge bg-success">Outcome: Exact Match</span></div>';
+                            } else if (matchValue === 0.5) {
+                                matchBadge = '<div><span class="badge bg-partial">Outcome: Partial Match</span></div>';
+                            } else {
+                                matchBadge = '<div><span class="badge bg-danger">Outcome: Mismatch</span></div>';
+                            }
+
+                            if (hasSimilarity) {
+                                const justification = parseFloat(data.justification_similarity).toFixed(3);
+                                const payment = parseFloat(data.payment_similarity).toFixed(3);
+                                const avg = parseFloat(data.avg_justification_similarity).toFixed(3);
+
+                                const justificationClass = getSimilarityClass(data.justification_similarity);
+                                const paymentClass = getSimilarityClass(data.payment_similarity);
+                                const avgClass = getSimilarityClass(data.avg_justification_similarity);
+
+                                const justificationInterpretation = getSimilarityInterpretation(justification);
+                                const paymentInterpretation = getSimilarityInterpretation(payment);
+                                const avgInterpretation = getSimilarityInterpretation(avg);
+
+                                let result = matchBadge + `
+                                    <div><span class="badge bg-${justificationClass}">Justification: ${justification}</span> <span class="similarity-interpretation">${justificationInterpretation}</span></div>
+                                    <div><span class="badge bg-${paymentClass}">Payment: ${payment}</span> <span class="similarity-interpretation">${paymentInterpretation}</span></div>
+                                    <div><span class="badge bg-${avgClass}">Avg: ${avg}</span> <span class="similarity-interpretation">${avgInterpretation}</span></div>
+                                `;
+
+                                // Add IoU if available
+                                if (hasIoU) {
+                                    const iou = parseFloat(data.justification_iou).toFixed(3);
+                                    const iouClass = getSimilarityClass(data.justification_iou);
+                                    const iouInterpretation = getSimilarityInterpretation(iou);
+                                    result += `<div><span class="badge bg-${iouClass}">IoU: ${iou}</span> <span class="similarity-interpretation">${iouInterpretation}</span></div>`;
+                                }
+
+                                return result;
+                            } else {
+                                // Fallback for old format with distance metrics - convert to similarity
+                                const justification = (1 - parseFloat(data.justification_distance)).toFixed(3);
+                                const payment = (1 - parseFloat(data.payment_distance)).toFixed(3);
+                                const avg = (1 - parseFloat(data.avg_justification_distance)).toFixed(3);
+
+                                const justificationClass = getSimilarityClass(justification);
+                                const paymentClass = getSimilarityClass(payment);
+                                const avgClass = getSimilarityClass(avg);
+
+                                const justificationInterpretation = getSimilarityInterpretation(justification);
+                                const paymentInterpretation = getSimilarityInterpretation(payment);
+                                const avgInterpretation = getSimilarityInterpretation(avg);
+
+                                return matchBadge + `
+                                    <div><span class="badge bg-${justificationClass}">Justification: ${justification}</span> <span class="similarity-interpretation">${justificationInterpretation}</span></div>
+                                    <div><span class="badge bg-${paymentClass}">Payment: ${payment}</span> <span class="similarity-interpretation">${paymentInterpretation}</span></div>
+                                    <div><span class="badge bg-${avgClass}">Avg: ${avg}</span> <span class="similarity-interpretation">${avgInterpretation}</span></div>
+                                `;
+                            }
+                        }
+                    }
+                ]
+            });
+
+            // Initialize empty metrics chart - now showing justification similarities and IoU
+            const ctx = document.getElementById('metrics-chart').getContext('2d');
+            metricsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Justification Similarity', 'Payment Similarity', 'Combined Similarity', 'Justification IoU'],
+                    datasets: [{
+                        label: 'Average Metrics (Higher is Better)',
+                        data: [0, 0, 0, 0],
+                        backgroundColor: [
+                            'var(--moderate-color)',
+                            'var(--moderate-color)',
+                            'var(--moderate-color)',
+                            'var(--moderate-color)'
+                        ],
+                        borderColor: [
+                            'var(--moderate-color)',
+                            'var(--moderate-color)',
+                            'var(--moderate-color)',
+                            'var(--moderate-color)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 1,
+                            title: {
+                                display: true,
+                                text: 'Score (0-1)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.raw;
+                                    const interpretation = getSimilarityInterpretation(value);
+                                    return `Score: ${value.toFixed(4)} (${interpretation})`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Remove local storage for clean start
+            localStorage.removeItem('evaluationRuns');
+
+            // Automatically load evaluations from the configured path
+            if (EVALUATION_RESULTS_PATH) {
+                loadEvaluationsFromPath(EVALUATION_RESULTS_PATH);
+            }
         }
 
         // Function to load evaluations from a specified path
@@ -1025,287 +1246,6 @@
             });
 
             return evaluationSets;
-        }
-
-        // Function to calculate policy-specific outcome statistics
-        function calculatePolicyOutcomeStats(results) {
-            // Group results by policy ID
-            const policyResults = {};
-
-            results.forEach(result => {
-                const policyId = result.policy_id;
-                if (!policyResults[policyId]) {
-                    policyResults[policyId] = [];
-                }
-                policyResults[policyId].push(result);
-            });
-
-            // Calculate stats for each policy
-            const policyStats = {};
-
-            for (const policyId in policyResults) {
-                const policyData = policyResults[policyId];
-                const totalQuestions = policyData.length;
-
-                // Count different match types
-                const exactMatches = policyData.filter(r => parseFloat(r.outcome_match) === 0).length;
-                const partialMatches = policyData.filter(r => parseFloat(r.outcome_match) === 0.5).length;
-                const mismatches = policyData.filter(r => parseFloat(r.outcome_match) > 0.5).length;
-
-                const matchRate = ((exactMatches + partialMatches) / totalQuestions) * 100;
-
-                // Count occurrences of each outcome
-                const outcomeStats = {};
-                OUTCOME_VALUES.forEach(outcome => {
-                    const occurrences = policyData.filter(r => r.output_outcome === outcome).length;
-                    const correctMatches = policyData.filter(r =>
-                        r.output_outcome === outcome && r.gt_outcome === outcome
-                    ).length;
-                    const totalOfThisOutcome = policyData.filter(r => r.gt_outcome === outcome).length;
-
-                    outcomeStats[outcome] = {
-                        occurrences: occurrences,
-                        correct: correctMatches,
-                        total: totalOfThisOutcome,
-                        accuracy: totalOfThisOutcome > 0 ? (correctMatches / totalOfThisOutcome) * 100 : 0
-                    };
-                });
-
-                policyStats[policyId] = {
-                    totalQuestions: totalQuestions,
-                    exactMatches: exactMatches,
-                    partialMatches: partialMatches,
-                    mismatches: mismatches,
-                    matchRate: matchRate,
-                    outcomes: outcomeStats
-                };
-            }
-
-            return policyStats;
-        }
-
-        // Function to initialize the dashboard
-        function initDashboard() {
-            // Set up tabs
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    // Remove active class from all tabs and content
-                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-                    // Add active class to clicked tab and corresponding content
-                    this.classList.add('active');
-                    const tabName = this.getAttribute('data-tab');
-                    document.getElementById(tabName).classList.add('active');
-                });
-            });
-
-            // Set up filters
-            document.getElementById('policy-filter').addEventListener('change', filterEvaluations);
-            document.getElementById('date-filter').addEventListener('change', filterEvaluations);
-            document.getElementById('search-input').addEventListener('input', filterEvaluations);
-
-            // Set up file input
-            document.getElementById('file-input').addEventListener('change', handleFileUpload);
-
-            // Set up pagination controls
-            document.getElementById('prev-page').addEventListener('click', function() {
-                if (currentPage > 1) {
-                    currentPage--;
-                    displayComparisonPage();
-                }
-            });
-
-            document.getElementById('next-page').addEventListener('click', function() {
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    displayComparisonPage();
-                }
-            });
-
-            // Initialize empty results table with fixed searching and sorting
-            resultsTable = $('#results-table').DataTable({
-                responsive: true,
-                paging: true,
-                searching: true,
-                ordering: true,
-                info: true,
-                lengthMenu: [10, 25, 50, 100],
-                columns: [
-                    { data: 'policy_id' },
-                    { data: 'request_id' },
-                    { data: 'output_outcome' },
-                    { data: 'gt_outcome' },
-                    {
-                        data: 'outcome_match',
-                        render: function(data) {
-                            const matchValue = parseFloat(data);
-                            if (matchValue === 0) {
-                                return '<span class="badge bg-success">Exact Match</span>';
-                            } else if (matchValue === 0.5) {
-                                return '<span class="badge bg-partial">Partial Match</span>';
-                            } else {
-                                return '<span class="badge bg-danger">Mismatch</span>';
-                            }
-                        }
-                    },
-                    {
-                        data: null,
-                        render: function(data) {
-                            // Check if we have similarity scores or distance scores
-                            const hasSimilarity = 'justification_similarity' in data;
-
-                            if (hasSimilarity) {
-                                const justification = parseFloat(data.justification_similarity).toFixed(3);
-                                const payment = parseFloat(data.payment_similarity).toFixed(3);
-                                const avg = parseFloat(data.avg_justification_similarity).toFixed(3);
-
-                                const justificationClass = getSimilarityClass(data.justification_similarity);
-                                const paymentClass = getSimilarityClass(data.payment_similarity);
-                                const avgClass = getSimilarityClass(data.avg_justification_similarity);
-
-                                const justificationInterpretation = getSimilarityInterpretation(justification);
-                                const paymentInterpretation = getSimilarityInterpretation(payment);
-                                const avgInterpretation = getSimilarityInterpretation(avg);
-
-                                return `
-                                    <div><span class="badge bg-${justificationClass}">Justification: ${justification}</span> <span class="similarity-interpretation">${justificationInterpretation}</span></div>
-                                    <div><span class="badge bg-${paymentClass}">Payment: ${payment}</span> <span class="similarity-interpretation">${paymentInterpretation}</span></div>
-                                    <div><span class="badge bg-${avgClass}">Avg: ${avg}</span> <span class="similarity-interpretation">${avgInterpretation}</span></div>
-                                `;
-                            } else {
-                                // Fallback for old format with distance metrics - convert to similarity
-                                const justification = (1 - parseFloat(data.justification_distance)).toFixed(3);
-                                const payment = (1 - parseFloat(data.payment_distance)).toFixed(3);
-                                const avg = (1 - parseFloat(data.avg_justification_distance)).toFixed(3);
-
-                                const justificationClass = getSimilarityClass(justification);
-                                const paymentClass = getSimilarityClass(payment);
-                                const avgClass = getSimilarityClass(avg);
-
-                                const justificationInterpretation = getSimilarityInterpretation(justification);
-                                const paymentInterpretation = getSimilarityInterpretation(payment);
-                                const avgInterpretation = getSimilarityInterpretation(avg);
-
-                                return `
-                                    <div><span class="badge bg-${justificationClass}">Justification: ${justification}</span> <span class="similarity-interpretation">${justificationInterpretation}</span></div>
-                                    <div><span class="badge bg-${paymentClass}">Payment: ${payment}</span> <span class="similarity-interpretation">${paymentInterpretation}</span></div>
-                                    <div><span class="badge bg-${avgClass}">Avg: ${avg}</span> <span class="similarity-interpretation">${avgInterpretation}</span></div>
-                                `;
-                            }
-                        }
-                    }
-                ],
-                // Fix sorting for outcome_match column
-                columnDefs: [
-                    {
-                        targets: 4, // Match column
-                        type: 'num' // Treat as numeric for sorting
-                    }
-                ]
-            });
-
-            // Initialize empty metrics chart - now showing justification similarities
-            const ctx = document.getElementById('metrics-chart').getContext('2d');
-            metricsChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Justification', 'Payment', 'Combined Justification'],
-                    datasets: [{
-                        label: 'Average Similarity (Higher is Better)',
-                        data: [0, 0, 0],
-                        backgroundColor: [
-                            'var(--moderate-color)',
-                            'var(--moderate-color)',
-                            'var(--moderate-color)'
-                        ],
-                        borderColor: [
-                            'var(--moderate-color)',
-                            'var(--moderate-color)',
-                            'var(--moderate-color)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 1,
-                            title: {
-                                display: true,
-                                text: 'Similarity Score (0-1)'
-                            }
-                        }
-                    },
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const value = context.raw;
-                                    const interpretation = getSimilarityInterpretation(value);
-                                    return `Similarity: ${value.toFixed(4)} (${interpretation})`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Remove local storage for clean start
-            localStorage.removeItem('evaluationRuns');
-
-            // Check if any evaluation files are stored in localStorage
-            const storedEvaluations = localStorage.getItem('evaluationRuns');
-            if (storedEvaluations) {
-                try {
-                    evaluationRuns = JSON.parse(storedEvaluations);
-                    updatePolicyFilter();
-                    updateDateFilter();
-                    renderEvaluationList();
-
-                    // Load the most recent evaluation if available
-                    if (evaluationRuns.length > 0) {
-                        loadEvaluation(evaluationRuns[0]);
-                        document.querySelector('.eval-list-item')?.classList.add('active');
-                    }
-                } catch (error) {
-                    console.error("Error loading stored evaluations:", error);
-                }
-            }
-
-            // Automatically load evaluations from the configured path
-            loadEvaluationsFromPath(EVALUATION_RESULTS_PATH);
-        }
-
-        // Function to display a specific page of comparisons
-        function displayComparisonPage() {
-            const startIdx = (currentPage - 1) * itemsPerPage;
-            const endIdx = Math.min(startIdx + itemsPerPage, allComparisons.length);
-            const comparisonsToShow = allComparisons.slice(startIdx, endIdx);
-
-            const container = document.getElementById('comparison-container');
-            container.innerHTML = comparisonsToShow.join('');
-
-            // Update pagination controls
-            document.getElementById('prev-page').disabled = currentPage === 1;
-            document.getElementById('next-page').disabled = currentPage === totalPages;
-            document.getElementById('current-page-info').textContent = `Page ${currentPage} of ${totalPages} (${allComparisons.length} total items)`;
-
-            // Add event listeners to policy headers for collapsing/expanding
-            document.querySelectorAll('.policy-header').forEach(header => {
-                header.addEventListener('click', function() {
-                    const targetId = this.getAttribute('data-target');
-                    const contentDiv = document.getElementById(targetId);
-                    const collapseIcon = this.querySelector('.collapse-icon');
-
-                    // Toggle the collapsed state
-                    contentDiv.classList.toggle('collapsed');
-                    collapseIcon.classList.toggle('collapsed');
-                });
-            });
         }
 
         // Function to handle file upload
@@ -1450,10 +1390,15 @@
             const match = filename.match(/evaluation_summary_(\d{2}-\d{2}-\d{4}_\d{2}-\d{2}-\d{2})\.json/);
             const timestamp = match ? match[1] : new Date().toISOString();
 
+            // Parse date and time correctly
+            const [dateStr, timeStr] = timestamp.split('_');
+            const dateTime = parseEuropeanDateTime(dateStr, timeStr);
+            const formatted = formatDateTime(dateTime);
+
             // Check if this evaluation already exists to prevent duplicates
             if (evaluationRuns.some(run =>
-                run.date === timestamp.split('_')[0] &&
-                run.time === timestamp.split('_')[1].replace(/-/g, ':')
+                run.date === formatted.date &&
+                run.time === formatted.time
             )) {
                 console.log(`Skipping duplicate evaluation: ${timestamp}`);
                 return; // Skip this evaluation as it's already loaded
@@ -1468,8 +1413,9 @@
             // Create evaluation entry
             const evaluation = {
                 id: Date.now().toString(),
-                date: timestamp.split('_')[0],
-                time: timestamp.split('_')[1].replace(/-/g, ':'),
+                date: formatted.date,
+                time: formatted.time,
+                dateTime: dateTime, // Store the actual date object
                 policyIds: policyIds,
                 summary: data.summary,
                 results: data.results,
@@ -1479,6 +1425,9 @@
 
             // Add to evaluations list
             evaluationRuns.unshift(evaluation);
+
+            // Sort evaluations by actual date/time
+            evaluationRuns.sort((a, b) => b.dateTime - a.dateTime);
 
             // Save to localStorage
             localStorage.setItem('evaluationRuns', JSON.stringify(evaluationRuns));
@@ -1494,6 +1443,63 @@
             // Update the active class
             document.querySelectorAll('.eval-list-item').forEach(i => i.classList.remove('active'));
             document.querySelector('.eval-list-item')?.classList.add('active');
+        }
+
+        // Function to calculate policy-specific outcome statistics
+        function calculatePolicyOutcomeStats(results) {
+            // Group results by policy ID
+            const policyResults = {};
+
+            results.forEach(result => {
+                const policyId = result.policy_id;
+                if (!policyResults[policyId]) {
+                    policyResults[policyId] = [];
+                }
+                policyResults[policyId].push(result);
+            });
+
+            // Calculate stats for each policy
+            const policyStats = {};
+
+            for (const policyId in policyResults) {
+                const policyData = policyResults[policyId];
+                const totalQuestions = policyData.length;
+
+                // Count different match types
+                const exactMatches = policyData.filter(r => parseFloat(r.outcome_match) === 0).length;
+                const partialMatches = policyData.filter(r => parseFloat(r.outcome_match) === 0.5).length;
+                const mismatches = policyData.filter(r => parseFloat(r.outcome_match) > 0.5).length;
+
+                const matchRate = ((exactMatches + partialMatches) / totalQuestions) * 100;
+
+                // Count occurrences of each outcome
+                const outcomeStats = {};
+                OUTCOME_VALUES.forEach(outcome => {
+                    const occurrences = policyData.filter(r => r.output_outcome === outcome).length;
+                    const correctMatches = policyData.filter(r =>
+                        r.output_outcome === outcome && r.gt_outcome === outcome
+                    ).length;
+                    const totalOfThisOutcome = policyData.filter(r => r.gt_outcome === outcome).length;
+
+                    outcomeStats[outcome] = {
+                        occurrences: occurrences,
+                        correct: correctMatches,
+                        total: totalOfThisOutcome,
+                        accuracy: totalOfThisOutcome > 0 ? (correctMatches / totalOfThisOutcome) * 100 : 0
+                    };
+                });
+
+                policyStats[policyId] = {
+                    totalQuestions: totalQuestions,
+                    exactMatches: exactMatches,
+                    partialMatches: partialMatches,
+                    mismatches: mismatches,
+                    matchRate: matchRate,
+                    outcomes: outcomeStats
+                };
+            }
+
+            return policyStats;
         }
 
         // Function to update policy filter options
@@ -1637,43 +1643,62 @@
 
             // Check if we have similarity or distance metrics
             const hasSimilarity = 'avg_justification_similarity' in summary;
+            const hasIoU = 'avg_justification_iou' in summary;
 
             if (hasSimilarity) {
                 const avgJustificationSimilarity = summary.avg_justification_similarity || 0;
                 const avgPaymentSimilarity = summary.avg_payment_similarity || 0;
                 const avgCombinedSimilarity = summary.avg_combined_justification_similarity || 0;
+                const avgJustificationIoU = hasIoU ? summary.avg_justification_iou : 0;
 
                 document.getElementById('avg-justification-similarity').textContent = avgJustificationSimilarity.toFixed(4);
+                document.getElementById('avg-justification-iou').textContent = avgJustificationIoU.toFixed(4);
 
                 // Add similarity interpretation text
                 document.getElementById('avg-similarity-interpretation').textContent =
                     getSimilarityInterpretation(avgJustificationSimilarity);
+                document.getElementById('avg-iou-interpretation').textContent =
+                    getSimilarityInterpretation(avgJustificationIoU);
 
                 // Apply appropriate color to the metric value
                 document.getElementById('avg-justification-similarity').style.color =
                     getSimilarityColor(avgJustificationSimilarity);
+                document.getElementById('avg-justification-iou').style.color =
+                    getSimilarityColor(avgJustificationIoU);
 
-                // Update chart data with similarity scores and corresponding colors
-                metricsChart.data.datasets[0].data = [
+                // Update chart data with similarity scores and IoU
+                const chartData = [
                     avgJustificationSimilarity,
                     avgPaymentSimilarity,
                     avgCombinedSimilarity
                 ];
 
-                // Update colors based on similarity values
-                metricsChart.data.datasets[0].backgroundColor = [
+                const chartColors = [
                     getSimilarityColorWithAlpha(avgJustificationSimilarity, 0.6),
                     getSimilarityColorWithAlpha(avgPaymentSimilarity, 0.6),
                     getSimilarityColorWithAlpha(avgCombinedSimilarity, 0.6)
                 ];
 
-                metricsChart.data.datasets[0].borderColor = [
+                const chartBorderColors = [
                     getSimilarityColorWithAlpha(avgJustificationSimilarity, 1.0),
                     getSimilarityColorWithAlpha(avgPaymentSimilarity, 1.0),
                     getSimilarityColorWithAlpha(avgCombinedSimilarity, 1.0)
                 ];
 
-                metricsChart.data.datasets[0].label = 'Average Similarity (Higher is Better)';
+                // Add IoU if available
+                if (hasIoU) {
+                    chartData.push(avgJustificationIoU);
+                    chartColors.push(getSimilarityColorWithAlpha(avgJustificationIoU, 0.6));
+                    chartBorderColors.push(getSimilarityColorWithAlpha(avgJustificationIoU, 1.0));
+                    metricsChart.data.labels = ['Justification Similarity', 'Payment Similarity', 'Combined Similarity', 'Justification IoU'];
+                } else {
+                    metricsChart.data.labels = ['Justification Similarity', 'Payment Similarity', 'Combined Similarity'];
+                }
+
+                metricsChart.data.datasets[0].data = chartData;
+                metricsChart.data.datasets[0].backgroundColor = chartColors;
+                metricsChart.data.datasets[0].borderColor = chartBorderColors;
+                metricsChart.data.datasets[0].label = 'Average Metrics (Higher is Better)';
             } else {
                 // Fallback to distance metrics (convert to similarity for display)
                 const justificationSimilarity = 1 - (summary.avg_justification_distance || 0);
@@ -1681,16 +1706,19 @@
                 const combinedSimilarity = 1 - (summary.avg_combined_justification_distance || 0);
 
                 document.getElementById('avg-justification-similarity').textContent = justificationSimilarity.toFixed(4);
+                document.getElementById('avg-justification-iou').textContent = '-';
 
                 // Add similarity interpretation text
                 document.getElementById('avg-similarity-interpretation').textContent =
                     getSimilarityInterpretation(justificationSimilarity);
+                document.getElementById('avg-iou-interpretation').textContent = 'Not available';
 
                 // Apply appropriate color to the metric value
                 document.getElementById('avg-justification-similarity').style.color =
                     getSimilarityColor(justificationSimilarity);
 
-                // Update chart data with converted similarity scores and corresponding colors
+                // Update chart data with converted similarity scores
+                metricsChart.data.labels = ['Justification Similarity', 'Payment Similarity', 'Combined Similarity'];
                 metricsChart.data.datasets[0].data = [
                     justificationSimilarity,
                     paymentSimilarity,
@@ -1728,6 +1756,223 @@
 
             // Update classification metrics view
             updateClassificationView(evaluation);
+        }
+
+        // Function to update the comparison view
+        function updateComparisonView(evaluation) {
+            const container = document.getElementById('comparison-container');
+            const paginationContainer = document.getElementById('comparison-pagination');
+
+            if (!evaluation || !evaluation.results || evaluation.results.length === 0) {
+                container.innerHTML = '<div class="no-data">No comparison data available</div>';
+                paginationContainer.style.display = 'none';
+                return;
+            }
+
+            // Group results by policy ID
+            const resultsByPolicy = {};
+            evaluation.results.forEach(result => {
+                if (!resultsByPolicy[result.policy_id]) {
+                    resultsByPolicy[result.policy_id] = [];
+                }
+                resultsByPolicy[result.policy_id].push(result);
+            });
+
+            // Reset comparison array and current page
+            allComparisons = [];
+            currentPage = 1;
+
+            // Generate HTML for each policy
+            for (const policyId in resultsByPolicy) {
+                const policyDivId = `policy-content-${policyId.replace(/\./g, '-')}`;
+
+                // Count total questions and matches for this policy
+                const totalQuestions = resultsByPolicy[policyId].length;
+                const exactMatches = resultsByPolicy[policyId].filter(r => parseFloat(r.outcome_match) === 0).length;
+                const partialMatches = resultsByPolicy[policyId].filter(r => parseFloat(r.outcome_match) === 0.5).length;
+                const matchRate = ((exactMatches + partialMatches) / totalQuestions * 100).toFixed(1);
+
+                // Policy header with expand/collapse
+                const policyHeader = `
+                    <div class="policy-header" data-target="${policyDivId}">
+                        <h4>Policy ${policyId} (${exactMatches} exact + ${partialMatches} partial = ${matchRate}%)</h4>
+                        <span class="collapse-icon">▼</span>
+                    </div>
+                    <div id="${policyDivId}" class="policy-content">
+                `;
+
+                // Sort results by request ID
+                const sortedResults = resultsByPolicy[policyId].sort((a, b) => {
+                    return parseInt(a.request_id) - parseInt(b.request_id);
+                });
+
+                // Generate HTML for each question
+                sortedResults.forEach(result => {
+                    // Check if we have similarity/IoU or distance metrics
+                    const hasSimilarity = 'justification_similarity' in result;
+                    const hasIoU = 'justification_iou' in result;
+
+                    // Get similarity values for justification and payment
+                    let justificationValue, paymentValue, iouValue;
+                    if (hasSimilarity) {
+                        justificationValue = parseFloat(result.justification_similarity).toFixed(4);
+                        paymentValue = parseFloat(result.payment_similarity).toFixed(4);
+                        iouValue = hasIoU ? parseFloat(result.justification_iou).toFixed(4) : null;
+                    } else {
+                        // Convert distances to similarities for display
+                        justificationValue = (1 - parseFloat(result.justification_distance)).toFixed(4);
+                        paymentValue = (1 - parseFloat(result.payment_distance)).toFixed(4);
+                        iouValue = null;
+                    }
+
+                    // Determine similarity classes and interpretations
+                    const justificationClass = getSimilarityClass(justificationValue);
+                    const paymentClass = getSimilarityClass(paymentValue);
+                    const iouClass = iouValue ? getSimilarityClass(iouValue) : null;
+
+                    const justificationInterpretation = getSimilarityInterpretation(justificationValue);
+                    const paymentInterpretation = getSimilarityInterpretation(paymentValue);
+                    const iouInterpretation = iouValue ? getSimilarityInterpretation(iouValue) : null;
+
+                    // Determine outcome match class
+                    const matchValue = parseFloat(result.outcome_match);
+                    let outcomeClass = 'bad';
+                    let matchText = '';
+
+                    if (matchValue === 0) {
+                        outcomeClass = 'good';
+                        matchText = 'Exact Match';
+                    } else if (matchValue === 0.5) {
+                        outcomeClass = 'partial';
+                        matchText = 'Partial Match';
+                    } else {
+                        outcomeClass = 'bad';
+                        matchText = 'Mismatch';
+                    }
+
+                    const comparisonHtml = `
+                        <div class="comparison-row">
+                            <div class="comparison-header">
+                                <div>
+                                    <span class="comparison-question">${result.question || 'Question ' + result.request_id}</span>
+                                    <span class="comparison-request-id">(Request ID: ${result.request_id})</span>
+                                </div>
+                            </div>
+
+                            <div class="comparison-grid">
+                                <div class="comparison-card">
+                                    <div class="comparison-title">
+                                        <span>System Output</span>
+                                        <span class="badge bg-secondary">Outcome: ${result.output_outcome}</span>
+                                    </div>
+                                    <div class="comparison-content">
+                                        <strong>Justification:</strong>
+                                        <p>${result.output_justification || 'Not provided'}</p>
+
+                                        <strong>Payment Explanation:</strong>
+                                        <p>${result.output_payment || 'Not provided'}</p>
+                                    </div>
+                                </div>
+
+                                <div class="comparison-card">
+                                    <div class="comparison-title">
+                                        <span>Ground Truth</span>
+                                        <span class="badge bg-secondary">Outcome: ${result.gt_outcome}</span>
+                                    </div>
+                                    <div class="comparison-content">
+                                        <strong>Justification:</strong>
+                                        <p>${result.gt_justification || 'Not provided'}</p>
+
+                                        <strong>Payment Explanation:</strong>
+                                        <p>${result.gt_payment || 'Not provided'}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="comparison-metrics mt-3">
+                                <div class="comparison-metric">
+                                    <span class="match-indicator match-${outcomeClass}"></span>
+                                    <span>Outcome Match: ${matchText}</span>
+                                </div>
+
+                                <div class="comparison-metric">
+                                    <span class="match-indicator match-${justificationClass}"></span>
+                                    <span>Justification Similarity: ${justificationValue} - ${justificationInterpretation}</span>
+                                    <div class="similarity-bar">
+                                        <div class="similarity-fill bg-${justificationClass}" style="width: ${Math.min(100, parseFloat(justificationValue) * 100)}%"></div>
+                                    </div>
+                                </div>
+
+                                <div class="comparison-metric">
+                                    <span class="match-indicator match-${paymentClass}"></span>
+                                    <span>Payment Similarity: ${paymentValue} - ${paymentInterpretation}</span>
+                                    <div class="similarity-bar">
+                                        <div class="similarity-fill bg-${paymentClass}" style="width: ${Math.min(100, parseFloat(paymentValue) * 100)}%"></div>
+                                    </div>
+                                </div>
+
+                                ${iouValue ? `<div class="comparison-metric">
+                                    <span class="match-indicator match-${iouClass}"></span>
+                                    <span>Justification IoU: ${iouValue} - ${iouInterpretation}</span>
+                                    <div class="similarity-bar">
+                                        <div class="similarity-fill bg-${iouClass}" style="width: ${Math.min(100, parseFloat(iouValue) * 100)}%"></div>
+                                    </div>
+                                </div>` : ''}
+                            </div>
+                        </div>
+                    `;
+
+                    // Store each comparison individually for pagination
+                    allComparisons.push(comparisonHtml);
+                });
+
+                // Close the policy content div
+                allComparisons[allComparisons.length - 1] += `</div>`;
+
+                // Add the policy header at the beginning of the first comparison for this policy
+                allComparisons[allComparisons.length - sortedResults.length] = policyHeader + allComparisons[allComparisons.length - sortedResults.length];
+            }
+
+            // Calculate total pages
+            totalPages = Math.ceil(allComparisons.length / itemsPerPage);
+
+            // Show pagination if needed
+            if (totalPages > 1) {
+                paginationContainer.style.display = 'flex';
+            } else {
+                paginationContainer.style.display = 'none';
+            }
+
+            // Display the first page
+            displayComparisonPage();
+        }
+
+        // Function to display a specific page of comparisons
+        function displayComparisonPage() {
+            const startIdx = (currentPage - 1) * itemsPerPage;
+            const endIdx = Math.min(startIdx + itemsPerPage, allComparisons.length);
+            const comparisonsToShow = allComparisons.slice(startIdx, endIdx);
+
+            const container = document.getElementById('comparison-container');
+            container.innerHTML = comparisonsToShow.join('');
+
+            // Update pagination controls
+            document.getElementById('prev-page').disabled = currentPage === 1;
+            document.getElementById('next-page').disabled = currentPage === totalPages;
+            document.getElementById('current-page-info').textContent = `Page ${currentPage} of ${totalPages} (${allComparisons.length} total items)`;
+
+            // Add event listeners to policy headers for collapsing/expanding
+            document.querySelectorAll('.policy-header').forEach(header => {
+                header.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const contentDiv = document.getElementById(targetId);
+                    const collapseIcon = this.querySelector('.collapse-icon');
+
+                    // Toggle the collapsed state
+                    contentDiv.classList.toggle('collapsed');
+                    collapseIcon.classList.toggle('collapsed');
+                });
+            });
         }
 
         // Function to update the classification metrics view
@@ -1783,7 +2028,6 @@
             updateCategoryMetricsTable(evaluation, 'Yes', 'yes-metrics');
             updateCategoryMetricsTable(evaluation, 'No - Unrelated event', 'no-unrelated-metrics');
             updateCategoryMetricsTable(evaluation, 'No - condition(s) not met', 'no-conditions-metrics');
-            updateCategoryMetricsTable(evaluation, 'Maybe', 'maybe-metrics');
         }
 
         // Helper function to create a confusion matrix from results if metrics not available
@@ -1939,207 +2183,6 @@
             }
 
             container.innerHTML = html;
-        }
-
-        // Function to update the comparison view
-        function updateComparisonView(evaluation) {
-            const container = document.getElementById('comparison-container');
-            const paginationContainer = document.getElementById('comparison-pagination');
-
-            if (!evaluation || !evaluation.results || evaluation.results.length === 0) {
-                container.innerHTML = '<div class="no-data">No comparison data available</div>';
-                paginationContainer.style.display = 'none';
-                return;
-            }
-
-            // Group results by policy ID
-            const resultsByPolicy = {};
-            evaluation.results.forEach(result => {
-                if (!resultsByPolicy[result.policy_id]) {
-                    resultsByPolicy[result.policy_id] = [];
-                }
-                resultsByPolicy[result.policy_id].push(result);
-            });
-
-            // Reset comparison array and current page
-            allComparisons = [];
-            currentPage = 1;
-
-            // Generate HTML for each policy
-            for (const policyId in resultsByPolicy) {
-                const policyDivId = `policy-content-${policyId.replace(/\./g, '-')}`;
-
-                // Count total questions and matches for this policy
-                const totalQuestions = resultsByPolicy[policyId].length;
-                const exactMatches = resultsByPolicy[policyId].filter(r => parseFloat(r.outcome_match) === 0).length;
-                const partialMatches = resultsByPolicy[policyId].filter(r => parseFloat(r.outcome_match) === 0.5).length;
-                const matchRate = ((exactMatches + partialMatches) / totalQuestions * 100).toFixed(1);
-
-                // Policy header with expand/collapse
-                const policyHeader = `
-                    <div class="policy-header" data-target="${policyDivId}">
-                        <h4>Policy ${policyId} (${exactMatches} exact + ${partialMatches} partial = ${matchRate}%)</h4>
-                        <span class="collapse-icon">▼</span>
-                    </div>
-                    <div id="${policyDivId}" class="policy-content">
-                `;
-
-                // Sort results by request ID
-                const sortedResults = resultsByPolicy[policyId].sort((a, b) => {
-                    return parseInt(a.request_id) - parseInt(b.request_id);
-                });
-
-                // Generate HTML for each question
-                sortedResults.forEach(result => {
-                    // Check if we have similarity or distance metrics
-                    const hasSimilarity = 'justification_similarity' in result;
-
-                    // Get similarity values for justification and payment
-                    let justificationValue, paymentValue;
-                    if (hasSimilarity) {
-                        justificationValue = parseFloat(result.justification_similarity).toFixed(4);
-                        paymentValue = parseFloat(result.payment_similarity).toFixed(4);
-                    } else {
-                        // Convert distances to similarities for display
-                        justificationValue = (1 - parseFloat(result.justification_distance)).toFixed(4);
-                        paymentValue = (1 - parseFloat(result.payment_distance)).toFixed(4);
-                    }
-
-                    // Determine similarity classes and interpretations
-                    const justificationClass = getSimilarityClass(justificationValue);
-                    const paymentClass = getSimilarityClass(paymentValue);
-                    const justificationInterpretation = getSimilarityInterpretation(justificationValue);
-                    const paymentInterpretation = getSimilarityInterpretation(paymentValue);
-
-                    // Determine outcome match class
-                    const matchValue = parseFloat(result.outcome_match);
-                    let outcomeClass = 'bad';
-                    let matchText = 'Mismatch';
-
-                    if (matchValue === 0) {
-                        outcomeClass = 'good';
-                        matchText = 'Exact Match';
-                    } else if (matchValue === 0.5) {
-                        outcomeClass = 'partial';
-                        matchText = 'Partial Match';
-                    }
-
-                    const comparisonHtml = `
-                        <div class="comparison-row">
-                            <div class="comparison-header">
-                                <div>
-                                    <span class="comparison-question">${result.question || 'Question ' + result.request_id}</span>
-                                    <span class="comparison-request-id">(Request ID: ${result.request_id})</span>
-                                </div>
-                                <div>
-                                    <span class="badge ${matchValue === 0 ? 'bg-success' : (matchValue === 0.5 ? 'bg-partial' : 'bg-danger')}">
-                                        ${matchText}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="comparison-grid">
-                                <div class="comparison-card">
-                                    <div class="comparison-title">
-                                        <span>System Output</span>
-                                        <span class="badge bg-secondary">Outcome: ${result.output_outcome}</span>
-                                    </div>
-                                    <div class="comparison-content">
-                                        <strong>Justification:</strong>
-                                        <p>${result.output_justification || 'Not provided'}</p>
-
-                                        <strong>Payment Explanation:</strong>
-                                        <p>${result.output_payment || 'Not provided'}</p>
-                                    </div>
-                                </div>
-
-                                <div class="comparison-card">
-                                    <div class="comparison-title">
-                                        <span>Ground Truth</span>
-                                        <span class="badge bg-secondary">Outcome: ${result.gt_outcome}</span>
-                                    </div>
-                                    <div class="comparison-content">
-                                        <strong>Justification:</strong>
-                                        <p>${result.gt_justification || 'Not provided'}</p>
-
-                                        <strong>Payment Explanation:</strong>
-                                        <p>${result.gt_payment || 'Not provided'}</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="comparison-metrics mt-3">
-                                <div class="comparison-metric">
-                                    <span class="match-indicator match-${outcomeClass}"></span>
-                                    <span>Outcome Match: ${matchText}</span>
-                                </div>
-
-                                <div class="comparison-metric">
-                                    <span class="match-indicator match-${justificationClass}"></span>
-                                    <span>Justification Similarity: ${justificationValue} - ${justificationInterpretation}</span>
-                                    <div class="similarity-bar">
-                                        <div class="similarity-fill bg-${justificationClass}" style="width: ${Math.min(100, parseFloat(justificationValue) * 100)}%"></div>
-                                    </div>
-                                </div>
-
-                                <div class="comparison-metric">
-                                    <span class="match-indicator match-${paymentClass}"></span>
-                                    <span>Payment Similarity: ${paymentValue} - ${paymentInterpretation}</span>
-                                    <div class="similarity-bar">
-                                        <div class="similarity-fill bg-${paymentClass}" style="width: ${Math.min(100, parseFloat(paymentValue) * 100)}%"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-
-                    // Store each comparison individually for pagination
-                    allComparisons.push(comparisonHtml);
-                });
-
-                // Close the policy content div
-                allComparisons[allComparisons.length - 1] += `</div>`;
-
-                // Add the policy header at the beginning of the first comparison for this policy
-                allComparisons[allComparisons.length - sortedResults.length] = policyHeader + allComparisons[allComparisons.length - sortedResults.length];
-            }
-
-            // Calculate total pages
-            totalPages = Math.ceil(allComparisons.length / itemsPerPage);
-
-            // Show pagination if needed
-            if (totalPages > 1) {
-                paginationContainer.style.display = 'flex';
-            } else {
-                paginationContainer.style.display = 'none';
-            }
-
-            // Display the first page
-            displayComparisonPage();
-
-            console.log(`Total comparisons: ${allComparisons.length}, Pages: ${totalPages}`);
-        }
-
-        // Function to toggle all policy sections
-        function toggleAllPolicySections(action) {
-            const allPolicyContents = document.querySelectorAll('.policy-content');
-            const allIcons = document.querySelectorAll('.collapse-icon');
-
-            allPolicyContents.forEach(content => {
-                if (action === 'expand') {
-                    content.classList.remove('collapsed');
-                } else if (action === 'collapse') {
-                    content.classList.add('collapsed');
-                }
-            });
-
-            allIcons.forEach(icon => {
-                if (action === 'expand') {
-                    icon.classList.remove('collapsed');
-                } else if (action === 'collapse') {
-                    icon.classList.add('collapsed');
-                }
-            });
         }
 
         // Initialize the dashboard when the page loads

@@ -56,14 +56,14 @@ def format_results_as_json(policy_path: str, question_results: List[List[str]]) 
 
     # Add each question result to the policy JSON
     for result in question_results:
-        _, q_id, question, eligibility, eligibility_policy, amount_policy, amount_policy_line = result
+        _, q_id, question, eligibility, eligibility_policy, amount_policy = result
 
         question_json = {
             "request_id": q_id,
             "question": question,
             "outcome": eligibility,
             "outcome_justification": eligibility_policy,
-            "payment_justification": amount_policy_line if amount_policy else None
+            "payment_justification": amount_policy,
         }
 
         policy_json["questions"].append(question_json)

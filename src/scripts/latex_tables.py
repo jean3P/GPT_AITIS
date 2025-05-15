@@ -2,8 +2,6 @@ import os
 import json
 import pandas as pd
 from datetime import datetime
-import numpy as np
-from pathlib import Path
 
 from config import EVALUATION_RESULTS_FILES_PATH
 
@@ -37,10 +35,10 @@ def find_most_recent_evaluation_files(eval_dir):
 def generate_evaluation_summary_table(summary_data):
     """Generate LaTeX table for evaluation summary with specific metrics."""
     # Extract values from summary data
-    # Assuming these values are available in your summary_data
     predicted_outcome = summary_data.get('exact_outcome_match_percentage', 64.63)
     justification_outcome = summary_data.get('avg_justification_similarity', 0.4681)
     justification_payment = summary_data.get('avg_payment_similarity', 0.8420)
+    justification_iou = summary_data.get('avg_justification_iou', 0.0)  # Add IoU metric
 
     latex = r'''\begin{table}[H]
 \centering
@@ -50,9 +48,10 @@ def generate_evaluation_summary_table(summary_data):
 \toprule
 \textbf{Field} & \textbf{Result} \\
 \midrule
-Predicted Outcome & \textbf{''' + f"{predicted_outcome:.2f}\%" + r'''} \\
-Justification Outcome &  \textbf{''' + f"{justification_outcome:.4f}" + r'''} \\
-Justification Payment &  \textbf{''' + f"{justification_payment:.4f}" + r'''} \\
+Predicted Outcome (Accu.) & \textbf{''' + f"{predicted_outcome:.2f}\\%" + r'''} \\
+Justification Outcome (SED) &  \textbf{''' + f"{justification_outcome:.4f}" + r'''} \\
+Justification Payment (SED) &  \textbf{''' + f"{justification_payment:.4f}" + r'''} \\
+Justification Outcome (IoU) &  \textbf{''' + f"{justification_iou:.4f}" + r'''} \\
 \bottomrule
 \end{tabular}
 \end{table}'''
@@ -66,8 +65,9 @@ def generate_string_edit_distance_table(summary_data):
     avg_justification = summary_data.get('avg_justification_similarity', 0)
     avg_payment = summary_data.get('avg_payment_similarity', 0)
     avg_combined = summary_data.get('avg_combined_justification_similarity', 0)
+    avg_iou = summary_data.get('avg_justification_iou', 0)  # Add IoU metric
 
-    latex = r'''\begin{table}[!ht]
+    latex = r'''\begin{table}[H]
 \centering
 \caption{String Edit Distance Similarity Results}
 \label{tab:string_edit_distance_results}
@@ -78,14 +78,16 @@ def generate_string_edit_distance_table(summary_data):
 Outcome Justification Similarity & ''' + f"{avg_justification:.4f}" + r''' \\
 Payment Justification Similarity & ''' + f"{avg_payment:.4f}" + r''' \\
 Combined Justification Similarity & ''' + f"{avg_combined:.4f}" + r''' \\
+Justification IoU & ''' + f"{avg_iou:.4f}" + r''' \\
 \midrule
 \multicolumn{2}{p{13cm}}{\textit{Note:} Similarity scores range from 0.0 (completely different) to 1.0 (identical). 
-The scores measure the normalized Levenshtein edit distance between predicted and ground truth justifications.} \\
+The scores measure the normalized Levenshtein edit distance between predicted and ground truth justifications.
+IoU (Intersection over Union) measures the word-level overlap between texts.} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\begin{table}[!ht]
+\begin{table}[H]
 \centering
 \caption{String Edit Distance Similarity Interpretation}
 \label{tab:string_edit_distance_interpretation}
@@ -114,12 +116,11 @@ def generate_confusion_matrix_table(metrics_data):
     if not conf_matrix:
         return "% Error: Confusion matrix data not found"
 
-    # Valid outcome categories
+    # Valid outcome categories (removed "Maybe")
     valid_outcomes = [
         "Yes",
         "No - Unrelated event",
-        "No - condition(s) not met",
-        "Maybe"
+        "No - condition(s) not met"
     ]
 
     # Calculate row and column totals
@@ -129,25 +130,26 @@ def generate_confusion_matrix_table(metrics_data):
     total = sum(row_totals)
 
     # Generate LaTeX table
-    latex = r'''\begin{table}[!ht]
+    latex = r'''\begin{table}[H]
 \centering
 \caption{Confusion Matrix of Outcome Classifications}
 \label{tab:confusion_matrix}
-\begin{tabular}{lcccc|c}
+\begin{tabular}{lccc|c}
 \toprule
-\multirow{2}{*}{\textbf{Actual Outcome}} & \multicolumn{4}{c}{\textbf{Predicted Outcome}} & \multirow{2}{*}{\textbf{Total}} \\
-\cmidrule{2-5}
-& \textbf{Yes} & \textbf{\begin{tabular}[c]{@{}c@{}}No - Unrelated\\event\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}No - condition(s)\\not met\end{tabular}} & \textbf{Maybe} & \\
+\multirow{2}{*}{\textbf{Actual Outcome}} & \multicolumn{3}{c}{\textbf{Predicted Outcome}} & \multirow{2}{*}{\textbf{Total}} \\
+\cmidrule{2-4}
+& \textbf{Yes} & \textbf{\begin{tabular}[c]{@{}c@{}}No - Unrelated\\event\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}No - condition(s)\\not met\end{tabular}} & \\
 \midrule'''
 
     for i, outcome in enumerate(valid_outcomes):
-        row = [conf_matrix[i][j] for j in range(len(conf_matrix[i]))]
-        row_str = " & ".join([str(val) for val in row])
-        latex += f"\n\\textbf{{{outcome.replace('-', '\\-')}}} & {row_str} & {row_totals[i]} \\\\"
+        if i < len(conf_matrix) and len(conf_matrix[i]) >= len(valid_outcomes):
+            row = [conf_matrix[i][j] for j in range(len(valid_outcomes))]
+            row_str = " & ".join([str(val) for val in row])
+            latex += f"\n\\textbf{{{outcome.replace('-', '\\-')}}} & {row_str} & {row_totals[i]} \\\\"
 
     latex += r'''
 \midrule
-\textbf{Total} & ''' + " & ".join([str(val) for val in col_totals]) + f" & {total}" + r''' \\
+\textbf{Total} & ''' + " & ".join([str(val) for val in col_totals[:len(valid_outcomes)]]) + f" & {total}" + r''' \\
 \bottomrule
 \end{tabular}
 \end{table}'''
@@ -160,19 +162,18 @@ def generate_classification_metrics_table(metrics_data, summary_data):
     # Extract classification report data
     report = metrics_data.get('classification_report', {})
 
-    # Valid outcome categories
+    # Valid outcome categories (removed "Maybe")
     valid_outcomes = [
         "Yes",
         "No - Unrelated event",
-        "No - condition(s) not met",
-        "Maybe"
+        "No - condition(s) not met"
     ]
 
     # Overall accuracy
     accuracy = summary_data.get('outcome_classification', {}).get('accuracy', 0)
 
     # Generate LaTeX table
-    latex = r'''\begin{table}[!ht]
+    latex = r'''\begin{table}[H]
 \centering
 \caption{Performance Metrics by Outcome Category}
 \label{tab:classification_metrics}
@@ -217,7 +218,7 @@ def generate_summary_table(summary_data):
     exact_matches = summary_data.get('exact_outcome_matches', 0)
     exact_match_pct = summary_data.get('exact_outcome_match_percentage', 0)
 
-    latex = r'''\begin{table}[!ht]
+    latex = r'''\begin{table}[H]
 \centering
 \caption{Evaluation Summary Statistics}
 \label{tab:evaluation_summary}

@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 if __name__ == "__main__":
     # Get available prompt names for the help message
     available_prompts = ", ".join([
-        "standard", "detailed", "precise"
+        "standard", "detailed", "precise", "precise_v2", "precise_v3", "precise_v4"
     ])
 
     # Parse command-line arguments
