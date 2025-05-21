@@ -32,6 +32,8 @@ if __name__ == "__main__":
                         help="Comma-separated list of question IDs to process (e.g., '1,2,3,4')")
     parser.add_argument("--policy-id", type=str,
                         help="Process only a specific policy ID (e.g., '20')")
+    parser.add_argument("--k", type=int, default=3,
+                        help="Number of context chunks to retrieve from vector store (default: 3)")
     args = parser.parse_args()
 
     # Set up logging with the specified log level
@@ -69,7 +71,8 @@ if __name__ == "__main__":
             prompt_name=args.prompt,
             use_persona=args.persona,
             question_ids=question_ids,
-            policy_id=args.policy_id
+            policy_id=args.policy_id,
+            k=args.k
         )
     else:
         run_rag(
@@ -80,7 +83,8 @@ if __name__ == "__main__":
             prompt_name=args.prompt,
             use_persona=args.persona,
             question_ids=question_ids,
-            policy_id=args.policy_id
+            policy_id=args.policy_id,
+            k=args.k
         )
 
     logger.info("RAG pipeline completed successfully")

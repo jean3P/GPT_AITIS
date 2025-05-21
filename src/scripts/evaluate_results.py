@@ -278,8 +278,7 @@ def evaluate_outputs():
             all_results.append({
                 "policy_id": policy_id,
                 "request_id": request_id,
-                "question": gt_question.get("question", "")[:50] + "..." if len(
-                    gt_question.get("question", "")) > 50 else gt_question.get("question", ""),
+                "question": gt_question.get("question", ""),
                 "output_outcome": output_outcome,
                 "gt_outcome": gt_outcome,
                 "outcome_match": outcome_match,

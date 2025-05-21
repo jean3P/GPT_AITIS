@@ -21,7 +21,8 @@ def run_rag(
         prompt_name: str = "standard",
         use_persona: bool = False,
         question_ids: Optional[list] = None,
-        policy_id: Optional[str] = None
+        policy_id: Optional[str] = None,
+        k: int = 3
 ) -> None:
     """
     Executes the RAG pipeline using a modular model client, either OpenAI or HuggingFace.
@@ -36,6 +37,7 @@ def run_rag(
         use_persona (bool): Whether to use persona extraction for the queries (default: False).
         question_ids (Optional[list]): List of question IDs to process (None = all questions).
         policy_id (Optional[str]): Filter to only process a specific policy ID (None = all policies).
+        k (int): Number of context chunks to retrieve for each question (default: 3).
     """
     # Select the prompt template
     try:
@@ -121,7 +123,7 @@ def run_rag(
                 context_texts = []
                 if context_provider:
                     try:
-                        context_texts = context_provider.retrieve(question, k=3)
+                        context_texts = context_provider.retrieve(question, k=k)
                         logger.info(f"Retrieved {len(context_texts)} context chunks")
                     except Exception as e:
                         logger.error(f"Error retrieving context: {e}")
@@ -158,7 +160,8 @@ def run_batch_rag(
         prompt_name: str = "standard",
         use_persona: bool = False,
         question_ids: Optional[list] = None,
-        policy_id: Optional[str] = None
+        policy_id: Optional[str] = None,
+        k: int = 3,
 ) -> None:
     """
     Alternative implementation that processes all policies together and then
@@ -173,6 +176,7 @@ def run_batch_rag(
         use_persona (bool): Whether to use persona extraction for the queries (default: False).
         question_ids (Optional[list]): List of question IDs to process (None = all questions).
         policy_id (Optional[str]): Filter to only process a specific policy ID (None = all policies).
+        k (int): Number of context chunks to retrieve for each question (default: 3).
     """
     # Select the prompt template
     try:
@@ -265,7 +269,7 @@ def run_batch_rag(
                 if context_provider:
                     try:
                         # Try to retrieve context specifically for this policy
-                        context_texts = context_provider.retrieve(query=question, k=5, policy_id=policy_id)
+                        context_texts = context_provider.retrieve(query=question, k=k, policy_id=policy_id)
                         logger.info(f"Retrieved {len(context_texts)} context chunks for policy {policy_id}")
                     except Exception as e:
                         logger.error(f"Error retrieving context: {e}")
