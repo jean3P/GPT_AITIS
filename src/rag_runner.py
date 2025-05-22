@@ -1,10 +1,10 @@
 # src/rag_runner.py
 
 import logging
-from typing import Optional
+from typing import Optional, Tuple, List
 
 from config import *
-from models.factory import get_model_client
+from models.factory import get_model_client, get_shared_relevance_client
 from utils import read_questions, list_pdf_paths
 from models.vector_store import LocalVectorStore
 from output_formatter import extract_policy_id, format_results_as_json, save_policy_json
@@ -12,6 +12,39 @@ from prompts.insurance_prompts import InsurancePrompts
 
 logger = logging.getLogger(__name__)
 
+
+def check_query_relevance(
+        question: str,
+        context_chunks: List[str],
+        relevance_client
+) -> Tuple[bool, str]:
+    """
+    Check if a query is relevant to the policy content.
+
+    Args:
+        question: The user query
+        context_chunks: Retrieved context chunks from the policy
+        relevance_client: Model client initialized with the relevance filter prompt
+
+    Returns:
+        Tuple of (is_relevant, reason)
+    """
+    try:
+        # Use the relevance client to query
+        response = relevance_client.query(question, context_files=context_chunks)
+
+        # Extract the relevance information from the response
+        if isinstance(response, dict):
+            is_relevant = response.get("is_relevant", True)  # Default to True if key missing
+            reason = response.get("reason", "No reason provided")
+            return bool(is_relevant), str(reason)  # Ensure proper types
+        else:
+            logger.warning(f"Unexpected response format from relevance check: {response}")
+            return True, "Unexpected response format, assuming relevant"
+
+    except Exception as e:
+        logger.warning(f"Error in relevance check: {e}, assuming relevant")
+        return True, "Error in relevance check, assuming relevant"
 
 def run_rag(
         model_provider: str = "openai",
@@ -22,7 +55,9 @@ def run_rag(
         use_persona: bool = False,
         question_ids: Optional[list] = None,
         policy_id: Optional[str] = None,
-        k: int = 3
+        k: int = 3,
+        filter_irrelevant: bool = False,
+        relevance_prompt_name: str = "relevance_filter_v1",
 ) -> None:
     """
     Executes the RAG pipeline using a modular model client, either OpenAI or HuggingFace.
@@ -38,6 +73,8 @@ def run_rag(
         question_ids (Optional[list]): List of question IDs to process (None = all questions).
         policy_id (Optional[str]): Filter to only process a specific policy ID (None = all policies).
         k (int): Number of context chunks to retrieve for each question (default: 3).
+        filter_irrelevant (bool): Whether to filter out irrelevant context chunks (default: False).
+        relevance_prompt_name (str): Name of the prompt template to use for relevance filtering.
     """
     # Select the prompt template
     try:
@@ -101,6 +138,20 @@ def run_rag(
         # Initialize the model client
         model_client = get_model_client(model_provider, model_name, sys_prompt)
 
+        # Initialize relevance checking client if filtering is enabled
+        # Initialize relevance checking client if filtering is enabled
+        relevance_client = None
+        if filter_irrelevant:
+            try:
+                relevance_prompt = InsurancePrompts.get_prompt(relevance_prompt_name)
+                # Use shared model client to avoid loading a second model instance
+                relevance_client = get_shared_relevance_client(model_client, relevance_prompt)
+                logger.info(f"Relevance filtering enabled - using shared model with prompt: {relevance_prompt_name}")
+            except ValueError as e:
+                logger.warning(f"Relevance prompt selection error: {str(e)}. Falling back to relevance_filter_v1.")
+                relevance_prompt = InsurancePrompts.relevance_filter_v1()
+                relevance_client = get_shared_relevance_client(model_client, relevance_prompt)
+
         # Initialize vector store with just this policy file
         try:
             logger.info(f"Initializing vector store for policy: {policy_id}")
@@ -127,6 +178,28 @@ def run_rag(
                         logger.info(f"Retrieved {len(context_texts)} context chunks")
                     except Exception as e:
                         logger.error(f"Error retrieving context: {e}")
+
+                # Only check relevance if filtering is enabled and we have context chunks
+                if filter_irrelevant and relevance_client and context_texts:
+                    # First assess query relevance using the lightweight filter
+                    is_relevant, reason = check_query_relevance(question, context_texts, relevance_client)
+
+                    if not is_relevant:
+                        logger.info(f"✓ Question {q_id} marked as IRRELEVANT: {reason}")
+                        # Create standardized "irrelevant" response and skip main processing
+                        result_row = [
+                            model_name,
+                            str(q_id),
+                            question,
+                            "No - Unrelated event",
+                            "",
+                            None,
+                        ]
+                        policy_results.append(result_row)
+                        continue  # Skip to next question
+                    else:
+                        logger.info(
+                            f"✓ Question {q_id} IS RELEVANT: {reason} - proceeding with detailed analysis")
 
                 # Query the model with the question and context
                 response = model_client.query(question, context_files=context_texts, use_persona=use_persona)
@@ -162,6 +235,8 @@ def run_batch_rag(
         question_ids: Optional[list] = None,
         policy_id: Optional[str] = None,
         k: int = 3,
+        filter_irrelevant: bool = False,
+        relevance_prompt_name: str = "relevance_filter_v1",
 ) -> None:
     """
     Alternative implementation that processes all policies together and then
@@ -177,6 +252,8 @@ def run_batch_rag(
         question_ids (Optional[list]): List of question IDs to process (None = all questions).
         policy_id (Optional[str]): Filter to only process a specific policy ID (None = all policies).
         k (int): Number of context chunks to retrieve for each question (default: 3).
+        filter_irrelevant (bool): Whether to filter out irrelevant context chunks (default: False).
+        relevance_prompt_name (str): Name of the prompt template to use for relevance filtering.
     """
     # Select the prompt template
     try:
@@ -190,6 +267,20 @@ def run_batch_rag(
 
     # Initialize the model client
     model_client = get_model_client(model_provider, model_name, sys_prompt)
+
+    # Initialize relevance checking client if filtering is enabled
+    # Initialize relevance checking client if filtering is enabled
+    relevance_client = None
+    if filter_irrelevant:
+        try:
+            relevance_prompt = InsurancePrompts.get_prompt(relevance_prompt_name)
+            # Use shared model client to avoid loading a second model instance
+            relevance_client = get_shared_relevance_client(model_client, relevance_prompt)
+            logger.info(f"Relevance filtering enabled - using shared model with prompt: {relevance_prompt_name}")
+        except ValueError as e:
+            logger.warning(f"Relevance prompt selection error: {str(e)}. Falling back to relevance_filter_v1.")
+            relevance_prompt = InsurancePrompts.relevance_filter_v1()
+            relevance_client = get_shared_relevance_client(model_client, relevance_prompt)
 
     # List all policy PDFs
     pdf_paths = list_pdf_paths(DOCUMENT_DIR)
@@ -273,6 +364,28 @@ def run_batch_rag(
                         logger.info(f"Retrieved {len(context_texts)} context chunks for policy {policy_id}")
                     except Exception as e:
                         logger.error(f"Error retrieving context: {e}")
+
+                # Only check relevance if filtering is enabled and we have context chunks
+                if filter_irrelevant and relevance_client and context_texts:
+                    # First assess query relevance using the lightweight filter
+                    is_relevant, reason = check_query_relevance(question, context_texts, relevance_client)
+
+                    if not is_relevant:
+                        logger.info(f"✓ Question {q_id} marked as IRRELEVANT for policy {policy_id}: {reason}")
+                        # Create standardized "irrelevant" response and skip main processing
+                        result_row = [
+                            model_name,
+                            str(q_id),
+                            question,
+                            "No - Unrelated event",
+                            "",
+                            None,
+                        ]
+                        policy_results[policy_id]["results"].append(result_row)
+                        continue  # Skip to next policy for this question
+                    else:
+                        logger.info(
+                            f"✓ Question {q_id} IS RELEVANT for policy {policy_id}: {reason} - proceeding with detailed analysis")
 
                 # Query the model with the question and context
                 response = model_client.query(question, context_files=context_texts, use_persona=use_persona)

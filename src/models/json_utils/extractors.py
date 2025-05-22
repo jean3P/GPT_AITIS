@@ -207,4 +207,8 @@ class JSONExtractor:
         if "personas" in json_obj and isinstance(json_obj["personas"], dict):
             return True
 
+        # Check for relevance filtering structure
+        if "is_relevant" in json_obj and "reason" in json_obj:
+            return True
+
         return False

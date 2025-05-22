@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "accelerate>=1.6.0",
+    "camelot-py>=1.0.0",
     "dotenv>=0.9.9",
     "editdistance>=0.8.1",
     "flask>=3.1.0",

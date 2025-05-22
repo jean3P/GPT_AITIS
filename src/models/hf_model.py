@@ -174,13 +174,38 @@ class HuggingFaceModelClient(BaseModelClient):
             Complete prompt for the model
         """
         prompt_final = "\nThen the json Solution is:\n\n"
+
+        # Determine JSON format based on the type of prompt being used
+        json_format = self._get_appropriate_json_format()
+
         if persona_text:
-            full_prompt = f"{self.base_prompt}\n\n{context_text}\n\nQuestion: {question}\n\n{persona_text}\n\n{self.json_format}\n\n{prompt_final}"
+            full_prompt = f"{self.base_prompt}\n\n{context_text}\n\nQuestion: {question}\n\n{persona_text}\n\n{json_format}\n\n{prompt_final}"
             logger.debug(f"Full prompt: {full_prompt}")
         else:
-            full_prompt = f"{self.base_prompt}\n\n{context_text}\n\nQuestion: {question}\n\n{self.json_format}\n\n{prompt_final}"
+            full_prompt = f"{self.base_prompt}\n\n{context_text}\n\nQuestion: {question}\n\n{json_format}\n\n{prompt_final}"
             logger.debug(f"Full prompt: {full_prompt}")
         return full_prompt
+
+    def _get_appropriate_json_format(self) -> str:
+        """
+        Get the appropriate JSON format based on the current prompt type.
+
+        Returns:
+            The appropriate JSON format string
+        """
+        # Check if this is a relevance filtering prompt
+        if "INSURANCE-POLICY RELEVANCE FILTER" in self.base_prompt:
+            return """
+                Return exactly this JSON:
+                {
+                  "is_relevant": true/false,
+                  "reason": "Brief explanation (≤ 25 words)"
+                }
+                """
+        else:
+            # Default to insurance analysis format
+            return self.json_format
+
 
     def _generate_model_output(self, prompt: str) -> Dict[str, Any]:
         """

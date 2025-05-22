@@ -11,7 +11,12 @@ logger = logging.getLogger(__name__)
 if __name__ == "__main__":
     # Get available prompt names for the help message
     available_prompts = ", ".join([
-        "standard", "detailed", "precise", "precise_v2", "precise_v3", "precise_v4"
+        "standard", "detailed", "precise", "precise_v2", "precise_v3", "precise_v4", "precise_v2_2",
+    ])
+
+    # Get available relevance filter prompts
+    available_relevance_prompts = ", ".join([
+        "relevance_filter_v1", "relevance_filter_v2",  # Add more versions as you create them
     ])
 
     # Parse command-line arguments
@@ -34,6 +39,11 @@ if __name__ == "__main__":
                         help="Process only a specific policy ID (e.g., '20')")
     parser.add_argument("--k", type=int, default=3,
                         help="Number of context chunks to retrieve from vector store (default: 3)")
+    parser.add_argument("--filter-irrelevant", action="store_true",
+                        help="Filter out obviously irrelevant queries before processing")
+    parser.add_argument("--prompt-relevant", default="relevance_filter_v1",
+                        help=f"Relevance filter prompt to use. Available: {available_relevance_prompts}")
+
     args = parser.parse_args()
 
     # Set up logging with the specified log level
@@ -72,7 +82,9 @@ if __name__ == "__main__":
             use_persona=args.persona,
             question_ids=question_ids,
             policy_id=args.policy_id,
-            k=args.k
+            k=args.k,
+            filter_irrelevant=args.filter_irrelevant,  # Pass the new parameter
+            relevance_prompt_name=args.prompt_relevant,
         )
     else:
         run_rag(
@@ -84,7 +96,9 @@ if __name__ == "__main__":
             use_persona=args.persona,
             question_ids=question_ids,
             policy_id=args.policy_id,
-            k=args.k
+            k=args.k,
+            filter_irrelevant=args.filter_irrelevant,  # Pass the new parameter
+            relevance_prompt_name=args.prompt_relevant,
         )
 
     logger.info("RAG pipeline completed successfully")

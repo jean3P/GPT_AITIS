@@ -122,11 +122,11 @@ def extract_ground_truth_text(reference_text: str, mixed_text: str):
 
 def main():
     # Resolve the path relative to this script file
-    POLICY_ID =                 20
+    POLICY_ID =                 18
     POLICY_PDF_DIRECTORY_PATH = DOCUMENT_DIR
-    POLICY_PDF_FILENAME =       '20_Nobis - Travel Cancellation (hospital) EN.pdf'
-    llm_responses_file_path =   os.path.join(JSON_PATH,f'policy_id-{POLICY_ID}__15-05-2025_10-46-22.json')
-    output_path =               os.path.join(JSON_PATH, f'policy_{POLICY_ID}_cleanup.json')
+    POLICY_PDF_FILENAME =       '18_Nobis - Baggage loss EN.pdf'
+    llm_responses_file_path =   os.path.join(JSON_PATH,f'policy_id-{POLICY_ID}__21-05-2025_15-03-07.json')
+    output_path =               os.path.join(JSON_PATH, f'policy_{POLICY_ID}_cleanup_21-05-2025_15-03-07.json')
     policy_pdf_path =           os.path.join(POLICY_PDF_DIRECTORY_PATH, POLICY_PDF_FILENAME)
 
     # Load the JSON file

@@ -18,7 +18,7 @@ This document provides a comprehensive explanation of the insurance policy analy
 ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
 │                 │     │                 │     │                 │
 │ JSON Extraction │◄────│   Phi-4 Model   │◄────│  Prompt + RAG   │
-│                 │     │                 │     │   + Persona     │
+│                 │     │                 │     │                 │
 │                 │     │                 │     │                 │
 └─────────────────┘     └─────────────────┘     └─────────────────┘
         │
