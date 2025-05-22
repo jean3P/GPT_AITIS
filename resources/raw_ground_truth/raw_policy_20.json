@@ -1,0 +1,3773 @@
+{
+  "content": "Nobis - Travel Cancellation (hospital) EN",
+  "policy_id": 26,
+  "policy_requests": [
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "UNSPECIFIED",
+      "policy_request_status": "IN_PROGRESS",
+      "request": {
+        "content": "We are a group of 5 leaving in 2 days. One of us had a serious accident and won’t be able to come. His girlfriend, who is traveling with us, does not want to come without him. Will the company refund the travel expenses for both of them?",
+        "request_id": 27
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 9,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 10,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 23,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1052,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-03-14T10:29:21.414766",
+      "updated_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "version": 1
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "UNSPECIFIED",
+      "policy_request_status": "IN_PROGRESS",
+      "request": {
+        "content": "We are a group of 20 and just landed in São Paulo, but 4 of our colleagues (2 couples) need to return home due to the death of the uncle of one of them. Will the insurance reimburse their trip?",
+        "request_id": 32
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 3,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 4,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 6,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 10,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 14,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1057,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-03-14T10:29:21.414766",
+      "updated_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "version": 1
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "UNSPECIFIED",
+      "policy_request_status": "IN_PROGRESS",
+      "request": {
+        "content": "I am traveling to Japan and had a layover in Dubai with my family of 4. Our flight to Dubai arrived 4 hours late. Although we didn’t miss our connection to Tokyo, will the insurance compensate us for the inconvenience?",
+        "request_id": 33
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 1,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 20,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1058,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-03-14T10:29:21.414766",
+      "updated_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "version": 1
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "UNSPECIFIED",
+      "policy_request_status": "IN_PROGRESS",
+      "request": {
+        "content": "We had a car accident in the USA, and a person in the other car broke a leg. They are claiming it was our fault. Will the company cover the expenses?",
+        "request_id": 34
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 4,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 10,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 18,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1059,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-03-14T10:29:21.414766",
+      "updated_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "version": 1
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "UNSPECIFIED",
+      "policy_request_status": "IN_PROGRESS",
+      "request": {
+        "content": "We are in the mountains, and I attempted paragliding. Upon landing, I injured my right ankle and had to go to the hospital. Will the insurance reimburse me?",
+        "request_id": 35
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 9,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1060,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-03-14T10:29:21.414766",
+      "updated_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "version": 1
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "UNSPECIFIED",
+      "policy_request_status": "IN_PROGRESS",
+      "request": {
+        "content": "We were sailing in the Caribbean, and my daughter was hit on the head by the boom of the sailboat. We had to take her to a private hospital in St. Lucia, which seems expensive. Will the insurance cover the expenses?",
+        "request_id": 36
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 4,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 9,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 10,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1061,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-03-14T10:29:21.414766",
+      "updated_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "version": 1
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "UNSPECIFIED",
+      "policy_request_status": "IN_PROGRESS",
+      "request": {
+        "content": "I was in Jerez de la Frontera kite surfing when I lost control and crashed into a large buoy. I am now in the hospital. Will the insurance cover the expenses?",
+        "request_id": 37
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 4,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 9,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 10,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1062,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-03-14T10:29:21.414766",
+      "updated_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "version": 1
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "UNSPECIFIED",
+      "policy_request_status": "IN_PROGRESS",
+      "request": {
+        "content": "We booked a trip for our family of 6, but my husband has severe back pain and previously had surgery for this condition. We won’t be able to leave. Will the company reimburse the trip for all 6 of us?",
+        "request_id": 38
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 9,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 10,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 22,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 23,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 24,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1063,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-03-14T10:29:21.414766",
+      "updated_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "version": 1
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "UNSPECIFIED",
+      "policy_request_status": "IN_PROGRESS",
+      "request": {
+        "content": "I am climbing Mount Everest, and my Sherpa accidentally dropped my baggage into a deep ravine, making it unretrievable. Can you reimburse it?",
+        "request_id": 40
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 4,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 18,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1065,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-03-14T10:29:21.414766",
+      "updated_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "version": 1
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "UNSPECIFIED",
+      "policy_request_status": "IN_PROGRESS",
+      "request": {
+        "content": "Our football team of 18 players booked a trip to Girona for an international tournament. 2 of our players had an accident 5 days ago and won’t be able to come. Can you reimburse their flights and hotel rooms?",
+        "request_id": 41
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 10,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 12,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 22,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 23,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 24,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1066,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-03-14T10:29:21.414766",
+      "updated_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "version": 1
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "My aunt passed away yesterday, and we are supposed to leave on holiday tomorrow. However, we need to attend the funeral and deal with family matters. Will the insurance reimburse us?",
+        "request_id": 14
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 3,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 6,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 22,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 23,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 24,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "up to the 3rd degree of kinship",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1039,
+          "response_outcome": "DENIED_EXCLUDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "Death, illness or injury resulting in[AITIS-DELIMITER]of the Insured or the Traveling Companion of their spouses/domestic partners more uxorio, parents, brothers, sisters, children, in-laws, sons-in-law, daughters-in-law, grandparents, uncles and nephews up to the 3rd degree of",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-28T13:58:23.555492",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-11T16:24:39.741832",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 3,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 6,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 22,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 23,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 24,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 15000,
+          "payout_justification": "IMPORTANT: The compensation payable to the Insured is equal to the withdrawal fee (i.e., the penalty stipulated in the travel contract, in the case of cancellation of the same), calculated as of the date on which the event occurred, i.e., the occurrence of the circumstances that resulted in the inability to undertake the trip. Any higher cancellation fee charged by the Tour Operator as a result of a delay by the Insured in reporting the cancellation of the trip to the Tour Operator will remain the responsibility of the Insured.[AITIS-DELIMITER]The Insurance is provided up to the total cost of the trip within the maximum amount per Insured of € 5,000.00 with a limit of € 15,000.00 per event (i.e. fact affecting one or more persons objectively connected by the purchase of the same trip booked by the Policyholder. Included, as long as they have been included in the total cost of the insured trip, are practice management costs, fuel adjustments already provided for on the policy issue date, as long as they result from the booking statement, and the cost of visas. Airport taxes are always excluded if they are reimbursable). Indemnities will be made without application of any excess",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1119,
+          "response_outcome": "APPROVED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "ART. 1.1 – TRAVEL CANCELLATION The Company shall indemnify, under the terms of this policy, the Insured and a single Travel Companion, provided that they are insured and registered for the same trip, for the withdrawal fee resulting from the cancellation of tourist services, determined in accordance with the General Terms and Conditions, which is a consequence of circumstances unforeseeable at the time of booking the trip or tourist services determined by: Death, illness or injury resulting in hospitalization (including Covid 19 infection provided that the latter results in the need for hospitalization and that the Insured proves that the full course of vaccines has been carried out or that there are documented health reasons preventing the administration of the vaccines) of the Insured or the Traveling Companion of their spouses/domestic partners more uxorio, parents, brothers, sisters, children, in-laws, sons-in-law, daughters-in-law, grandparents, uncles and nephews up to the 3rd degree of kinship, brothers-in- law, Co-owner Partner of the Insured's Firm or direct supervisor, of such severity as to prevent the Insured from undertaking the trip due to his or her health condition or the need to provide care for the above-mentioned ill or injured persons.",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-11T16:29:29.461622",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": true,
+      "updated_at": "2025-04-11T16:29:29.461622",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 3
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "I am traveling with my family, and all our bags were stolen from our rented car. Will the insurance reimburse the value of what was stolen?",
+        "request_id": 2
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 18,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1027,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-10T13:55:59.353795",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "NOT_REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1109,
+          "response_outcome": "DENIED_UNRELATED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-10T13:55:59.353795",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-04-10T13:55:59.353795",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "My daughter had a bike accident and needs to see a doctor. We are in Tokyo—will the insurance cover the costs upfront?",
+        "request_id": 6
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 9,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 10,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 18,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1031,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-10T13:57:04.253982",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "NOT_REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1113,
+          "response_outcome": "DENIED_UNRELATED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-10T13:57:04.253982",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-04-10T13:57:04.253982",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "I was supposed to be in Mallorca for 15 days, but after 5 days, my mother-in-law had a health issue, and I have to go back home. Will you reimburse the remainder of my holiday?",
+        "request_id": 10
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 6,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 12,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 22,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 24,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1035,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-10T14:00:15.438262",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "NOT_REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1117,
+          "response_outcome": "DENIED_EXCLUDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "The Company shall indemnify, under the terms of this policy, the Insured and a single Travel Companion, provided that they are insured and registered for the same trip, for the withdrawal fee resulting from the cancellation of tourist services, determined in accordance with the General Terms and Conditions,",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-10T14:00:15.438262",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-04-10T14:00:15.438262",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "My precious handbag was stolen while I was in a bar in Paris, along with my mobile phone and documents. Can you help me with the costs I’ll have to bear?",
+        "request_id": 3
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 18,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1028,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-10T13:56:18.035913",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "NOT_REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1110,
+          "response_outcome": "DENIED_UNRELATED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-10T13:56:18.035913",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-04-10T13:56:18.035913",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "(Cruise) My son twisted his ankle at the swimming pool and won’t be able to leave the cabin for two days. Are we entitled to a reimbursement?",
+        "request_id": 12
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 12,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1037,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-11T16:32:47.830814",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "NOT_REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1124,
+          "response_outcome": "DENIED_UNRELATED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-11T16:32:47.830814",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-04-11T16:32:47.830814",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "I am traveling alone, and my business partner had a heart attack, so I have to go back home. Will you reimburse the rest of the trip?",
+        "request_id": 7
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 9,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 10,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 16,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1032,
+          "response_outcome": "DENIED_EXCLUDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "The Company shall indemnify, under the terms of this policy, the Insured and a single Travel Companion, provided that they are insured and registered for the same trip, for the withdrawal fee resulting from the cancellation of tourist[AITIS-DELIMITER]determined by: Death, illness or injury resulting in hospitalization (including Covid 19 infection provided that the latter results in the need for hospitalization and that the Insured proves that the full course of vaccines has been carried out or that there are documented health reasons preventing the administration of the vaccines) of the Insured or the Traveling Companion of",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-28T13:58:23.555492",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-10T13:57:45.785448",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "NOT_REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1114,
+          "response_outcome": "DENIED_UNRELATED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-10T13:57:45.785448",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": true,
+      "updated_at": "2025-04-10T13:57:45.785448",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "I had dinner at the resort yesterday, and I had an awful night with stomach pain and diarrhea. I want to see a doctor—can you send one to our hotel?",
+        "request_id": 4
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 11,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 13,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 17,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 25,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1029,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-10T13:56:37.220539",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "NOT_REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1111,
+          "response_outcome": "DENIED_UNRELATED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-10T13:56:37.220539",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-04-10T13:56:37.220539",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "I am at the airport, and my bag has been derouted. Can I obtain a reimbursement?",
+        "request_id": 1
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 1,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 21,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1026,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-10T13:55:38.886314",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "NOT_REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1108,
+          "response_outcome": "DENIED_UNRELATED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-10T13:55:38.886314",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-04-10T13:55:38.886314",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "My mother-in-law had a health issue, and I can’t leave anymore. Will you reimburse my trip?",
+        "request_id": 11
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 5,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 6,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 12,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 22,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 23,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 24,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1036,
+          "response_outcome": "DENIED_EXCLUDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-28T13:58:23.555492",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-10T14:09:56.810611",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 5,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 6,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 12,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 22,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 23,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 24,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "The Insurance is provided up to the total cost of the trip within the maximum amount per Insured of € 5,000.00 with a limit of € 15,000.00 per event (i.e. fact affecting one or more persons objectively connected by the purchase of the same trip booked by the Policyholder. Included, as long as they have been included in the total cost of the insured trip, are practice management costs, fuel adjustments already provided for on the policy issue date, as long as they result from the booking statement, and the cost of visas. Airport taxes are always excluded if they are reimbursable)",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1118,
+          "response_outcome": "APPROVED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "ART. 1.1 – TRAVEL CANCELLATION The Company shall indemnify, under the terms of this policy, the Insured and a single Travel Companion, provided that they are insured and registered for the same trip, for the withdrawal fee resulting from the cancellation of tourist services, determined in accordance with the General Terms and Conditions, which is a consequence of circumstances unforeseeable at the time of booking the trip or tourist services determined by: Death, illness or injury resulting in hospitalization (including Covid 19 infection provided that the latter results in the need for hospitalization and that the Insured proves that the full course of vaccines has been carried out or that there are documented health reasons preventing the administration of the vaccines) of the Insured or the Traveling Companion of their spouses/domestic partners more uxorio, parents, brothers, sisters, children, in-laws, sons-in-law, daughters-in-law, grandparents, uncles and nephews up to the 3rd degree of kinship, brothers-in- law, Co-owner Partner of the Insured's Firm or direct supervisor, of such severity as to prevent the Insured from undertaking the trip due to his or her health condition or the need to provide care for the above-mentioned ill or injured persons",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-10T14:09:56.810611",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": true,
+      "updated_at": "2025-04-10T14:09:56.810611",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "I am traveling with my family, and my business partner had a heart attack, so we have to go back home. Will you reimburse the rest of the trip?",
+        "request_id": 8
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 9,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 10,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 16,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1033,
+          "response_outcome": "DENIED_EXCLUDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "The Company shall indemnify, under the terms of this policy, the Insured and a single Travel Companion, provided that they are insured and registered for the same trip, for the withdrawal fee resulting from the cancellation of tourist[AITIS-DELIMITER]determined by: Death, illness or injury resulting in hospitalization (including Covid 19 infection provided that the latter results in the need for hospitalization and that the Insured proves that the full course of vaccines has been carried out or that there are documented health reasons preventing the administration of the vaccines) of the Insured or the Traveling Companion of",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-28T13:58:23.555492",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-10T13:58:06.106096",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "NOT_REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1115,
+          "response_outcome": "DENIED_UNRELATED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-10T13:58:06.106096",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": true,
+      "updated_at": "2025-04-10T13:58:06.106096",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "My daughter had a bike accident and needs to see a doctor. We are in Amsterdam—should we advance the hospital payment?",
+        "request_id": 5
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 9,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 10,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 18,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1030,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-10T13:56:51.420955",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "NOT_REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1112,
+          "response_outcome": "DENIED_UNRELATED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-10T13:56:51.420955",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-04-10T13:56:51.420955",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "My business partner had a heart attack, and I can’t leave anymore. Will you reimburse the cost of the trip?",
+        "request_id": 9
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 9,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 16,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 22,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 23,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 24,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1034,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-10T13:59:14.665917",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 9,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 16,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 22,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 23,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 24,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "ART 1.2 – MAXIMUM CEILING, OVERDRAFT, DEDUCTIBLES The Insurance is provided up to the total cost of the trip within the maximum amount per Insured of € 5,000.00 with a limit of € 15,000.00 per event (i.e. fact affecting one or more persons objectively connected by the purchase of the same trip booked by the Policyholder. Included, as long as they have been included in the total cost of the insured trip, are practice management costs, fuel adjustments already provided for on the policy issue date, as long as they result from the booking statement, and the cost of visas. Airport taxes are always excluded if they are reimbursable). Indemnities will be made without application of any excess",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1116,
+          "response_outcome": "APPROVED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "ART. 1.1 – TRAVEL CANCELLATION The Company shall indemnify, under the terms of this policy, the Insured and a single Travel Companion, provided that they are insured and registered for the same trip, for the withdrawal fee resulting from the cancellation of tourist services, determined in accordance with the General Terms and Conditions, which is a consequence of circumstances unforeseeable at the time of booking the trip or tourist services determined by: Death, illness or injury resulting in hospitalization (including Covid 19 infection provided that the latter results in the need for hospitalization and that the Insured proves that the full course of vaccines has been carried out or that there are documented health reasons preventing the administration of the vaccines) of the Insured or the Traveling Companion of their spouses/domestic partners more uxorio, parents, brothers, sisters, children, in-laws, sons-in-law, daughters-in-law, grandparents, uncles and nephews up to the 3rd degree of kinship, brothers-in- law, Co-owner Partner of the Insured's Firm or direct supervisor, of such severity as to prevent the Insured from undertaking the trip due to his or her health condition or the need to provide care for the above-mentioned ill or injured persons",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-10T13:59:14.665917",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-04-10T15:01:28.602710",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 3
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "I have a pre-existing condition that has worsened significantly in the past few days, and I am afraid I won’t be able to leave. Will the insurance reimburse my trip?",
+        "request_id": 19
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 12,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 22,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 23,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 24,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1044,
+          "response_outcome": "DENIED_EXCLUDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "are not payable for claims caused",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-28T13:58:23.555492",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-11T16:31:55.389397",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 12,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 22,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 23,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 24,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1121,
+          "response_outcome": "DENIED_EXCLUDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "Reimbusrsements are not payable for claims caused by[AITIS-DELIMITER]- Illnesses that are the expression or direct consequence of pathological situations existing prior to the conclusion of the policy; - Chronic illnesses",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-11T16:31:55.389397",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": true,
+      "updated_at": "2025-04-11T16:31:55.389397",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "We were supposed to leave for Toronto with American Airlines today, but our flight was canceled. We will need to take the next available flight. Will you cover an upgrade if only more expensive tickets are available?",
+        "request_id": 17
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 15,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 19,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 22,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1042,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-11T16:33:07.965238",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "NOT_REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1125,
+          "response_outcome": "DENIED_UNRELATED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-11T16:33:07.965238",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-04-11T16:33:07.965238",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "My flight landed 3 hours late in São Paulo. Will you reimburse us?",
+        "request_id": 18
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 1,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 20,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1043,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-11T16:32:15.020099",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "NOT_REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1122,
+          "response_outcome": "DENIED_UNRELATED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-11T16:32:15.020099",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-04-11T16:32:15.020099",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "We are in Mexico, and we received an alarm notification from our home—there may have been a robbery. Will you reimburse the damages?",
+        "request_id": 21
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 8,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1046,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-11T16:34:09.042443",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "NOT_REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1128,
+          "response_outcome": "DENIED_UNRELATED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-11T16:34:09.042443",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-04-11T16:34:09.042443",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "(Cruise) We are traveling in the Caribbean, and our neighbor called to inform us that there is a water leak in our apartment. We can’t do much from here, but as we return in five days, it might be too late. Can you send someone?",
+        "request_id": 25
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1050,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-11T16:36:27.145483",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "NOT_REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1132,
+          "response_outcome": "DENIED_UNRELATED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-11T16:36:27.145483",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-04-11T16:36:27.145483",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "MEDIUM",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "We had a car accident in the USA, and my husband broke his leg. We are now in the hospital. We gave the insurance details at check-in—up to what amount will you cover?",
+        "request_id": 13
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 4,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 9,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 10,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 18,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1038,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-11T16:33:37.229955",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "NOT_REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1126,
+          "response_outcome": "DENIED_UNRELATED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-11T16:33:37.229955",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-04-11T16:33:37.229955",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "MEDIUM",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "My 2-year-old child has a cold, and we can’t leave anymore. Will you reimburse our tickets?",
+        "request_id": 15
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 12,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 22,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 23,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 24,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1040,
+          "response_outcome": "DENIED_EXCLUDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "determined by: Death, illness or injury resulting in[AITIS-DELIMITER]of the Insured or the Traveling Companion of[AITIS-DELIMITER]of such severity as to prevent the Insured from undertaking the",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-28T13:58:23.555492",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-11T16:28:08.676750",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 10,
+            "iso_code": "EUR",
+            "name": "Euro"
+          },
+          "documents": [
+            {
+              "document_id": 12,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 22,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 23,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 24,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 15000,
+          "payout_justification": "IMPORTANT: The compensation payable to the Insured is equal to the withdrawal fee (i.e., the penalty stipulated in the travel contract, in the case of cancellation of the same), calculated as of the date on which the event occurred, i.e., the occurrence of the circumstances that resulted in the inability to undertake the trip. Any higher cancellation fee charged by the Tour Operator as a result of a delay by the Insured in reporting the cancellation of the trip to the Tour Operator will remain the responsibility of the Insured.[AITIS-DELIMITER]The Insurance is provided up to the total cost of the trip within the maximum amount per Insured of € 5,000.00 with a limit of € 15,000.00 per event (i.e. fact affecting one or more persons objectively connected by the purchase of the same trip booked by the Policyholder. Included, as long as they have been included in the total cost of the insured trip, are practice management costs, fuel adjustments already provided for on the policy issue date, as long as they result from the booking statement, and the cost of visas. Airport taxes are always excluded if they are reimbursable). Indemnities will be made without application of any excess",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1120,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "Death, illness or injury resulting in hospitalization[AITIS-DELIMITER]of the Insured or the Traveling Companion of their spouses/domestic partners more uxorio, parents, brothers, sisters, children,[AITIS-DELIMITER]of such severity as to prevent the Insured from undertaking the trip due to his or her health condition or the need to provide care for the above-mentioned ill or injured persons. In the event of a claim involving multiple Insured persons enrolled in the same trip, the Company will reimburse all eligible family members and only one of the Travel Companions provided they are also insured.",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-11T16:28:08.676750",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": true,
+      "updated_at": "2025-04-11T16:28:08.676750",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "Our flight was delayed in Dubai, and we missed our connection to Tokyo. The next flight is in 10 hours. Will you reimburse us the lounge or a day hotel?",
+        "request_id": 16
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 1,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 10,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 20,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1041,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-11T16:32:25.969147",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 1,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 10,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 20,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1123,
+          "response_outcome": "DENIED_UNRELATED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-11T16:32:25.969147",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-04-11T16:32:25.969147",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "(Cruise) We are supposed to leave in two days, but my son broke his wrist playing basketball. We wish to postpone our trip by a month—will you help with the additional costs?",
+        "request_id": 26
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 2,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 10,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 22,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 23,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1051,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-11T16:41:12.816607",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "NOT_REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1136,
+          "response_outcome": "DENIED_EXCLUDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "The Company shall indemnify, under the terms of this policy, the Insured and a single Travel Companion, provided that they are insured and registered for the same trip, for the withdrawal fee resulting from the cancellation of tourist services, determined in accordance with the General Terms and Conditions, which is a consequence of circumstances unforeseeable at the time of booking the trip",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-11T16:41:12.816607",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-04-11T16:41:12.816607",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "I am traveling in India with my wife and two kids. My wife’s uncle passed away yesterday, and we must return home as he was very close to us. Will the insurance reimburse the cost of changing our tickets so we can attend the funeral?",
+        "request_id": 22
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 3,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 6,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 10,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 22,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 24,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1047,
+          "response_outcome": "DENIED_EXCLUDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "parents, brothers, sisters, children, in-laws, sons-in-law, daughters-in-law, grandparents, uncles and nephews up to the 3rd degree of",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-28T13:58:23.555492",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-11T16:35:09.111035",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "NOT_REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1129,
+          "response_outcome": "DENIED_UNRELATED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-11T16:35:09.111035",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": true,
+      "updated_at": "2025-04-11T16:35:09.111035",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "We are a group of 20 and just landed in São Paulo, but 4 of our colleagues (2 couples) need to return home due to urgent work matters. Will the company reimburse their trip?",
+        "request_id": 31
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 4,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 10,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 14,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1056,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-11T16:36:39.777953",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "NOT_REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1133,
+          "response_outcome": "DENIED_UNRELATED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-11T16:36:39.777953",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-04-11T16:36:39.777953",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "(Cruise) I have a work emergency and need to cut short my two-week cruise. Will I be reimbursed for the remaining days?",
+        "request_id": 20
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 2,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 4,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 22,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1045,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-11T16:33:54.762449",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "NOT_REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1127,
+          "response_outcome": "DENIED_UNRELATED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-11T16:33:54.762449",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-04-11T16:33:54.762449",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "We are traveling in India, and a massive flood has blocked us here. We are supposed to fly home tomorrow, but realistically, we won’t be able to leave for a couple of days. Will the insurance cover the additional costs?",
+        "request_id": 23
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 10,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 22,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 24,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1048,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-11T16:35:25.062309",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "NOT_REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1130,
+          "response_outcome": "DENIED_UNRELATED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-11T16:35:25.062309",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-04-11T16:35:25.062309",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "We are a group of five leaving in two days. One of us had a serious accident and won’t be able to travel. Without him, we don’t feel like going. Will the company refund the travel expenses for all of us?",
+        "request_id": 28
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 9,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 10,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 23,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1053,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-11T16:45:39.699396",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 9,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 10,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 23,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 15000,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1137,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "The company will reimburse some of them. If all of them, it depends on their relationship. If friends, it will reimburse only the affected traveler and one more person. If family, all family members plus one travel companion. ",
+          "response_outcome_justification": "ART. 1.1 – TRAVEL CANCELLATION The Company shall indemnify, under the terms of this policy, the Insured and a single Travel Companion, provided that they are insured and registered for the same trip, for the withdrawal fee resulting from the cancellation of tourist services, determined in accordance with the General Terms and Conditions, which is a consequence of circumstances unforeseeable at the time of booking the trip or tourist services determined by: Death, illness or injury resulting in hospitalization (including Covid 19 infection provided that the latter results in the need for hospitalization and that the Insured proves that the full course of vaccines has been carried out or that there are documented health reasons preventing the administration of the vaccines) of the Insured or the Traveling Companion of their spouses/domestic partners more uxorio, parents, brothers, sisters, children, in-laws, sons-in-law, daughters-in-law, grandparents, uncles and nephews up to the 3rd degree of kinship, brothers-in- law, Co-owner Partner of the Insured's Firm or direct supervisor, of such severity as to prevent the Insured from undertaking the trip due to his or her health condition or the need to provide care for the above-mentioned ill or injured persons. [AITIS-DELIMITER]In the event of a claim involving multiple Insured persons enrolled in the same trip, the Company will reimburse all eligible family members and only one of the Travel Companions provided they are also insured",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-11T16:45:39.699396",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-04-11T16:45:39.699396",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "(Cruise) My husband had a stroke during the cruise. We are now in a hospital in Athens, but the ship has departed. Will you reimburse us and cover the hospital and flight expenses back to Rome?",
+        "request_id": 24
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 2,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 7,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 9,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 10,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "The Insurance is provided up to the total cost of the trip within the maximum amount per Insured of[AITIS-DELIMITER]per event (i.e. fact affecting one or more persons objectively connected by the purchase of the same trip booked by the",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1049,
+          "response_outcome": "APPROVED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-28T13:58:23.555492",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-11T16:35:55.697257",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "NOT_REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1131,
+          "response_outcome": "DENIED_UNRELATED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-11T16:35:55.697257",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": true,
+      "updated_at": "2025-04-11T16:35:55.697257",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "We are a group of 20 and just landed in São Paulo, but one of our team members did not receive his bag at the airport. Does he have the right to a reimbursement?",
+        "request_id": 30
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 1,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 14,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 21,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1055,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-11T16:36:55.078187",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "NOT_REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1134,
+          "response_outcome": "DENIED_UNRELATED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-11T16:36:55.078187",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-04-11T16:36:55.078187",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "I am at the airport in New York with my family, and my bag was shipped to Dubai. Do I have the right to a refund from the insurance?",
+        "request_id": 29
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 1,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 21,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1054,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-11T16:37:11.395145",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "NOT_REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1135,
+          "response_outcome": "DENIED_UNRELATED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-11T16:37:11.395145",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-04-11T16:37:11.395145",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "We booked a trip for our family of 6, but my husband has severe back pain. We won’t be able to leave. Will the company reimburse the trip for all 6 of us?",
+        "request_id": 39
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 9,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 10,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 22,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 23,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 24,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1064,
+          "response_outcome": "UNDECIDED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-14T10:30:19.514086",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-11T23:23:53.312442",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 9,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 10,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 22,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 23,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 24,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 15000,
+          "payout_justification": "ART 1.2 – MAXIMUM CEILING, OVERDRAFT, DEDUCTIBLES The Insurance is provided up to the total cost of the trip within the maximum amount per Insured of € 5,000.00 with a limit of € 15,000.00 per event (i.e. fact affecting one or more persons objectively connected by the purchase of the same trip booked by the Policyholder. Included, as long as they have been included in the total cost of the insured trip, are practice management costs, fuel adjustments already provided for on the policy issue date, as long as they result from the booking statement, and the cost of visas. Airport taxes are always excluded if they are reimbursable). Indemnities will be made without application of any excess",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1138,
+          "response_outcome": "APPROVED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "In principle, the insurance covers the whole family. In practice, as the maximum refund per case is Eur 15000, for a family of 6 it depends on how much it requested for each person. ",
+          "response_outcome_justification": "The Company shall indemnify, under the terms of this policy, the Insured and a single Travel Companion, provided that they are insured and registered for the same trip, for the withdrawal fee resulting from the cancellation of tourist services, determined in accordance with the General Terms and Conditions, which is a consequence of circumstances unforeseeable at the time of booking the trip or tourist services determined by:[AITIS-DELIMITER]Death, illness or injury resulting in hospitalization of the Insured or the Traveling Companion",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-11T23:23:53.312442",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": false,
+      "updated_at": "2025-04-11T23:23:53.312442",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 2
+    }
+  ],
+  "title": "Nobis - Travel Cancellation (hospital) EN"
+}

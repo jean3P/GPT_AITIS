@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="Python 3.12 virtualenv at ~/Downloads/gpt_aitis/.venv" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.12 virtualenv at ~/Downloads/gpt_aitis/.venv" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="uv (GPT_AITIS)" project-jdk-type="Python SDK" />
 </project>
