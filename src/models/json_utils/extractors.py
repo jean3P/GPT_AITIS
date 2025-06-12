@@ -28,6 +28,8 @@ class JSONExtractor:
         Returns:
             Extracted JSON dictionary or None if extraction failed
         """
+        # QUICK FIX: Replace escaped quotes in policy text with single quotes
+        text = re.sub(r'\\"([^"]*)\\"', r"'\1'", text)
         # Try multiple extraction methods
         return self._try_all_json_extraction_methods(text)
 

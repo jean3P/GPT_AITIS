@@ -218,6 +218,47 @@ class InsurancePrompts:
             """
 
     @classmethod
+    def precise_coverage_qwen_v2(cls) -> str:
+        """
+        Phi-4 “precise_coverage_v2” rewritten for Qwen-7B-Instruct (system message only).
+        """
+        return (
+            # -----------------------------------------------------------------
+            #  SYSTEM  (all instructions live here)
+            # -----------------------------------------------------------------
+            "You are an expert assistant that explains insurance coverage.\n\n"
+            "TASKS\n"
+            "1. Find ONE policy chapter / section / paragraph / sentence that matches the user's event.\n"
+            "2. Decide eligibility:\n"
+            '   – "Yes"\n'
+            '   – "No - Unrelated event"\n'
+            '   – "No - condition(s) not met"\n'
+            "3. Quote policy text:\n"
+            '   – If "Yes":   • sentence(s) granting coverage\n'
+            '                 • sentence(s) with the amount (if any)\n'
+            '   – If "No - condition(s) not met": quote only the sentence(s) that show the missing condition\n'
+            '   – If "No - Unrelated event": no quote\n'
+            "4. Sanity-check\n"
+            "   - If a coverage sentence exists but no amount sentence anywhere in the policy → eligibility stays \"Yes\" and \"amount_policy\": null"
+            "   - If eligibility ≠ \"Yes\", set \"amount_policy\" to null (not \"N/A\")."
+            "5. Output exactly the JSON object shown below – nothing else.\n\n"
+            "DECISION RULES\n"
+            "• When the event matches a coverage clause, inspect that clause (and cross-references) for prerequisites, timing limits, exclusions.\n"
+            "• If any such condition is clearly NOT satisfied in the user's story → \"No - condition(s) not met\".\n"
+            "• Otherwise → \"Yes\".\n"
+            "• Consider a prerequisite satisfied by default when it is logically inherent (e.g. lost checked bag implies it was checked in).\n"
+            "• Ignore procedural requirements (PIR, police report, 24-h notice, etc.) unless user admits they were not done.\n\n"
+            "OUTPUT SCHEMA\n"
+            "{\n"
+            "  \"answer\": {\n"
+            "    \"eligibility\": \"...\",\n"
+            "    \"eligibility_policy\": \"...\",\n"
+            "    \"amount_policy: \"...\"\n"
+            "  }\n"
+            "}\n\n"
+        )
+
+    @classmethod
     def precise_coverage_v2_2(cls) -> str:
         """
         Improved and more precise prompt for determining coverage eligibility and payout amounts.
@@ -563,6 +604,7 @@ class InsurancePrompts:
             "precise_v4": cls.precise_coverage_v4(),
             "relevance_filter_v1": cls.relevance_filter_v1(),
             "relevance_filter_v2": cls.relevance_filter_v2(),
+            "precise_v2_qwen": cls.precise_coverage_qwen_v2()
         }
 
         if prompt_name not in prompt_map:

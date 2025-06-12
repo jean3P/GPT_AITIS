@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 if __name__ == "__main__":
     # Get available prompt names for the help message
     available_prompts = ", ".join([
-        "standard", "detailed", "precise", "precise_v2", "precise_v3", "precise_v4", "precise_v2_2",
+        "standard", "detailed", "precise", "precise_v2", "precise_v3", "precise_v4", "precise_v2_2", "precise_v2_qwen",
     ])
 
     # Get available relevance filter prompts
@@ -21,7 +21,7 @@ if __name__ == "__main__":
 
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Run RAG system for insurance policy analysis")
-    parser.add_argument("--model", choices=["openai", "hf"], default="hf", help="Model provider (openai or hf)")
+    parser.add_argument("--model", choices=["openai", "hf", "qwen"], default="hf", help="Model provider (openai, hf or qwen)")
     parser.add_argument("--model-name", default="microsoft/phi-4", help="Name of the model to use")
     parser.add_argument("--batch", action="store_true", help="Process all policies in a single batch")
     parser.add_argument("--num-questions", type=int, default=None,

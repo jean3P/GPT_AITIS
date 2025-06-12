@@ -10,7 +10,7 @@ from typing import List, Dict, Any
 from huggingface_hub import login
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 
-from config import HUGGINGFACE_TOKEN
+from config import HUGGINGFACE_TOKEN, get_local_model_path, get_model_config
 from models.base import BaseModelClient
 from models.persona.extractor import PersonaExtractor
 from models.json_utils.extractors import JSONExtractor
@@ -53,25 +53,17 @@ class HuggingFaceModelClient(BaseModelClient):
         logger.info(f"HF_ASSETS_CACHE: {os.environ.get('HF_ASSETS_CACHE', 'Not set')}")
 
     def _check_model_in_scratch(self, model_name: str) -> str:
-        """Check if the model exists in scratch directory and return the appropriate path."""
-        if model_name == "microsoft/phi-4":
-            scratch_model_path = os.path.join("/cluster/scratch", os.environ.get("USER", ""), "models", "phi-4")
-
-            if os.path.exists(scratch_model_path):
-                logger.info(f"Found phi-4 model in scratch: {scratch_model_path}")
-                return scratch_model_path
-            else:
-                logger.warning(f"Phi-4 not found in scratch directory. Looking for it in HuggingFace cache.")
-
-        return model_name
+        """Check if the model exists locally and return appropriate path."""
+        return get_local_model_path(model_name)
 
     def _initialize_pipeline(self, model_name: str):
         """Initialize the HuggingFace pipeline with the specified model."""
         try:
             logger.info(f"Initializing pipeline with model: {model_name}")
+            model_config = get_model_config(model_name)
 
             tokenizer = self._load_tokenizer(model_name)
-            model = self._load_model(model_name)
+            model = self._load_model(model_name, model_config)
 
             # Create pipeline with loaded model and tokenizer
             pipe = pipeline(
@@ -94,14 +86,14 @@ class HuggingFaceModelClient(BaseModelClient):
             trust_remote_code=True
         )
 
-    def _load_model(self, model_name: str):
-        """Load the model with appropriate configuration."""
+    def _load_model(self, model_name: str, model_config: dict):
+        """Load the model with configuration from config.py."""
         return AutoModelForCausalLM.from_pretrained(
             model_name,
-            torch_dtype="auto",
-            device_map="auto",
-            trust_remote_code=True,
-            low_cpu_mem_usage=True
+            torch_dtype=model_config["torch_dtype"],
+            device_map=model_config["device_map"],
+            trust_remote_code=model_config["trust_remote_code"],
+            low_cpu_mem_usage=model_config["low_cpu_mem_usage"]
         )
 
     def _get_json_format_template(self) -> str:
@@ -163,27 +155,21 @@ class HuggingFaceModelClient(BaseModelClient):
 
     def _build_prompt(self, question: str, context_text: str, persona_text: str) -> str:
         """
-        Build the full prompt for the model.
-
-        Args:
-            question: The question to answer
-            context_text: Formatted context information
-            persona_text: Formatted persona information
-
-        Returns:
-            Complete prompt for the model
+        Build the full prompt for Qwen model using native chat template.
         """
-        prompt_final = "\nThen the json Solution is:\n\n"
-
-        # Determine JSON format based on the type of prompt being used
-        json_format = self._get_appropriate_json_format()
-
         if persona_text:
-            full_prompt = f"{self.base_prompt}\n\n{context_text}\n\nQuestion: {question}\n\n{persona_text}\n\n{json_format}\n\n{prompt_final}"
-            logger.debug(f"Full prompt: {full_prompt}")
+            user_content = f"{context_text}\n\nQuestion: {question}\n\n{persona_text}"
         else:
-            full_prompt = f"{self.base_prompt}\n\n{context_text}\n\nQuestion: {question}\n\n{json_format}\n\n{prompt_final}"
-            logger.debug(f"Full prompt: {full_prompt}")
+            user_content = f"{context_text}\n\nQuestion: {question}"
+
+        # Use Qwen chat template format - DO NOT repeat JSON schema in user message
+        system_message = f"<|im_start|>system\n{self.base_prompt}<|im_end|>\n"
+        user_message = f"<|im_start|>user\n{user_content}<|im_end|>\n"
+        assistant_start = "<|im_start|>assistant\n"  # This is what add_generation_prompt=True does
+
+        full_prompt = system_message + user_message + assistant_start
+
+        logger.debug(f"Qwen chat template prompt: {full_prompt}")
         return full_prompt
 
     def _get_appropriate_json_format(self) -> str:
@@ -218,11 +204,14 @@ class HuggingFaceModelClient(BaseModelClient):
             Parsed JSON response or error message
         """
         try:
+            model_config = get_model_config(self.pipe.model.name_or_path)
             # Generate text with appropriate parameters for JSON output
             outputs = self.pipe(
                 prompt,
-                max_new_tokens=2048,
-                do_sample=False,
+                max_new_tokens=model_config["max_new_tokens"],
+                temperature=model_config["temperature"],
+                do_sample=model_config["do_sample"],
+                repetition_penalty=model_config["repetition_penalty"],
                 num_return_sequences=1,
                 return_full_text=False
             )
