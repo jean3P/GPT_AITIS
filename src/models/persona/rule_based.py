@@ -553,7 +553,7 @@ class RuleBasedExtractor:
             # Check who is actually affected/claiming
             affected_terms = [
                 'all of us', 'everyone', 'the whole family',
-                'all \d+ of us', 'for the \d+ of us', 'for all of us'
+                r'all \d+ of us', r'for the \d+ of us', 'for all of us'
             ]
 
             # Extract the specific affected family member if mentioned
