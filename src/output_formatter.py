@@ -10,28 +10,27 @@ from typing import Dict, List, Any
 logger = logging.getLogger(__name__)
 
 
-def extract_policy_id(pdf_path: str) -> str:
+def extract_policy_id(file_path: str) -> str:
     """
-    Extract policy ID from the PDF filename.
+    Extract policy ID from PDF or TXT filename.
     Examples:
     - "10_nobis_policy.pdf" -> "10"
+    - "18_medical_coverage.txt" -> "18"
     - "10-1_AXA 20220316 DIP AGGIUNTIVO ALI@TOP.pdf" -> "10-1"
-
-    Args:
-        pdf_path: Path to the PDF file
-    Returns:
-        The policy ID as a string
     """
-    filename = os.path.basename(pdf_path)
+    filename = os.path.basename(file_path)
+    # Remove extension first to handle both .pdf and .txt
+    name_without_ext = os.path.splitext(filename)[0]
+
     # Extract policy ID from the filename using regex
     # Updated to handle hyphens in policy IDs
-    match = re.match(r'^([\d-]+)_', filename)
+    match = re.match(r'^([\d-]+)_', name_without_ext)
     if match:
         return match.group(1)
     else:
         logger.warning(f"Could not extract policy ID from filename: {filename}")
         # Return the filename without extension as fallback
-        return os.path.splitext(filename)[0]
+        return name_without_ext
 
 
 def format_results_as_json(policy_path: str, question_results: List[List[str]]) -> Dict[str, Any]:

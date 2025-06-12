@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 if __name__ == "__main__":
     # Get available prompt names for the help message
     available_prompts = ", ".join([
-        "standard", "detailed", "precise", "precise_v2", "precise_v3", "precise_v4", "precise_v2_2", "precise_v2_qwen",
+        "standard", "detailed", "precise", "precise_v2", "precise_v3", "precise_v4", "precise_v2_1" , "precise_v2_2", "precise_v2_qwen",
     ])
 
     # Get available relevance filter prompts

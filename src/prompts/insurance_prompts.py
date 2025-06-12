@@ -165,6 +165,87 @@ class InsurancePrompts:
                    – If you found a coverage sentence but no amount sentence anywhere in the policy → eligibility is still 
                      "Yes" and "amount_policy" must be null.
                 5. OUTPUT exactly in the JSON schema below.
+
+                ==========  WHEN DECIDING “condition(s) not met” VS. “Yes”  ==========
+
+                • If the user’s event matches the loss description in a coverage clause:
+                    – Check the *same* clause (and any cross-referenced article) for
+                      explicit prerequisites, exclusions, or timing limits.
+                    – If at least one of those conditions is clearly **not satisfied
+                      in the user’s story**, choose "No - condition(s) not met".
+                    – Otherwise choose "Yes".
+
+                • Treat a prerequisite as **satisfied by default** when it is
+                  *logically inherent* in the event:
+                    (e.g. a derouted/lost/late bag was checked in; a cancellation
+                    request implies the trip hasn’t started yet; a hospitalised
+                    person hasn’t travelled).
+
+                • DO NOT require procedural steps (PIR, police report, 24-h notice, etc.)
+                  to be mentioned; assume they can still be provided later unless user
+                  admits they didn’t do them.
+
+
+                ==========  OUTPUT SCHEMA  ==========
+                {
+                  "answer": {
+                    "eligibility": "...",
+                    "eligibility_policy": "...",
+                    "amount_policy": "..."
+                  }
+                }
+
+                ==========  EXAMPLE  (follow this layout)  ==========
+                User event: “My checked bag never arrived – can I claim?”
+                Policy snippet: «In the event that the air carrier fails to deliver ... Indemnity amount for baggage 
+                                loss option 1 € 150,00 Option 2 € 350,00 ...»
+                Expected answer:
+                {
+                  "answer": {
+                    "eligibility": "Yes",
+                    "eligibility_policy": "In the event that the air carrier fails to deliver the Insured's Baggage ...",
+                    "amount_policy": "The Insured Person may choose... The Indemnification option selected and 
+                        operative will be only the one resulting in the policy certificate according to the following: 
+                        Indemnity amount for baggage loss option 1 € 150,00 Option 2 € 350,00 Option 3 € 500,00"
+                  }
+                }
+                (Do NOT output this example again.)
+
+                ==========  REMEMBER  ==========
+                • Return *only* valid JSON – no markdown, no explanations.
+                • Do NOT invent keys or punctuation not present in the policy.
+                • Keep quotes verbatim (no “[…]” ellipses).
+            """
+
+    @classmethod
+    def precise_coverage_v2_1(cls) -> str:
+        """
+        Improved and more precise prompt for determining coverage eligibility and payout amounts.
+        """
+        return """
+                You are an expert assistant that explains insurance coverage.
+
+                ==========  TASKS  ==========
+                1. FIND the single policy chapter, section, paragraph, or sentence that matches the user’s event.
+                2. DECIDE eligibility:
+                   • "Yes"
+                   • "No - Unrelated event"
+                   • "No - condition(s) not met"
+                3. QUOTE policy:
+                   • If "Yes":   – sentence(s) that grant coverage
+                                 – sentence(s) that state the amount **(if an amount sentence exists)**
+                   • If "No - condition(s) not met": quote only the sentence(s) that show the missing condition
+                   • If "No - Unrelated event": no quote
+                4. AMOUNT EXTRACTION RULES:
+                   – Look for ANY text containing "€" followed by numbers (e.g., "€ 350", "Fino a € 2.000")
+                   – Quote the EXACT text that contains the euro amount
+                   – If multiple amounts exist, quote the one most relevant to the user's event
+                   – If NO euro amounts exist anywhere, use null
+                5. SANITY CHECK  
+                   – If you found both a coverage sentence *and* an amount sentence → eligibility must be "Yes".  
+                   – If you found a coverage sentence but no amount sentence anywhere in the policy → eligibility is still 
+                     "Yes" and "amount_policy" must be null.
+                5. OUTPUT exactly in the JSON schema below.
                 
                 ==========  WHEN DECIDING “condition(s) not met” VS. “Yes”  ==========
 
@@ -599,6 +680,7 @@ class InsurancePrompts:
             "detailed": cls.detailed_coverage(),
             "precise": cls.precise_coverage(),
             "precise_v2": cls.precise_coverage_v2(),
+            "precise_v2_1": cls.precise_coverage_v2_1(),
             "precise_v2_2": cls.precise_coverage_v2_2(),
             "precise_v3": cls.precise_coverage_v3(),
             "precise_v4": cls.precise_coverage_v4(),

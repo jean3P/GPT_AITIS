@@ -5,7 +5,7 @@ from typing import Optional, Tuple, List
 
 from config import *
 from models.factory import get_model_client, get_shared_relevance_client
-from utils import read_questions, list_pdf_paths
+from utils import read_questions, list_policy_paths
 from models.vector_store import LocalVectorStore
 from output_formatter import extract_policy_id, format_results_as_json, save_policy_json
 from prompts.insurance_prompts import InsurancePrompts
@@ -93,7 +93,7 @@ def run_rag(
     logger.info(f"JSON output will be saved to: {output_dir}")
 
     # List all policy PDFs
-    pdf_paths = list_pdf_paths(DOCUMENT_DIR)
+    pdf_paths = list_policy_paths(DOCUMENT_DIR)
     if not pdf_paths:
         logger.error("No PDF policies found in directory")
         return
@@ -283,7 +283,7 @@ def run_batch_rag(
             relevance_client = get_shared_relevance_client(model_client, relevance_prompt)
 
     # List all policy PDFs
-    pdf_paths = list_pdf_paths(DOCUMENT_DIR)
+    pdf_paths = list_policy_paths(DOCUMENT_DIR)
 
     # Filter policies by ID if specified
     if policy_id:
