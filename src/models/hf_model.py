@@ -155,7 +155,41 @@ class HuggingFaceModelClient(BaseModelClient):
 
     def _build_prompt(self, question: str, context_text: str, persona_text: str) -> str:
         """
-        Build the full prompt for Qwen model using native chat template.
+        Build the full prompt using model-specific format.
+        - Phi-4: Simple concatenated format (original working version)
+        - Qwen: Chat template format
+        """
+        # Get the model path to determine which format to use
+        model_path = getattr(self.pipe.model, 'name_or_path', '')
+        model_name_lower = model_path.lower()
+
+        # Check if this is a Qwen model
+        is_qwen = any(indicator in model_name_lower for indicator in ["qwen", "qwen2", "qwen2.5"])
+
+        if is_qwen:
+            # QWEN FORMAT: Use chat template
+            return self._build_qwen_chat_prompt(question, context_text, persona_text)
+        else:
+            # PHI-4 FORMAT: Use original simple format that was working
+            return self._build_phi_simple_prompt(question, context_text, persona_text)
+
+    def _build_phi_simple_prompt(self, question: str, context_text: str, persona_text: str) -> str:
+        """
+        Build the full prompt for Phi-4 using the original simple format that was working.
+        """
+        prompt_final = "\nThen the json Solution is:\n\n"
+
+        if persona_text:
+            full_prompt = f"{self.base_prompt}\n\n{context_text}\n\nQuestion: {question}\n\n{persona_text}\n\n{prompt_final}"
+        else:
+            full_prompt = f"{self.base_prompt}\n\n{context_text}\n\nQuestion: {question}\n\n{prompt_final}"
+
+        logger.debug(f"Phi-4 prompt: {full_prompt}")
+        return full_prompt
+
+    def _build_qwen_chat_prompt(self, question: str, context_text: str, persona_text: str) -> str:
+        """
+        Build the full prompt for Qwen using chat template format.
         """
         if persona_text:
             user_content = f"{context_text}\n\nQuestion: {question}\n\n{persona_text}"
@@ -165,10 +199,9 @@ class HuggingFaceModelClient(BaseModelClient):
         # Use Qwen chat template format - DO NOT repeat JSON schema in user message
         system_message = f"<|im_start|>system\n{self.base_prompt}<|im_end|>\n"
         user_message = f"<|im_start|>user\n{user_content}<|im_end|>\n"
-        assistant_start = "<|im_start|>assistant\n"  # This is what add_generation_prompt=True does
+        assistant_start = "<|im_start|>assistant\n"
 
         full_prompt = system_message + user_message + assistant_start
-
         logger.debug(f"Qwen chat template prompt: {full_prompt}")
         return full_prompt
 
@@ -192,7 +225,6 @@ class HuggingFaceModelClient(BaseModelClient):
             # Default to insurance analysis format
             return self.json_format
 
-
     def _generate_model_output(self, prompt: str) -> Dict[str, Any]:
         """
         Generate output from the model.
@@ -201,7 +233,7 @@ class HuggingFaceModelClient(BaseModelClient):
             prompt: The prompt to send to the model
 
         Returns:
-            Parsed JSON response or error message
+            Parsed JSON response or default "No - condition(s) not met" response
         """
         try:
             model_config = get_model_config(self.pipe.model.name_or_path)
@@ -209,9 +241,7 @@ class HuggingFaceModelClient(BaseModelClient):
             outputs = self.pipe(
                 prompt,
                 max_new_tokens=model_config["max_new_tokens"],
-                temperature=model_config["temperature"],
                 do_sample=model_config["do_sample"],
-                repetition_penalty=model_config["repetition_penalty"],
                 num_return_sequences=1,
                 return_full_text=False
             )
@@ -226,14 +256,29 @@ class HuggingFaceModelClient(BaseModelClient):
             if extracted_json:
                 return extracted_json
 
-            # If all extraction methods fail, return a formatted error
-            logger.error("All JSON extraction methods failed")
-            return self._create_error_response("Failed to extract valid JSON from model output")
+            # If all extraction methods fail, return default "No - condition(s) not met" response
+            logger.error("All JSON extraction methods failed - returning default 'No - condition(s) not met' response")
+            return self._create_default_no_conditions_response()
 
         except Exception as e:
             error_msg = f"Error during model inference: {str(e)}"
             logger.error(error_msg)
-            return self._create_error_response(error_msg)
+            return self._create_default_no_conditions_response()
+
+    def _create_default_no_conditions_response(self) -> Dict[str, Any]:
+        """
+        Create a default 'No - condition(s) not met' response when JSON extraction fails.
+
+        Returns:
+            Default structured response indicating conditions not met
+        """
+        return {
+            "answer": {
+                "eligibility": "",
+                "eligibility_policy": "",
+                "amount_policy": ""
+            }
+        }
 
     def query(self, question: str, context_files: List[str], use_persona: bool = False) -> Dict[str, Any]:
         """
