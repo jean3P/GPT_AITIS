@@ -1,0 +1,292 @@
+{
+  "policy_id": "06",
+  "questions": [
+    {
+      "request_id": "1",
+      "question": "I am at the airport and my bag has been derouted, can I obtain a reimbursement?",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
+      "payment_justification": ""
+    },
+    {
+      "request_id": "2",
+      "question": "I am traveling with my family, they stole all our bags from our rented car, will the insurance reimburse the value of what stolen?",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
+      "payment_justification": ""
+    },
+    {
+      "request_id": "3",
+      "question": "I got a precious handbag stolen while in a bar in  Paris, with mobile phone and documents in it, can you help me with the costs I'll have to bear?",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
+      "payment_justification": ""
+    },
+    {
+      "request_id": "4",
+      "question": "I had dinner at our the resort yesterday, and I had an awful night with pain in the stomach and diharreha, I want to see a doctor, can you send one to our hotel?",
+      "outcome": "No - condition(s) not met",
+      "outcome_justification": "Rientro sanitario a seguito di malattia o infortunio in viaggio In caso di malattia o infortunio gravi, compresa la diagnosi di una malattia epidemica o pandemica come il COVID-19, avvenuti durante il viaggio, il team medico della Compagnia valuterà, in accordo con il tuo medico curante, se le tue condizioni cliniche consentono il rientro sanitario.",
+      "payment_justification": null
+    },
+    {
+      "request_id": "5",
+      "question": "My daughter had an accident by bike and needs to see a doctor. We are in Amsterdam, shall we advance the payment of the hospital? ",
+      "outcome": "Yes",
+      "outcome_justification": "La Compagnia, con il parere del medico locale, identificherà l'ospedale o un altro centro medico meglio attrezzato per la patologia sofferta, organizzerà il tuo trasporto e ne sosterrà i relativi costi",
+      "payment_justification": null
+    },
+    {
+      "request_id": "6",
+      "question": "My daughter had an accident by bike and needs to see a doctor. We are in Tokyo, is the insurance going to anticipate the costs? ",
+      "outcome": "Yes",
+      "outcome_justification": "In caso di malattia o infortunio, compresa la diagnosi di una malattia epidemica o pandemica come il COVID-19, durante il viaggio, la Compagnia rimborserà i costi sostenuti per il trasporto di emergenza dal luogo dell'evento allo studio di un medico o a una struttura sanitaria nelle vicinanze.",
+      "payment_justification": null
+    },
+    {
+      "request_id": "7",
+      "question": "I am traveling alone, my business partner had a hearth attack and I have to go back home. Will you reimbuse the rest of the trip?",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
+      "payment_justification": ""
+    },
+    {
+      "request_id": "8",
+      "question": "I am traveling with my family, my business partner had a hearth attack and we have to go back home. Will you reimbuse the rest of the trip?",
+      "outcome": "Yes",
+      "outcome_justification": "In caso di tuo ricovero in ospedale (compreso il ricovero causato da una malattia epidemica o pandemica, come il Covid 19), con prognosi di degenza superiore a 72 ore o nel caso in cui il viaggio di rientro costituisca un pericolo per la tua vita a causa delle tue condizioni mediche, la",
+      "payment_justification": null
+    },
+    {
+      "request_id": "9",
+      "question": "My business partner had a hearth attack and I can't leave any more. Will you reimburse the cost of the trip? ",
+      "outcome": "No - condition(s) not met",
+      "outcome_justification": "In caso di attivazione della copertura per uno dei seguenti motivi, la Compagnia prende a carico i costi consuetudinari da te sostenuti per le suddette cure mediche e rimborsa i costi sostenuti per le cure odontoiatriche urgenti, fino all'importo massimo indicato per la copertura spese mediche",
+      "payment_justification": "Spese mediche € 500.000 Nessuno Spese dentistiche di emergenza € 250 Nessuno Spese mediche al rientro per massimo 30 giorni € 1.000 Nessuno"
+    },
+    {
+      "request_id": "10",
+      "question": "I had to be in Mayorca for 15 days, but after 5 days my mother in law had a health issue and I have to go back home, will you reimburse the rest of my holidays?",
+      "outcome": "No - condition(s) not met",
+      "outcome_justification": "Laddove la Compagnia ritenga che la struttura sanitaria di primo soccorso o di primo ricovero non sia idonea a fornire un trattamento medico necessario appropriato per il tuo caso:... In caso di emergenza o pericolo per la vita, l’Assicurato deve rivolgersi immediatamente agli organismi ufficiali di soccorso del luogo in cui si trova.",
+      "payment_justification": null
+    },
+    {
+      "request_id": "11",
+      "question": "My mother in law had a health issue and I can't leave any more. Will you reimburse my trip?",
+      "outcome": "No - condition(s) not met",
+      "outcome_justification": "In caso di attivazione della copertura per uno dei seguenti motivi, la Compagnia prende a carico i costi consuetudinari da te sostenuti per le suddette cure mediche e rimborsa i costi sostenuti per le cure odontoiatriche urgenti, fino all'importo massimo indicato per la copertura spese mediche",
+      "payment_justification": "Spese Mediche € 500.000"
+    },
+    {
+      "request_id": "12",
+      "question": "(Cruise) My son twisted and akle at the swimmingpool, and won't be able to walk out of the cabin for 2 days, have we got the right to a reimbursemet?",
+      "outcome": "No - condition(s) not met",
+      "outcome_justification": "Qualsiasi altra prestazione medica o odontoiatrica non di urgenza.",
+      "payment_justification": null
+    },
+    {
+      "request_id": "13",
+      "question": "We had a car accident in the USA, and my hausband broke a leg. We are now in the hospital. We gave the name of the insurance at check in, up to what amount will you cover?",
+      "outcome": "Yes",
+      "outcome_justification": "SPESE MEDICHE Prestazioni Limite di copertura Scoperto Spese mediche € 500.000 Nessuno",
+      "payment_justification": "Spese mediche € 500.000"
+    },
+    {
+      "request_id": "14",
+      "question": "My aunt died yesterday, we shall leave on holidays tomorrow, but obviously we need to attend the funeral and deal with family issues, will the insurance reimburse us?",
+      "outcome": "Yes",
+      "outcome_justification": "Se un familiare decide di organizzare il funerale, la sepoltura o la cremazione nel luogo del decesso, la Compagnia rimborserà le relative spese nel limite di quanto avrebbe sostenuto per il rientro della salma.",
+      "payment_justification": null
+    },
+    {
+      "request_id": "15",
+      "question": "I my 2 years old kid has a cold, and we can't leave any more, will you reimburse our tickets?",
+      "outcome": "No - condition(s) not met",
+      "outcome_justification": "In caso di malattia o infortunio, compresa la diagnosi di una malattia epidemica o pandemica come il COVID-19, durante il viaggio, la Compagnia rimborserà i costi sostenuti per il trasporto di emergenza dal luogo dell'evento allo studio di un medico o a una struttura sanitaria nelle vicinanze.",
+      "payment_justification": null
+    },
+    {
+      "request_id": "16",
+      "question": "Our flight was late in Dubai and we have missed the coincidence for Tokyo, the next flight will be in 10 hours. Will you reimburse us the lounge or a day hotel?",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
+      "payment_justification": ""
+    },
+    {
+      "request_id": "17",
+      "question": "We had to leave for Toronto with American Airlines today, but our flight was cancelled. We will need to take the next fight depending on availability. Will you pay for an upgrade in case only more expensive tickets are available?",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
+      "payment_justification": ""
+    },
+    {
+      "request_id": "18",
+      "question": "My flight landed 3 hours late in Sao Paulo, will you reimburse us?",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
+      "payment_justification": ""
+    },
+    {
+      "request_id": "19",
+      "question": "I have an existing patology that got incredibly worst during the last days, I am afraid I won't be able to leave. Will the insurance reimburse my trip?",
+      "outcome": "No - condition(s) not met",
+      "outcome_justification": "Policy context 1: DURATA VIAGGIO FINO A PREMIO di cui imposte INDIVIDUALE FINITO Spese Mediche € 500.000 60 giorni € 2,83",
+      "payment_justification": null
+    },
+    {
+      "request_id": "20",
+      "question": "(Cruise) I have an issue at work and need to stop my 2 weeks cruise in advance. Will I be reimbursed of the remaining days?",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
+      "payment_justification": ""
+    },
+    {
+      "request_id": "21",
+      "question": "We are in Mexico, and we had an alarm at our place, maybe there was a robbery. Will you reimburse the damage?",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
+      "payment_justification": ""
+    },
+    {
+      "request_id": "22",
+      "question": "I am traveing in India with my wife and two kids. My wife's uncle died yesteday, and we must wrap-up and go back (he was very close to us), will the company reimburse us for the expenses of changin tickets, so that we can be present to his burial?",
+      "outcome": "Yes",
+      "outcome_justification": "Se un familiare decide di organizzare il funerale, la sepoltura o la cremazione nel luogo del decesso, la Compagnia rimborserà le relative spese nel limite di quanto avrebbe sostenuto per il rientro della salma.",
+      "payment_justification": null
+    },
+    {
+      "request_id": "23",
+      "question": "We are traveling in India, a massive flood has blocked us here, and we are supposed to take our flight back home tomorrow. Realistically, we won't be able to move before a couple of days. Will the insurance assume the additional costs? ",
+      "outcome": "No - condition(s) not met",
+      "outcome_justification": "ASSISTENZA IN VIAGGIO",
+      "payment_justification": null
+    },
+    {
+      "request_id": "24",
+      "question": "(Cruise) My hausbad had a stroke during the cruise, we are now in Athens, in the hospital, but the ship has gone. Will you reimburse us and pay for the hospital and for the flights back to Rome?",
+      "outcome": "Yes",
+      "outcome_justification": "SPESE MEDICHE Prestazioni Limite di copertura Scoperto Spese mediche € 500.000 Nessuno Spese dentistiche di emergenza € 250 Nessuno Spese mediche al rientro per € 1.000 Nessuno massimo 30 giorni ASSISTENZA IN VIAGGIO",
+      "payment_justification": "SPESE MEDICHE Prestazioni Limite di copertura Scoperto Spese mediche € 500.000 Nessuno Spese dentistiche di emergenza € 250 Nessuno Spese mediche al rientro per € 1.000 Nessuno massimo 30 giorni ASSISTENZA IN VIAGGIO"
+    },
+    {
+      "request_id": "25",
+      "question": "(Cruise) We are traveling in the Caraibe, but our neighbour called that there's a water leak in our appartment. We can't do much, but as we will be back in 5 days, it might be too late. Can you send someone?",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
+      "payment_justification": ""
+    },
+    {
+      "request_id": "26",
+      "question": "(Cruise) We are supposed to leave in two days, but my son broke his wrist playing basketball. We wish to move our reservation of one month, will you help us with the additional costs?",
+      "outcome": "No - condition(s) not met",
+      "outcome_justification": "Rimpatrio per motivi medici Costo effettivo Nessuno",
+      "payment_justification": null
+    },
+    {
+      "request_id": "27",
+      "question": "We are a group of 5 leaving in 2 days. One of us had a bad accident and won't make it. With us, we have his girlfriend that doesn't wont to come without him. Will the company refund the travel expenses for both of them? ",
+      "outcome": "Yes",
+      "outcome_justification": "Se un familiare decide di organizzare il funerale, la sepoltura o la cremazione nel luogo del decesso, la Compagnia rimborserà le relative spese nel limite di quanto avrebbe sostenuto per il rientro della salma.",
+      "payment_justification": null
+    },
+    {
+      "request_id": "28",
+      "question": "We are a group of 5 leaving in 2 days. One of us had a bad accident and won't make it. Without him, we don't feel like leaving. Will the company refund the travel expenses for all of us? ",
+      "outcome": "No - condition(s) not met",
+      "outcome_justification": "In caso di attivazione della copertura per uno dei seguenti motivi, la Compagnia prende a carico i costi consuetudinari da te sostenuti per le suddette cure mediche e rimborsa i costi sostenuti per le cure odontoiatriche urgenti, fino all'importo massimo indicato per la copertura spese mediche",
+      "payment_justification": null
+    },
+    {
+      "request_id": "29",
+      "question": "I am at the airport in New York with my family and my bag was shipped to Dubai. Do I have the right to a refund from the insurance? ",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
+      "payment_justification": ""
+    },
+    {
+      "request_id": "30",
+      "question": "We are a group of 20, we have just landed in Sao Paulo, but one of our team didn't recieve the bag at the airport. Does he has the right to a reimbursement?",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
+      "payment_justification": ""
+    },
+    {
+      "request_id": "31",
+      "question": "We are a group of 20, we have just landed in Sao Paulo, but 4 of our team (two couples of coleauges) have to leave back due to urgent matters at work. Will the company reimburse their trip?",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
+      "payment_justification": ""
+    },
+    {
+      "request_id": "32",
+      "question": "We are a group of 20, we have just landed in Sao Paulo, but 4 of our team (two couples of coleauges) have to leave back due to the death of the uncle of one of them. Will the insurance reimburse their trip?",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
+      "payment_justification": ""
+    },
+    {
+      "request_id": "33",
+      "question": "I am traveling to Japan and had a stop in Dubai with my family of 4. Our flight arrived in Dubai 4 hours later. Although we didn't miss the conicidence with our flight to Tokyo, will the insurance contribute for the discomfort?",
+      "outcome": "No - condition(s) not met",
+      "outcome_justification": "In caso di ritardo del volo di coincidenza, l’Assicurato ha diritto a un rimborso per il disagio subito, pari a € 25,00 per ogni ora di ritardo, fino a un massimo di € 100,00 per persona, per ogni volo di coincidenza, a condizione che il volo di coincidenza sia stato effettivamente perso.",
+      "payment_justification": "In caso di ritardo del volo di coincidenza, l’Assicurato ha diritto a un rimborso per il disagio subito, pari a € 25,00 per ogni ora di ritardo, fino a un massimo di € 100,00 per persona, per ogni volo di coincidenza, a condizione che il volo di coincidenza sia stato effettivamente perso."
+    },
+    {
+      "request_id": "34",
+      "question": "We had a car accident in the USA, and a person in the other car broke a leg. The other car claims that it is our fault. Will the company cover the expenses?",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
+      "payment_justification": ""
+    },
+    {
+      "request_id": "35",
+      "question": "We are in the mountains and I tried to do paragliding. When landing I had an issue with my right ankle and had to go to the hospital. Will the insurance reimburse me?",
+      "outcome": "",
+      "outcome_justification": "",
+      "payment_justification": ""
+    },
+    {
+      "request_id": "36",
+      "question": "We were sailing in the Caribean, and my daughter had a hit of boom on her head, we had to bring her to the hospital in St Lucia. The hospital is private and seems expensive, will the insurance reimburse the expenses?",
+      "outcome": "Yes",
+      "outcome_justification": "La Compagnia, con il parere del medico locale, identificherà l'ospedale o un altro centro medico meglio attrezzato per la patologia sofferta, organizzerà il tuo trasporto e ne sosterrà i relativi costi;",
+      "payment_justification": "Spese mediche € 500.000 Nessuno"
+    },
+    {
+      "request_id": "37",
+      "question": "I was in Jerez de la Fronteira doing Kyte surf, I have lost control and ended up on a large buoy. I am now at the hospital. Will the insurance cover the expenses? ",
+      "outcome": "Yes",
+      "outcome_justification": "In caso di malattia o infortunio, compresa la diagnosi di una malattia epidemica o pandemica come il COVID-19, durante il viaggio, la Compagnia rimborserà i costi sostenuti per il trasporto di emergenza dal luogo dell'evento allo studio di un medico o a una struttura sanitaria nelle vicinanze.",
+      "payment_justification": "Spese Mediche € 500.000"
+    },
+    {
+      "request_id": "38",
+      "question": "We have reserved for our family of 6, but my hausband has an awful backpain, he has already gone through surgery for this. We won't be able to leave. Will the company reimburse the trip for the 6 of us?",
+      "outcome": "No - condition(s) not met",
+      "outcome_justification": "In caso di attivazione della copertura per uno dei seguenti motivi, la Compagnia prende a carico i costi consuetudinari da te sostenuti per le suddette cure mediche e rimborsa i costi sostenuti per le cure odontoiatriche urgenti, fino all'importo massimo indicato per la copertura spese mediche",
+      "payment_justification": null
+    },
+    {
+      "request_id": "39",
+      "question": "We have reserved for our family of 6, but my hausband has an awful backpain. We won't be able to leave. Will the company reimburse the trip for the 6 of us?",
+      "outcome": "No - condition(s) not met",
+      "outcome_justification": "In caso di attivazione della copertura per uno dei seguenti motivi, la Compagnia prende a carico i costi consuetudinari da te sostenuti per le suddette cure mediche e rimborsa i costi sostenuti per le cure odontoiatriche urgenti, fino all'importo massimo indicato per la copertura spese mediche",
+      "payment_justification": null
+    },
+    {
+      "request_id": "40",
+      "question": "I am escalading the Everest and my Sherpa and they have dropped my baggage by in a deep, where it cant' be retrieved. Can you reimburse it?",
+      "outcome": "No - condition(s) not met",
+      "outcome_justification": "e. Sport di arrampicata o free climbing; f. Qualsiasi attività ad alta quota;",
+      "payment_justification": null
+    },
+    {
+      "request_id": "41",
+      "question": "Sport team of 18 football players. We booked a trip to Girona for our international tournement. Two of the players won't come because they had an accident playing last week (5 days ago). Can you reimburse their flghts and hotel rooms?",
+      "outcome": "No - condition(s) not met",
+      "outcome_justification": "La Compagnia, con il parere del medico locale, identificherà l'ospedale o un altro centro medico meglio attrezzato per la patologia sofferta, organizzerà il tuo trasporto e ne sosterrà i relativi costi.",
+      "payment_justification": null
+    }
+  ]
+}
