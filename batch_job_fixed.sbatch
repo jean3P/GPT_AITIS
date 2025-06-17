@@ -3,7 +3,7 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=16G
-#SBATCH --time=02:00:00
+#SBATCH --time=24:00:00
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:a40_48gb:1
 #SBATCH --error=logs/phi4_rag_%j-err.log
@@ -123,14 +123,17 @@ df -h $HF_HUB_CACHE
 echo "=== STARTING RAG PIPELINE at $(date) ==="
 
 # Fix the model name - remove extra quotes!
-MODEL_NAME="Qwen/Qwen2.5-7B"
-QUESTIONS="1,2,3,4,5,6,7,8,12,13,16,17,18,10,19,26,9,11,14,39"
+#MODEL_NAME="Qwen/Qwen2.5-7B"
+MODEL_NAME="microsoft/phi-4"
+#QUESTIONS="1,2,3,4,5,6,7,8,12,13,16,17,18,10,19,26,9,11,14,39"
 #QUESTIONS="7,16"
-POLICY_ID="20"
+#POLICY_ID="20"
 
 
 # Store the command for easier modification
-RAG_COMMAND="$VENV_PYTHON src/main.py --model hf --model-name $MODEL_NAME --prompt precise_v2_qwen --k 3 --log-level DEBUG --questions $QUESTIONS --policy-id $POLICY_ID --batch"
+RAG_COMMAND="$VENV_PYTHON src/main.py --model hf --model-name $MODEL_NAME --prompt precise_v2_1 --k 3 --log-level DEBUG --batch"
+#RAG_COMMAND="$VENV_PYTHON src/main.py --model hf --model-name $MODEL_NAME --prompt precise_v2 --k 3 --log-level DEBUG --questions $QUESTIONS --batch"
+#RAG_COMMAND="$VENV_PYTHON src/main.py --model hf --model-name $MODEL_NAME --prompt precise_v2_qwen --k 3 --log-level DEBUG --questions $QUESTIONS --policy-id $POLICY_ID --batch"
 #RAG_COMMAND="$VENV_PYTHON src/main.py --model hf --model-name $MODEL_NAME --prompt precise_v2_qwen --k 3 --log-level DEBUG --questions $QUESTIONS --batch"
 
 echo "Executing: $RAG_COMMAND"

@@ -66,7 +66,7 @@ MODEL_CONFIGS = {
         "device_map": "auto",
         "trust_remote_code": True,
         "low_cpu_mem_usage": True,
-        "max_new_tokens": 2048,
+        "max_new_tokens": 4096,
         "temperature": 0.1,
         "do_sample": False,
         "repetition_penalty": 1.05,
@@ -82,7 +82,7 @@ MODEL_CONFIGS = {
         # Generation parameters (essential for speed)
         "max_new_tokens": 1024,
         # "temperature": 0.0,
-        "do_sample": False,
+        "do_sample": True,
         "repetition_penalty": 1.0,
         "pad_token_id": None
     },

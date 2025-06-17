@@ -5,11 +5,11 @@ from models.hf_model import HuggingFaceModelClient
 from models.openai_model import OpenAIModelClient
 from models.qwen_model import QwenModelClient
 from models.shared_client import SharedModelClient
-from utils import list_pdf_paths
+from utils import list_policy_paths
 
 
 def get_model_client(provider: str, model_name: str, sys_prompt: str):
-    file_paths = list_pdf_paths(DOCUMENT_DIR)
+    file_paths = list_policy_paths(DOCUMENT_DIR)
     if provider == "openai":
         return OpenAIModelClient(model_name, sys_prompt, file_paths)
     elif provider in ["hf", "qwen"]:
