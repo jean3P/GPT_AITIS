@@ -16,7 +16,9 @@ declare -A MODELS
 MODELS["phi-4"]="microsoft/phi-4"
 MODELS["qwen2.5-32b"]="Qwen/Qwen2.5-32B"
 MODELS["qwen2.5-7b"]="Qwen/Qwen2.5-7B"
-#MODELS["qwen2.5-14b"]="Qwen/Qwen2.5-14B"
+MODELS["qwen2.5-14b"]="Qwen/Qwen2.5-14B"
+MODELS["qwen3-14b"]="Qwen/Qwen3-14B"
+MODELS["qwen3-32b"]="Qwen/Qwen3-32B"
 # Add more models here as needed
 # MODELS["llama3.1-8b"]="meta-llama/Meta-Llama-3.1-8B"
 # MODELS["mistral-7b"]="mistralai/Mistral-7B-v0.1"

@@ -1,25 +1,25 @@
 {
-  "policy_id": "24",
+  "policy_id": "19",
   "questions": [
     {
       "request_id": "1",
       "question": "I am at the airport, and my bag has been derouted. Can I obtain a reimbursement?",
-      "outcome": "Yes",
-      "outcome_justification": "In the event that the air carrier fails to deliver the Insured's Baggage to the airport of arrival resulting from the ticket, the Company shall indemnify the Insured for the fixed and predetermined amount stated in the policy certificate and established at the time of purchase of the policy.",
-      "payment_justification": "The Insured Person may choose from the following reimbursement options the amount payable to him/her in the event of the materialization of an indemnifiable claim. The Indemnification option selected and operative will be only the one resulting in the policy certificate according to the following: Indemnity amount for baggage loss Option 1 € 150,00 Option 2 € 350,00 Option 3 € 500,00"
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
+      "payment_justification": null
     },
     {
       "request_id": "2",
       "question": "I am traveling with my family, and all our bags were stolen from our rented car. Will the insurance reimburse the value of what was stolen?",
-      "outcome": "No - condition(s) not met",
-      "outcome_justification": "In the event that the air carrier fails to deliver the Insured's Baggage to the airport of arrival resulting from the ticket, the Company shall indemnify the Insured",
-      "payment_justification": "The Insured's Hand Baggage and all baggage not delivered to the Carrier at the time of Check-in are also excluded.[AITIS-DELIMITER]CHAPTER 1 - COMPENSATION FOR NON-DELIVERY OF"
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
+      "payment_justification": null
     },
     {
       "request_id": "3",
       "question": "My precious handbag was stolen while I was in a bar in Paris, along with my mobile phone and documents. Can you help me with the costs I’ll have to bear?",
-      "outcome": "No - condition(s) not met",
-      "outcome_justification": "The Insured's Hand Baggage and all baggage not delivered to the Carrier at the time of Check-in are also excluded.",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
       "payment_justification": null
     },
     {
@@ -88,7 +88,7 @@
     {
       "request_id": "13",
       "question": "We had a car accident in the USA, and my husband broke his leg. We are now in the hospital. We gave the insurance details at check-in—up to what amount will you cover?",
-      "outcome": "Maybe",
+      "outcome": "No - Unrelated event",
       "outcome_justification": "",
       "payment_justification": null
     },
@@ -109,22 +109,22 @@
     {
       "request_id": "16",
       "question": "Our flight was delayed in Dubai, and we missed our connection to Tokyo. The next flight is in 10 hours. Will you reimburse us the lounge or a day hotel?",
-      "outcome": "No - Unrelated event",
-      "outcome_justification": "",
+      "outcome": "No - condition(s) not met",
+      "outcome_justification": "Indemnity amount for individual flight delay Option 1 € 150,00 Option 2 € 250,00 Option 3 € 300,0",
       "payment_justification": null
     },
     {
       "request_id": "17",
       "question": "We were supposed to leave for Toronto with American Airlines today, but our flight was canceled. We will need to take the next available flight. Will you cover an upgrade if only more expensive tickets are available?",
-      "outcome": "No - Unrelated event",
-      "outcome_justification": "",
+      "outcome": "No - condition(s) not met",
+      "outcome_justification": "Flight cancellations and/or cancellations (regardless of the reasons from which they originate) are not considered delays",
       "payment_justification": null
     },
     {
       "request_id": "18",
       "question": "My flight landed 3 hours late in São Paulo. Will you reimburse us?",
-      "outcome": "No - Unrelated event",
-      "outcome_justification": "",
+      "outcome": "No - condition(s) not met",
+      "outcome_justification": "n the event of a delay of the insured flight (identified by ETKT), which lasts more than 4 hours with respect to the arrival time stipulated in the flight plan and resulting from the ticket, the Company shall indemnify the Insured against the amount shown on the policy certificate and established at the time of purchase of the policy",
       "payment_justification": null
     },
     {
@@ -200,16 +200,16 @@
     {
       "request_id": "29",
       "question": "I am at the airport in New York with my family, and my bag was shipped to Dubai. Do I have the right to a refund from the insurance?",
-      "outcome": "Yes",
-      "outcome_justification": "In the event that the air carrier fails to deliver the Insured's Baggage to the airport of arrival resulting from the ticket, the Company shall indemnify the Insured for the fixed and predetermined amount stated in the policy certificate and established at the time of purchase of the policy",
-      "payment_justification": "ARTICLE 1.2 - INDEMNIFICATION OPTIONS. The Insured Person may choose from the following reimbursement options the amount payable to him/her in the event of the materialization of an indemnifiable claim. The Indemnification option selected and operative will be only the one resulting in the policy certificate according to the following: Indemnity amount for baggage loss Option 1 € 150,00 Option 2 € 350,00 Option 3 € 500,00"
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "the insured flight at destination, as determined by the air carrier when issuing the ticket; Insured",
+      "payment_justification": null
     },
     {
       "request_id": "30",
       "question": "We are a group of 20 and just landed in São Paulo, but one of our team members did not receive his bag at the airport. Does he have the right to a reimbursement?",
-      "outcome": "Yes",
-      "outcome_justification": "ARTICLE 1.1 - OBJECT OF INSURANCE In the event that the air carrier fails to deliver the Insured's Baggage to the airport of arrival resulting from the ticket, the Company shall indemnify the Insured for the fixed and predetermined amount stated in the policy certificate and established at the time of purchase of the policy. The Baggage must have been duly checked in by the Insured and delivered to the Check-in Desk of the air carrier for boarding in the hold.",
-      "payment_justification": "ARTICLE 1.2 - INDEMNIFICATION OPTIONS. The Insured Person may choose from the following reimbursement options the amount payable to him/her in the event of the materialization of an indemnifiable claim. The Indemnification option selected and operative will be only the one resulting in the policy certificate according to the following: Indemnity amount for baggage loss Option 1 € 150,00 Option 2 € 350,00 Option 3 € 500,00"
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
+      "payment_justification": null
     },
     {
       "request_id": "31",
@@ -228,9 +228,9 @@
     {
       "request_id": "33",
       "question": "I am traveling to Japan and had a layover in Dubai with my family of 4. Our flight to Dubai arrived 4 hours late. Although we didn’t miss our connection to Tokyo, will the insurance compensate us for the inconvenience?",
-      "outcome": "No - Unrelated event",
-      "outcome_justification": "",
-      "payment_justification": null
+      "outcome": "Yes",
+      "outcome_justification": "In the event of a delay of the insured flight (identified by ETKT), which lasts more than 4 hours with respect to the arrival time stipulated in the flight plan and resulting from the ticket, the Company shall indemnify the Insured against the amount shown on the policy certificate and established at the time of purchase of the policy.",
+      "payment_justification": "ndemnity amount for individual flight delay Option 1 € 150,00 Option 2 € 250,00 Option 3 € 300,00"
     },
     {
       "request_id": "34",
@@ -277,8 +277,8 @@
     {
       "request_id": "40",
       "question": "I am climbing Mount Everest, and my Sherpa accidentally dropped my baggage into a deep ravine, making it unretrievable. Can you reimburse it?",
-      "outcome": "No - condition(s) not met",
-      "outcome_justification": "ARTICLE 1.1 - OBJECT OF INSURANCE In the event that the air carrier fails to deliver the Insured's Baggage to the airport of arrival resulting from the ticket, the Company shall indemnify the Insured for the fixed and predetermined amount stated in the policy certificate and established at the time of purchase of the policy. The Baggage must have been duly checked in by the Insured and delivered to the Check-in Desk of the air carrier for boarding in the hold",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
       "payment_justification": null
     },
     {

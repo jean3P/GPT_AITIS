@@ -209,106 +209,6 @@
       "policy_request_complexity": "EASY",
       "policy_request_status": "APPROVED",
       "request": {
-        "content": "I am at the airport, and my bag has been derouted. Can I obtain a reimbursement?",
-        "request_id": 1
-      },
-      "responses": [
-        {
-          "comment": "",
-          "created_at": "2025-03-14T10:30:19.514086",
-          "created_by_user": {
-            "user_id": 2,
-            "username": "Script"
-          },
-          "currency": {
-            "currency_id": 1,
-            "iso_code": "XXX",
-            "name": "No/Unknown currency"
-          },
-          "documents": [
-            {
-              "document_id": 1,
-              "document_involved_person": false
-            },
-            {
-              "document_id": 21,
-              "document_involved_person": false
-            }
-          ],
-          "payout": 0,
-          "payout_justification": "Insured Person may choose from the following reimbursement options the amount payable to him/her in the event of the materialization of an indemnifiable claim. The Indemnification option selected and operative will be only the one resulting in the policy certificate according to the[AITIS-DELIMITER]CHAPTER 1 - COMPENSATION FOR NON-DELIVERY OF",
-          "response_document_list_requirement_status": "REQUIRED",
-          "response_document_list_requirement_status_confidence_level": "SURE",
-          "response_id": 944,
-          "response_outcome": "APPROVED",
-          "response_outcome_confidence_level": "SURE",
-          "response_outcome_explanation": "",
-          "response_outcome_justification": "In the event that the air carrier fails to deliver the Insured's Baggage to the airport of arrival resulting from the ticket, the Company shall indemnify the Insured for the fixed and predetermined amount stated in the policy certificate and established at the time of purchase of the policy.[AITIS-DELIMITER]CHAPTER 1 - COMPENSATION FOR NON-DELIVERY OF",
-          "response_payout_confidence_level": "SURE",
-          "response_time": 0,
-          "updated_at": "2025-03-28T13:58:23.555492",
-          "updated_by_user": {
-            "user_id": 2,
-            "username": "Script"
-          }
-        },
-        {
-          "comment": "",
-          "created_at": "2025-04-04T12:12:14.120368",
-          "created_by_user": {
-            "user_id": 5,
-            "username": "Saverio P."
-          },
-          "currency": {
-            "currency_id": 1,
-            "iso_code": "XXX",
-            "name": "No/Unknown currency"
-          },
-          "documents": [
-            {
-              "document_id": 1,
-              "document_involved_person": false
-            },
-            {
-              "document_id": 21,
-              "document_involved_person": false
-            }
-          ],
-          "payout": 0,
-          "payout_justification": "The Insured Person may choose from the following reimbursement options the amount payable to him/her in the event of the materialization of an indemnifiable claim. The Indemnification option selected and operative will be only the one resulting in the policy certificate according to the following: Indemnity amount for baggage loss Option 1 € 150,00 Option 2 € 350,00 Option 3 € 500,00",
-          "response_document_list_requirement_status": "REQUIRED",
-          "response_document_list_requirement_status_confidence_level": "SURE",
-          "response_id": 1067,
-          "response_outcome": "APPROVED",
-          "response_outcome_confidence_level": "SURE",
-          "response_outcome_explanation": "",
-          "response_outcome_justification": "In the event that the air carrier fails to deliver the Insured's Baggage to the airport of arrival resulting from the ticket, the Company shall indemnify the Insured for the fixed and predetermined amount stated in the policy certificate and established at the time of purchase of the policy.",
-          "response_payout_confidence_level": "SURE",
-          "response_time": 0,
-          "updated_at": "2025-04-04T12:12:14.120368",
-          "updated_by_user": {
-            "user_id": 5,
-            "username": "Saverio P."
-          }
-        }
-      ],
-      "to_be_validated": true,
-      "updated_at": "2025-04-04T12:12:14.120368",
-      "updated_by_user": {
-        "user_id": 5,
-        "username": "Saverio P."
-      },
-      "version": 2
-    },
-    {
-      "created_at": "2025-03-14T10:29:21.414766",
-      "created_by_user": {
-        "user_id": 2,
-        "username": "Script"
-      },
-      "policy_request_complexity": "EASY",
-      "policy_request_status": "APPROVED",
-      "request": {
         "content": "We are traveling in India, and a massive flood has blocked us here. We are supposed to fly home tomorrow, but realistically, we won’t be able to leave for a couple of days. Will the insurance cover the additional costs?",
         "request_id": 23
       },
@@ -575,12 +475,12 @@
         }
       ],
       "to_be_validated": true,
-      "updated_at": "2025-04-04T12:16:27.090669",
+      "updated_at": "2025-05-26T08:54:00.965043",
       "updated_by_user": {
         "user_id": 5,
         "username": "Saverio P."
       },
-      "version": 2
+      "version": 3
     },
     {
       "created_at": "2025-03-14T10:29:21.414766",
@@ -873,12 +773,12 @@
         }
       ],
       "to_be_validated": true,
-      "updated_at": "2025-04-10T13:02:15.778316",
+      "updated_at": "2025-05-26T08:54:53.079768",
       "updated_by_user": {
         "user_id": 5,
         "username": "Saverio P."
       },
-      "version": 2
+      "version": 3
     },
     {
       "created_at": "2025-03-14T10:29:21.414766",
@@ -1162,12 +1062,12 @@
         }
       ],
       "to_be_validated": true,
-      "updated_at": "2025-04-10T13:03:12.589525",
+      "updated_at": "2025-05-26T08:55:30.930330",
       "updated_by_user": {
         "user_id": 5,
         "username": "Saverio P."
       },
-      "version": 2
+      "version": 3
     },
     {
       "created_at": "2025-03-14T10:29:21.414766",
@@ -3981,6 +3881,106 @@
         "username": "Anna S-B."
       },
       "version": 1
+    },
+    {
+      "created_at": "2025-03-14T10:29:21.414766",
+      "created_by_user": {
+        "user_id": 2,
+        "username": "Script"
+      },
+      "policy_request_complexity": "EASY",
+      "policy_request_status": "APPROVED",
+      "request": {
+        "content": "I am at the airport, and my bag has been derouted. Can I obtain a reimbursement?",
+        "request_id": 1
+      },
+      "responses": [
+        {
+          "comment": "",
+          "created_at": "2025-03-14T10:30:19.514086",
+          "created_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 1,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 21,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "Insured Person may choose from the following reimbursement options the amount payable to him/her in the event of the materialization of an indemnifiable claim. The Indemnification option selected and operative will be only the one resulting in the policy certificate according to the[AITIS-DELIMITER]CHAPTER 1 - COMPENSATION FOR NON-DELIVERY OF",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 944,
+          "response_outcome": "APPROVED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "In the event that the air carrier fails to deliver the Insured's Baggage to the airport of arrival resulting from the ticket, the Company shall indemnify the Insured for the fixed and predetermined amount stated in the policy certificate and established at the time of purchase of the policy.[AITIS-DELIMITER]CHAPTER 1 - COMPENSATION FOR NON-DELIVERY OF",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-03-28T13:58:23.555492",
+          "updated_by_user": {
+            "user_id": 2,
+            "username": "Script"
+          }
+        },
+        {
+          "comment": "",
+          "created_at": "2025-04-04T12:12:14.120368",
+          "created_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          },
+          "currency": {
+            "currency_id": 1,
+            "iso_code": "XXX",
+            "name": "No/Unknown currency"
+          },
+          "documents": [
+            {
+              "document_id": 1,
+              "document_involved_person": false
+            },
+            {
+              "document_id": 21,
+              "document_involved_person": false
+            }
+          ],
+          "payout": 0,
+          "payout_justification": "The Insured Person may choose from the following reimbursement options the amount payable to him/her in the event of the materialization of an indemnifiable claim. The Indemnification option selected and operative will be only the one resulting in the policy certificate according to the following: Indemnity amount for baggage loss Option 1 € 150,00 Option 2 € 350,00 Option 3 € 500,00",
+          "response_document_list_requirement_status": "REQUIRED",
+          "response_document_list_requirement_status_confidence_level": "SURE",
+          "response_id": 1067,
+          "response_outcome": "APPROVED",
+          "response_outcome_confidence_level": "SURE",
+          "response_outcome_explanation": "",
+          "response_outcome_justification": "In the event that the air carrier fails to deliver the Insured's Baggage to the airport of arrival resulting from the ticket, the Company shall indemnify the Insured for the fixed and predetermined amount stated in the policy certificate and established at the time of purchase of the policy.",
+          "response_payout_confidence_level": "SURE",
+          "response_time": 0,
+          "updated_at": "2025-04-04T12:12:14.120368",
+          "updated_by_user": {
+            "user_id": 5,
+            "username": "Saverio P."
+          }
+        }
+      ],
+      "to_be_validated": true,
+      "updated_at": "2025-05-26T08:53:14.465527",
+      "updated_by_user": {
+        "user_id": 5,
+        "username": "Saverio P."
+      },
+      "version": 4
     }
   ],
   "title": "Nobis - Baggage loss EN"

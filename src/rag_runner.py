@@ -7,7 +7,7 @@ from config import *
 from models.factory import get_model_client, get_shared_relevance_client
 from utils import read_questions, list_policy_paths
 from models.vector_store import LocalVectorStore
-from output_formatter import extract_policy_id, format_results_as_json, save_policy_json
+from output_formatter import extract_policy_id, format_results_as_json, save_policy_json, create_model_specific_output_dir
 from prompts.insurance_prompts import InsurancePrompts
 
 logger = logging.getLogger(__name__)
@@ -89,8 +89,9 @@ def run_rag(
     # Create output directory for JSON files
     if output_dir is None:
         output_dir = os.path.join(base_dir, JSON_PATH)
-    os.makedirs(output_dir, exist_ok=True)
-    logger.info(f"JSON output will be saved to: {output_dir}")
+
+    model_output_dir = create_model_specific_output_dir(output_dir, model_name)
+    logger.info(f"JSON output will be saved to: {model_output_dir}")
 
     # List all policy PDFs
     pdf_paths = list_policy_paths(DOCUMENT_DIR)
@@ -138,7 +139,6 @@ def run_rag(
         # Initialize the model client
         model_client = get_model_client(model_provider, model_name, sys_prompt)
 
-        # Initialize relevance checking client if filtering is enabled
         # Initialize relevance checking client if filtering is enabled
         relevance_client = None
         if filter_irrelevant:
@@ -306,8 +306,9 @@ def run_batch_rag(
     # Create output directory for JSON files
     if output_dir is None:
         output_dir = os.path.join(base_dir, "resources/results/json_output")
-    os.makedirs(output_dir, exist_ok=True)
-    logger.info(f"JSON output will be saved to: {output_dir}")
+
+    model_output_dir = create_model_specific_output_dir(output_dir, model_name)
+    logger.info(f"JSON output will be saved to: {model_output_dir}")
 
     # Initialize and populate the vector store with all PDFs
     context_provider = None
@@ -408,6 +409,6 @@ def run_batch_rag(
     # Format and save results for each policy
     for policy_id, data in policy_results.items():
         policy_json = format_results_as_json(data["policy_path"], data["results"])
-        save_policy_json(policy_json, output_dir)
+        save_policy_json(policy_json, output_dir, model_name)
 
     logger.info("✅ RAG run completed successfully.")
