@@ -177,7 +177,7 @@ class HuggingFaceModelClient(BaseModelClient):
         """
         Build the full prompt for Phi-4 using the original simple format that was working.
         """
-        prompt_final = "\nThen the json Solution is:\n\n"
+        prompt_final = "\nThen the JSON Solution is:\n\n"
 
         if persona_text:
             full_prompt = f"{self.base_prompt}\n\n{context_text}\n\nQuestion: {question}\n\n{persona_text}\n\n{prompt_final}"
@@ -197,11 +197,11 @@ class HuggingFaceModelClient(BaseModelClient):
             user_content = f"{context_text}\n\nQuestion: {question}"
 
         # Use Qwen chat template format - DO NOT repeat JSON schema in user message
-        system_message = f"<|im_start|>system\n{self.base_prompt}<|im_end|>\n"
-        user_message = f"<|im_start|>user\n{user_content}<|im_end|>\n"
-        assistant_start = "<|im_start|>assistant\n"
+        # system_message = f"<|im_start|>system\n{self.base_prompt}<|im_end|>\n"
+        user_message = f"{user_content}\n"
+        # assistant_start = "<|im_start|>assistant\n"
 
-        full_prompt = system_message + user_message + assistant_start
+        full_prompt = user_message
         logger.debug(f"Qwen chat template prompt: {full_prompt}")
         return full_prompt
 

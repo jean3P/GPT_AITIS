@@ -1,5 +1,4 @@
 # src/models/json_utils/extractors.py
-
 """
 JSON extraction utilities.
 Functions for extracting valid JSON from model outputs.
@@ -20,26 +19,90 @@ class JSONExtractor:
 
     def extract_json(self, text: str) -> Optional[Dict[str, Any]]:
         """
-        Extract JSON from a text string using multiple methods.
-
-        Args:
-            text: The text to extract JSON from
-
-        Returns:
-            Extracted JSON dictionary or None if extraction failed
+        Extract JSON from text, handling Qwen thinking tags and malformed JSON.
         """
+        # Remove thinking tags that interfere with JSON extraction
+        text = re.sub(r'<think>.*?</think>', '', text, flags=re.DOTALL)
+
+        # Remove any text before the first { and after the last }
+        # This helps with models that add explanatory text
+        first_brace = text.find('{')
+        last_brace = text.rfind('}')
+
+        if first_brace != -1 and last_brace != -1 and last_brace > first_brace:
+            text = text[first_brace:last_brace + 1]
+
         # QUICK FIX: Replace escaped quotes in policy text with single quotes
         text = re.sub(r'\\"([^"]*)\\"', r"'\1'", text)
+
         # Try multiple extraction methods
-        return self._try_all_json_extraction_methods(text)
+        extracted = self._try_all_json_extraction_methods(text)
+        if extracted:
+            normalized = self._normalize_json_fields(extracted)
+            logger.info(f"Successfully extracted and normalized JSON: {normalized}")
+            return normalized
+        return None
+
+    def _normalize_json_fields(self, json_obj: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Enhanced normalization to handle Qwen model variations.
+        """
+        if "answer" in json_obj and isinstance(json_obj["answer"], dict):
+            answer = json_obj["answer"]
+            normalized_answer = {}
+
+            # Enhanced eligibility field normalization
+            eligibility_value = ""
+            eligibility_fields = [
+                "eligibility", "elgibility", "eligiblity", "eligibilty",
+                "eligibilaty", "eligiblity", "eligibilit", "eligibilyt",
+                "eligible"  # Add this common Qwen variant
+            ]
+            for field in eligibility_fields:
+                if field in answer:
+                    eligibility_value = answer[field]
+                    break
+            normalized_answer["eligibility"] = eligibility_value
+
+            # Enhanced eligibility_policy field normalization
+            policy_value = ""
+            policy_fields = [
+                "eligibility_policy", "elgibility_policy", "eligibility_text",
+                "eligiblity_policy", "eligibilty_policy", "policy_text",
+                "eligible_policy",  # Add this common Qwen variant
+                "description", "text", "justification"
+            ]
+            for field in policy_fields:
+                if field in answer:
+                    value = answer[field]
+                    if isinstance(value, list):
+                        policy_value = value[0] if value else ""
+                    else:
+                        policy_value = str(value) if value else ""
+                    break
+            normalized_answer["eligibility_policy"] = policy_value
+
+            # Amount field normalization (unchanged)
+            amount_value = None
+            amount_fields = [
+                "amount_policy", "amount_policey", "amount_polcy",
+                "amount_policy_line", "coverage", "coverage_amount", "amount", "payment"
+            ]
+            for field in amount_fields:
+                if field in answer:
+                    amount_value = answer[field]
+                    break
+            normalized_answer["amount_policy"] = amount_value
+
+            json_obj["answer"] = normalized_answer
+
+        return json_obj
 
     def _try_all_json_extraction_methods(self, generated: str) -> Optional[Dict[str, Any]]:
         """
         Try multiple JSON extraction methods in sequence.
-
         Args:
             generated: The generated text to extract JSON from
-
         Returns:
             Extracted JSON or None if all methods failed
         """
@@ -66,16 +129,13 @@ class JSONExtractor:
     def _extract_json_from_solution_block(self, text: str) -> Optional[Dict[str, Any]]:
         """
         Extract JSON from Phi's "Solution 1" block format.
-
         Args:
             text: Generated text containing the solution block
-
         Returns:
             Parsed JSON dictionary or None if not found
         """
         solution_pattern = r'## Solution 1:.*?```json\s*(.*?)\s*```'
         match = re.search(solution_pattern, text, re.DOTALL)
-
         if match:
             json_str = match.group(1).strip()
             try:
@@ -84,44 +144,36 @@ class JSONExtractor:
                 return parsed
             except json.JSONDecodeError as e:
                 logger.warning(f"Found solution block but JSON is invalid: {e}")
-
         return None
 
     def _extract_json_from_code_block(self, text: str) -> Optional[Dict[str, Any]]:
         """
         Extract JSON from markdown code blocks.
-
         Args:
             text: Generated text that might contain code blocks
-
         Returns:
             Parsed JSON dictionary or None if not found
         """
         code_block_pattern = r'```(?:json)?\s*(.*?)\s*```'
         matches = re.findall(code_block_pattern, text, re.DOTALL)
-
         for block in matches:
             try:
                 parsed = json.loads(block.strip())
-                if self._is_valid_answer_json(parsed):
+                if self._is_valid_answer_json_flexible(parsed):
                     return parsed
             except json.JSONDecodeError:
                 continue
-
         return None
 
     def _extract_json_from_text(self, text: str) -> Optional[Dict[str, Any]]:
         """
         Extract valid JSON from text that might contain additional content.
-
         Args:
             text: The generated text that should contain JSON
-
         Returns:
             The parsed JSON dictionary or None if not found
         """
         json_candidates = self._extract_json_candidate_strings(text)
-
         if not json_candidates:
             logger.warning("No JSON-like patterns found in the text")
             return None
@@ -136,46 +188,49 @@ class JSONExtractor:
 
     def _extract_json_candidate_strings(self, text: str) -> List[str]:
         """
-        Extract potential JSON strings from text.
-
-        Args:
-            text: The text to extract JSON candidates from
-
-        Returns:
-            List of potential JSON strings, sorted by length (descending)
+        Enhanced JSON candidate extraction.
         """
         if not text:
             logger.warning("Empty text provided for JSON extraction")
             return []
 
-        # Look for complex JSON pattern
-        pattern = r'\{(?:[^{}]|(?:\{(?:[^{}]|(?:\{[^{}]*\}))*\}))*\}'
-        matches = re.findall(pattern, text)
+        # First, try to find JSON objects with flexible key matching
+        patterns = [
+            # Standard JSON pattern
+            r'\{(?:[^{}]|(?:\{(?:[^{}]|(?:\{[^{}]*\}))*\}))*\}',
+            # More flexible pattern for malformed JSON
+            r'\{[^{}]*["\'](?:answer|eligibility|eligible)["\'][^{}]*\}',
+        ]
 
-        # If no matches found, try a simpler pattern
-        if not matches:
-            logger.debug("No complex JSON patterns found, trying simpler pattern")
-            simple_pattern = r'\{[^{}]*\}'
-            matches = re.findall(simple_pattern, text)
+        all_matches = []
+        for pattern in patterns:
+            matches = re.findall(pattern, text, re.DOTALL)
+            all_matches.extend(matches)
 
-        # Sort matches from longest to shortest
-        matches.sort(key=len, reverse=True)
-        return matches
+        # Remove duplicates while preserving order
+        seen = set()
+        unique_matches = []
+        for match in all_matches:
+            if match not in seen:
+                seen.add(match)
+                unique_matches.append(match)
+
+        # Sort by length (longest first)
+        unique_matches.sort(key=len, reverse=True)
+        return unique_matches
 
     def _parse_json_candidate(self, json_candidate: str) -> Optional[Dict[str, Any]]:
         """
         Try to parse a JSON candidate string.
-
         Args:
             json_candidate: The string to parse as JSON
-
         Returns:
             Parsed JSON object or None if parsing failed
         """
         try:
             # Attempt to parse the candidate
             json_obj = json.loads(json_candidate)
-            if self._is_valid_answer_json(json_obj):
+            if self._is_valid_answer_json_flexible(json_obj):
                 return json_obj
         except json.JSONDecodeError:
             # Try to fix common JSON issues and try again
@@ -183,26 +238,23 @@ class JSONExtractor:
                 # Replace single quotes with double quotes
                 fixed_json = json_candidate.replace("'", '"')
                 json_obj = json.loads(fixed_json)
-                if self._is_valid_answer_json(json_obj):
+                if self._is_valid_answer_json_flexible(json_obj):
                     logger.info("Successfully parsed JSON after fixing quotes")
                     return json_obj
             except json.JSONDecodeError:
                 pass
-
         return None
 
-    def _is_valid_answer_json(self, json_obj: Dict[str, Any]) -> bool:
+    def _is_valid_answer_json_flexible(self, json_obj: Dict[str, Any]) -> bool:
         """
-        Check if the JSON object has the expected structure.
-
+        Very flexible validation - accepts almost any JSON with recognizable structure.
         Args:
             json_obj: The JSON object to check
-
         Returns:
-            True if the JSON has the expected structure, False otherwise
+            True if the JSON has some recognizable structure, False otherwise
         """
-        # Check for the answer structure for insurance queries
-        if "answer" in json_obj and isinstance(json_obj["answer"], dict) and "eligibility" in json_obj["answer"]:
+        # Check for the answer structure (very flexible)
+        if "answer" in json_obj and isinstance(json_obj["answer"], dict):
             return True
 
         # Check for the personas structure for persona extraction
@@ -213,4 +265,16 @@ class JSONExtractor:
         if "is_relevant" in json_obj and "reason" in json_obj:
             return True
 
+        # If it has at least one of the key fields we care about
+        if isinstance(json_obj, dict):
+            answer_keys = ["eligibility", "elgibility", "eligiblity", "eligibilty"]
+            if any(key in json_obj for key in answer_keys):
+                return True
+
         return False
+
+    def _is_valid_answer_json(self, json_obj: Dict[str, Any]) -> bool:
+        """
+        Legacy method - kept for compatibility but now calls the flexible version
+        """
+        return self._is_valid_answer_json_flexible(json_obj)

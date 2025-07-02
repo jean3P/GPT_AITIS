@@ -1,6 +1,6 @@
 # src/main.py
 
-from config import LOG_DIR
+from config import LOG_DIR, OPENROUTER_API_KEY
 from logging_utils import setup_logging
 from rag_runner import run_rag, run_batch_rag
 import argparse
@@ -11,18 +11,21 @@ logger = logging.getLogger(__name__)
 if __name__ == "__main__":
     # Get available prompt names for the help message
     available_prompts = ", ".join([
-        "standard", "detailed", "precise", "precise_v2", "precise_v3", "precise_v4", "precise_v2_1" , "precise_v2_2", "precise_v2_qwen",
+        "standard", "detailed", "precise", "precise_v2", "precise_v3", "precise_v4",
+        "precise_v2_1", "precise_v2_2", "precise_v2_qwen",
     ])
 
     # Get available relevance filter prompts
     available_relevance_prompts = ", ".join([
-        "relevance_filter_v1", "relevance_filter_v2",  # Add more versions as you create them
+        "relevance_filter_v1", "relevance_filter_v2",
     ])
 
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Run RAG system for insurance policy analysis")
-    parser.add_argument("--model", choices=["openai", "hf", "qwen"], default="hf", help="Model provider (openai, hf or qwen)")
-    parser.add_argument("--model-name", default="microsoft/phi-4", help="Name of the model to use")
+    parser.add_argument("--model", choices=["openai", "hf", "qwen", "openrouter"], default="hf",
+                        help="Model provider (openai, hf, qwen, or openrouter)")
+    parser.add_argument("--model-name", default="microsoft/phi-4",
+                        help="Name of the model to use. For OpenRouter, use format like 'qwen/qwen-2.5-72b-instruct'")
     parser.add_argument("--batch", action="store_true", help="Process all policies in a single batch")
     parser.add_argument("--num-questions", type=int, default=None,
                         help="Number of questions to process (default: all available questions)")
@@ -57,6 +60,15 @@ if __name__ == "__main__":
     logger.info(f"Starting RAG pipeline with model: {args.model}/{args.model_name}")
     logger.info(f"Using prompt template: {args.prompt}")
     logger.info(f"Log level set to: {args.log_level}")
+
+    # Add OpenRouter-specific logging
+    if args.model == "openrouter":
+        logger.info("Using OpenRouter API for model access")
+        if not OPENROUTER_API_KEY:
+            logger.error("OPENROUTER_API_KEY environment variable not set!")
+            logger.error("Please set your OpenRouter API key in the .env file")
+            exit(1)
+
     if args.num_questions:
         logger.info(f"Processing {args.num_questions} questions")
     else:
@@ -83,7 +95,7 @@ if __name__ == "__main__":
             question_ids=question_ids,
             policy_id=args.policy_id,
             k=args.k,
-            filter_irrelevant=args.filter_irrelevant,  # Pass the new parameter
+            filter_irrelevant=args.filter_irrelevant,
             relevance_prompt_name=args.prompt_relevant,
         )
     else:
@@ -97,8 +109,9 @@ if __name__ == "__main__":
             question_ids=question_ids,
             policy_id=args.policy_id,
             k=args.k,
-            filter_irrelevant=args.filter_irrelevant,  # Pass the new parameter
+            filter_irrelevant=args.filter_irrelevant,
             relevance_prompt_name=args.prompt_relevant,
         )
 
     logger.info("RAG pipeline completed successfully")
+

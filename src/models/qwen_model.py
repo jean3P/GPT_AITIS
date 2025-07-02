@@ -6,6 +6,7 @@ Based on the HuggingFace model client but optimized for Qwen models.
 """
 import logging
 import os
+import re
 from typing import Dict, Any
 
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
@@ -118,14 +119,15 @@ class QwenModelClient(HuggingFaceModelClient):
             # Qwen-specific generation parameters
             generation_params = {
                 "max_new_tokens": self.model_config.get("max_new_tokens", 512),
-                "temperature": self.model_config.get("temperature", 0.0),
+                "temperature": None,
                 "do_sample": self.model_config.get("do_sample", False),
                 "repetition_penalty": self.model_config.get("repetition_penalty", 1.1),
                 "num_return_sequences": 1,
                 "return_full_text": False,
                 "pad_token_id": self.pipe.tokenizer.eos_token_id,
                 "eos_token_id": self.pipe.tokenizer.eos_token_id,
-                "top_p": self.model_config.get("top_p", 0.9),
+                "top_p": None,
+                "top_k": None,
                 "no_repeat_ngram_size": self.model_config.get("no_repeat_ngram_size", 3),
             }
 
@@ -134,6 +136,8 @@ class QwenModelClient(HuggingFaceModelClient):
 
             # Get the generated text
             generated = outputs[0]["generated_text"]
+
+            generated = self._clean_qwen_output(generated)
             logger.debug(f"Qwen model output: {generated}")
 
             # Try to extract JSON from the output
@@ -151,6 +155,26 @@ class QwenModelClient(HuggingFaceModelClient):
             logger.error(error_msg)
             return self._create_error_response(error_msg)
 
+    def _clean_qwen_output(self, text: str) -> str:
+        """
+        Clean Qwen output to improve JSON extraction.
+        """
+        # Remove thinking tags
+        text = re.sub(r'<think>.*?</think>', '', text, flags=re.DOTALL)
+
+        # Remove any explanatory text before JSON
+        lines = text.split('\n')
+        json_started = False
+        cleaned_lines = []
+
+        for line in lines:
+            if '{' in line and not json_started:
+                json_started = True
+            if json_started:
+                cleaned_lines.append(line)
+
+        return '\n'.join(cleaned_lines) if cleaned_lines else text
+
     def _build_prompt(self, question: str, context_text: str, persona_text: str) -> str:
         """
         Build the full prompt for Qwen model using proper chat template.
@@ -165,14 +189,15 @@ class QwenModelClient(HuggingFaceModelClient):
         if hasattr(self.pipe.tokenizer, 'apply_chat_template'):
             try:
                 messages = [
-                    {"role": "system", "content": self.base_prompt},
-                    {"role": "user", "content": user_content}
+                    # {"role": "system", "content": },
+                    {"role": "user", "content": (self.base_prompt + user_content)}
                 ]
 
                 formatted_prompt = self.pipe.tokenizer.apply_chat_template(
                     messages,
                     tokenize=False,
-                    add_generation_prompt=True  # This adds <|im_start|>assistant
+                    add_generation_prompt=True,
+                    enable_thinking=True
                 )
                 logger.debug(f"Qwen chat template prompt: {formatted_prompt}")
                 return formatted_prompt
@@ -180,69 +205,5 @@ class QwenModelClient(HuggingFaceModelClient):
             except Exception as e:
                 logger.warning(f"Failed to use chat template: {e}, falling back to manual formatting")
 
-        # Fallback to manual formatting with proper assistant tag
-        system_message = f"<|im_start|>system\n{self.base_prompt}<|im_end|>\n"
-        user_message = f"<|im_start|>user\n{user_content}<|im_end|>\n"
-        assistant_start = "<|im_start|>assistant\n"
+        return ""
 
-        full_prompt = system_message + user_message + assistant_start
-        logger.debug(f"Qwen manual template prompt: {full_prompt}")
-        return full_prompt
-
-    # def _format_qwen_prompt_with_chat_template(self, question: str, context_text: str, persona_text: str) -> str:
-    #     """
-    #     ALTERNATIVE: Format prompt using Qwen's chat template (if you want to experiment).
-    #     This method is available but not used by default to maintain consistency.
-    #     """
-    #     # Try to use Qwen's chat template if available
-    #     if hasattr(self.pipe.tokenizer, 'apply_chat_template'):
-    #         try:
-    #             # Build content same as Phi-4 logic
-    #             json_format = self._get_appropriate_json_format()
-    #             prompt_final = "\nThen the json Solution is:\n\n"
-    #
-    #             if persona_text:
-    #                 user_content = f"{context_text}\n\nQuestion: {question}\n\n{persona_text}\n\n{json_format}\n\n{prompt_final}"
-    #             else:
-    #                 user_content = f"{context_text}\n\nQuestion: {question}\n\n{json_format}\n\n{prompt_final}"
-    #
-    #             messages = [
-    #                 {"role": "system", "content": self.base_prompt},
-    #                 {"role": "user", "content": user_content}
-    #             ]
-    #
-    #             formatted_prompt = self.pipe.tokenizer.apply_chat_template(
-    #                 messages,
-    #                 tokenize=False,
-    #                 add_generation_prompt=True
-    #             )
-    #             logger.debug(f"Chat template formatted prompt: {formatted_prompt}")
-    #             return formatted_prompt
-    #
-    #         except Exception as e:
-    #             logger.warning(f"Failed to use chat template: {e}, falling back to standard formatting")
-    #
-    #     # Fallback to standard formatting (same as Phi-4)
-    #     return self._build_prompt(question, context_text, persona_text)
-    #
-    # def _format_qwen_prompt_manual(self, question: str, context_text: str, persona_text: str) -> str:
-    #     """
-    #     ALTERNATIVE: Manual Qwen chat template formatting (for experimentation).
-    #     This method is available but not used by default.
-    #     """
-    #     system_message = f"<|im_start|>system\n{self.base_prompt}<|im_end|>\n"
-    #
-    #     json_format = self._get_appropriate_json_format()
-    #     prompt_final = "\nThen the json Solution is:\n\n"
-    #
-    #     if persona_text:
-    #         user_content = f"{context_text}\n\nQuestion: {question}\n\n{persona_text}\n\n{json_format}\n\n{prompt_final}"
-    #     else:
-    #         user_content = f"{context_text}\n\nQuestion: {question}\n\n{json_format}\n\n{prompt_final}"
-    #
-    #     user_message = f"<|im_start|>user\n{user_content}<|im_end|>\n"
-    #     assistant_start = "<|im_start|>assistant\n"
-    #
-    #     full_prompt = system_message + user_message + assistant_start
-    #     logger.debug(f"Manual Qwen format prompt: {full_prompt}")
-    #     return full_prompt

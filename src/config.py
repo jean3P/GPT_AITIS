@@ -11,6 +11,9 @@ OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY")
 HUGGINGFACE_TOKEN = os.getenv("HUGGINGFACE_TOKEN")
 MODEL_NAME: str = "gpt-4o"
 EMBEDDING_MODEL: str = "all-MiniLM-L6-v2"  # Keep for backward compatibility
+OPENROUTER_API_KEY: str = os.getenv("OPENROUTER_API_KEY")
+OPENROUTER_SITE_URL: str = os.getenv("OPENROUTER_SITE_URL", "")  # Optional
+OPENROUTER_SITE_NAME: str = os.getenv("OPENROUTER_SITE_NAME", "")  # Optional
 
 # Configure embedding model path for the downloaded sentence transformer model
 EMBEDDING_MODEL_PATH = "/cluster/scratch/jeanpool.pereyrap/models/embeddings/sentence-transformers_all-MiniLM-L6-v2"
@@ -59,6 +62,42 @@ MODEL_PATHS = {
     # "qwen2.5-14b": os.path.join(MODELS_BASE_DIR, "qwen2.5-14b"),
 }
 
+OPENROUTER_MODELS = {
+    # Qwen models via OpenRouter
+    "qwen/qwen-2.5-72b-instruct": "qwen/qwen-2.5-72b-instruct",
+    "qwen/qwen-2.5-32b-instruct": "qwen/qwen-2.5-32b-instruct",
+    "qwen/qwen-2.5-14b-instruct": "qwen/qwen-2.5-14b-instruct",
+    "qwen/qwen-2.5-7b-instruct": "qwen/qwen-2.5-7b-instruct",
+    "qwen/qwen-2.5-3b-instruct": "qwen/qwen-2.5-3b-instruct",
+
+    # Other popular models
+    "anthropic/claude-3.5-sonnet": "anthropic/claude-3.5-sonnet",
+    "openai/gpt-4o": "openai/gpt-4o",
+    "openai/gpt-4o-mini": "openai/gpt-4o-mini",
+    "meta-llama/llama-3.1-405b-instruct": "meta-llama/llama-3.1-405b-instruct",
+    "meta-llama/llama-3.1-70b-instruct": "meta-llama/llama-3.1-70b-instruct",
+    "meta-llama/llama-3.1-8b-instruct": "meta-llama/llama-3.1-8b-instruct",
+}
+
+
+def get_openrouter_model_name(model_name: str) -> str:
+    """Get the OpenRouter model name, with fallback to the input name."""
+    return OPENROUTER_MODELS.get(model_name, model_name)
+
+
+def is_openrouter_model(model_name: str) -> bool:
+    """Check if a model name corresponds to an OpenRouter model."""
+    if model_name in OPENROUTER_MODELS:
+        return True
+
+    # Check common OpenRouter patterns
+    openrouter_patterns = [
+        "qwen/", "anthropic/", "meta-llama/", "google/",
+        "cohere/", "mistral/", "01-ai/", "deepseek/"
+    ]
+
+    return any(model_name.startswith(pattern) for pattern in openrouter_patterns)
+
 # Model-specific generation configurations
 MODEL_CONFIGS = {
     "microsoft/phi-4": {
@@ -66,7 +105,7 @@ MODEL_CONFIGS = {
         "device_map": "auto",
         "trust_remote_code": True,
         "low_cpu_mem_usage": True,
-        "max_new_tokens": 4096,
+        "max_new_tokens": 1024,
         "temperature": 0.1,
         "do_sample": False,
         "repetition_penalty": 1.05,
@@ -104,14 +143,93 @@ MODEL_CONFIGS = {
         "use_cache": True,
         "no_repeat_ngram_size": 3,
     },
+    "Qwen/Qwen2.5-14B": {
+        # Same config as above
+        "torch_dtype": "auto",
+        "device_map": "auto",
+        "trust_remote_code": True,
+        "low_cpu_mem_usage": True,
+        "max_new_tokens": 2048,
+        "temperature": 0.0,
+        "do_sample": False,
+        "repetition_penalty": 1.1,
+        "pad_token_id": None,
+        "eos_token_id": None,
+        "top_p": 0.9,
+        "num_return_sequences": 1,
+        "output_scores": False,
+        "use_cache": True,
+        "no_repeat_ngram_size": 3,
+    },
+    "Qwen/Qwen3-14B": {
+        # Same config as above
+        "torch_dtype": "auto",
+        "device_map": "auto",
+        "trust_remote_code": True,
+        "low_cpu_mem_usage": True,
+        "max_new_tokens": 1024,
+        "temperature": 0.0,
+        "do_sample": False,
+        "repetition_penalty": 1.1,
+        "pad_token_id": None,
+        "eos_token_id": None,
+        "top_p": 0.9,
+        "num_return_sequences": 1,
+        "output_scores": False,
+        "use_cache": True,
+        "no_repeat_ngram_size": 3,
+    },
+    "Qwen/Qwen3-32B": {
+        # Same config as above
+        "torch_dtype": "auto",
+        "device_map": "auto",
+        "trust_remote_code": True,
+        "low_cpu_mem_usage": True,
+        "max_new_tokens": 1024,
+        "temperature": 0.0,
+        "do_sample": False,
+        "repetition_penalty": 1.1,
+        "pad_token_id": None,
+        "eos_token_id": None,
+        "top_p": 0.9,
+        "num_return_sequences": 1,
+        "output_scores": False,
+        "use_cache": True,
+        "no_repeat_ngram_size": 3,
+    },
 }
 
 # Copy configs for local name aliases
 MODEL_CONFIGS["phi-4"] = MODEL_CONFIGS["microsoft/phi-4"]
 MODEL_CONFIGS["qwen2.5-32b"] = MODEL_CONFIGS["Qwen/Qwen2.5-32B"]
 MODEL_CONFIGS["qwen2.5-7b"] = MODEL_CONFIGS["Qwen/Qwen2.5-7B"]
-# MODEL_CONFIGS["qwen2.5-14b"] = MODEL_CONFIGS["Qwen/Qwen2.5-14B"]
+MODEL_CONFIGS["qwen2.5-14b"] = MODEL_CONFIGS["Qwen/Qwen2.5-14B"]
 
+def get_clean_model_name(model_name: str) -> str:
+    """
+    Extract a clean model name for directory naming.
+
+    Examples:
+    - "microsoft/phi-4" -> "phi-4"
+    - "qwen/qwen-2.5-72b-instruct" -> "qwen-2.5-72b-instruct"
+    - "gpt-4o" -> "gpt-4o"
+    - "Qwen/Qwen2.5-32B" -> "qwen2.5-32b"
+    """
+    # Handle local paths
+    if "/" in model_name and not model_name.startswith(("http://", "https://")):
+        # For patterns like "microsoft/phi-4" or "qwen/qwen-2.5-72b"
+        clean_name = model_name.split("/")[-1]
+    else:
+        clean_name = model_name
+
+    # Normalize to lowercase and replace dots/spaces with hyphens
+    clean_name = clean_name.lower()
+    clean_name = clean_name.replace(".", "-").replace(" ", "-").replace("_", "-")
+
+    # Remove common prefixes/suffixes
+    clean_name = clean_name.replace("-instruct", "").replace("-chat", "")
+
+    return clean_name
 
 def get_local_model_path(model_name: str) -> str:
     """

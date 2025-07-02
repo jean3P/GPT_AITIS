@@ -123,18 +123,21 @@ df -h $HF_HUB_CACHE
 echo "=== STARTING RAG PIPELINE at $(date) ==="
 
 # Fix the model name - remove extra quotes!
-#MODEL_NAME="Qwen/Qwen2.5-7B"
+#MODEL_NAME="Qwen/Qwen3-32B"
 MODEL_NAME="microsoft/phi-4"
-#QUESTIONS="1,2,3,4,5,6,7,8,12,13,16,17,18,10,19,26,9,11,14,39"
+#QUESTIONS="18,21"
+QUESTIONS="2,3,4,5,6,7,8,9,10,11,12,14,16,17,18,19,20,21,22,23,24,25,26,29,30,31,33,34,36,38,39,40"
 #QUESTIONS="7,16"
 #POLICY_ID="20"
 
 
 # Store the command for easier modification
-RAG_COMMAND="$VENV_PYTHON src/main.py --model hf --model-name $MODEL_NAME --prompt precise_v2_1 --k 3 --log-level DEBUG --batch"
+# Replace your current RAG_COMMAND with this:
+RAG_COMMAND="$VENV_PYTHON src/main.py --model openrouter --model-name qwen/qwen3-235b-a22b --prompt precise_v2_qwen --k 3 --log-level DEBUG --questions $QUESTIONS --batch"
+#RAG_COMMAND="$VENV_PYTHON src/main.py --model hf --model-name $MODEL_NAME --prompt precise_v2_1 --k 3 --log-level DEBUG --batch"
 #RAG_COMMAND="$VENV_PYTHON src/main.py --model hf --model-name $MODEL_NAME --prompt precise_v2 --k 3 --log-level DEBUG --questions $QUESTIONS --batch"
 #RAG_COMMAND="$VENV_PYTHON src/main.py --model hf --model-name $MODEL_NAME --prompt precise_v2_qwen --k 3 --log-level DEBUG --questions $QUESTIONS --policy-id $POLICY_ID --batch"
-#RAG_COMMAND="$VENV_PYTHON src/main.py --model hf --model-name $MODEL_NAME --prompt precise_v2_qwen --k 3 --log-level DEBUG --questions $QUESTIONS --batch"
+#RAG_COMMAND="$VENV_PYTHON src/main.py --model hf --model-name $MODEL_NAME --prompt precise_v2 --k 3 --log-level DEBUG --questions $QUESTIONS --batch"
 
 echo "Executing: $RAG_COMMAND"
 
