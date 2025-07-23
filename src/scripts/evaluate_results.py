@@ -124,6 +124,10 @@ def get_latest_output_files(model_dir_path: str) -> List[str]:
     all_files = [f for f in os.listdir(model_dir_path)
                  if f.startswith("policy_id-") and f.endswith(".json")]
 
+    print(f"  📁 Found {len(all_files)} policy output files in directory:")
+    for file in sorted(all_files):
+        print(f"    - {file}")
+
     # Group files by policy ID
     policy_files = {}
     for file in all_files:
@@ -137,13 +141,37 @@ def get_latest_output_files(model_dir_path: str) -> List[str]:
                 policy_files[policy_id] = []
             policy_files[policy_id].append(file)
 
+    def parse_timestamp(filename):
+        """Parse timestamp from filename and return datetime object for proper sorting."""
+        try:
+            # Extract timestamp part: DD-MM-YYYY_HH-MM-SS
+            timestamp_str = filename.split("__")[-1].split(".")[0]
+            # Parse DD-MM-YYYY_HH-MM-SS format
+            return datetime.strptime(timestamp_str, "%d-%m-%Y_%H-%M-%S")
+        except (ValueError, IndexError):
+            # If parsing fails, return a very old date so it gets sorted last
+            return datetime.min
+
     # For each policy ID, find the most recent file
     latest_files = []
     for policy_id, files in policy_files.items():
-        # Sort files by timestamp (after the double underscore)
-        sorted_files = sorted(files, key=lambda x: x.split("__")[-1].split(".")[0], reverse=True)
+        # Sort files by parsed timestamp (most recent first)
+        sorted_files = sorted(files, key=parse_timestamp, reverse=True)
         if sorted_files:
             latest_files.append(sorted_files[0])
+
+            # Debug: show all files and their timestamps for this policy
+            print(f"  🔍 Policy {policy_id} timestamp analysis:")
+            for file in files:
+                timestamp = parse_timestamp(file)
+                selected = "✅ SELECTED" if file == sorted_files[0] else "  "
+                print(f"    {selected} {file} -> {timestamp.strftime('%Y-%m-%d %H:%M:%S')}")
+
+    print(f"  ✅ Selected {len(latest_files)} latest files for evaluation:")
+    for file in sorted(latest_files):
+        policy_id = file.split("__")[0].replace("policy_id-", "")
+        timestamp = parse_timestamp(file)
+        print(f"    - Policy {policy_id}: {file} (from {timestamp.strftime('%Y-%m-%d %H:%M:%S')})")
 
     return latest_files
 
@@ -170,6 +198,10 @@ def evaluate_model_outputs(model_name: str, model_dir_path: str, gt_path: str) -
     # Get all ground truth files
     gt_files = [f for f in os.listdir(gt_path) if f.startswith("GT_policy_") and f.endswith(".json")]
 
+    print(f"\n  📋 Ground Truth Files Found ({len(gt_files)}):")
+    for gt_file in sorted(gt_files):
+        print(f"    - {gt_file}")
+
     if not output_files:
         print(f"Error: No output files found in {model_dir_path}")
         return None, None
@@ -181,22 +213,31 @@ def evaluate_model_outputs(model_name: str, model_dir_path: str, gt_path: str) -
     # Map policy IDs to GT files for easier lookup
     gt_file_map = {f.split("_")[2].split(".")[0]: f for f in gt_files}
 
-    print(f"Found {len(output_files)} output files and {len(gt_files)} ground truth files")
+    print(f"\n  🔗 Policy ID to Ground Truth File Mapping:")
+    for policy_id, gt_file in sorted(gt_file_map.items()):
+        print(f"    - Policy {policy_id}: {gt_file}")
+
+    print(f"\nFound {len(output_files)} output files and {len(gt_files)} ground truth files")
 
     total_output_questions = 0
     total_evaluated_questions = 0
 
+    print(f"\n  🔍 Processing File Pairs:")
     for output_file in output_files:
         # Extract policy ID from filename
         policy_id = output_file.split("__")[0].replace("policy_id-", "")
 
         # Find corresponding ground truth file
         if policy_id not in gt_file_map:
-            print(f"Warning: No ground truth file found for policy {policy_id}")
+            print(f"    ❌ Policy {policy_id}: No ground truth file found for output {output_file}")
             continue
 
         gt_file_name = gt_file_map[policy_id]
         gt_file_path = os.path.join(gt_path, gt_file_name)
+
+        print(f"    ✅ Policy {policy_id}:")
+        print(f"       Output: {output_file}")
+        print(f"       Ground Truth: {gt_file_name}")
 
         # Load files
         try:
@@ -206,7 +247,7 @@ def evaluate_model_outputs(model_name: str, model_dir_path: str, gt_path: str) -
             with open(gt_file_path, 'r', encoding='utf-8') as f:
                 gt_data = json.load(f)
         except (json.JSONDecodeError, UnicodeDecodeError) as e:
-            print(f"Error loading files for policy {policy_id}: {e}")
+            print(f"    ❌ Error loading files for policy {policy_id}: {e}")
             continue
 
         # Create lookup dictionaries for faster access
@@ -216,14 +257,14 @@ def evaluate_model_outputs(model_name: str, model_dir_path: str, gt_path: str) -
         questions_in_file = len(output_questions)
         total_output_questions += questions_in_file
 
-        print(f"Policy {policy_id}: Found {questions_in_file} questions in output")
+        print(f"       Questions: {questions_in_file} in output, {len(gt_questions_dict)} in ground truth")
 
         # Compare each output question with ground truth
         for output_question in output_questions:
             request_id = output_question.get("request_id")
 
             if request_id not in gt_questions_dict:
-                print(f"Warning: Policy {policy_id}, Request {request_id} not found in ground truth")
+                print(f"       ⚠️  Request {request_id} not found in ground truth")
                 continue
 
             gt_question = gt_questions_dict[request_id]
@@ -452,6 +493,10 @@ def main():
         print(f"No model directories found in {args.json_path}")
         return
 
+    print(f"\n🔍 Available Model Directories Found:")
+    for model in available_models:
+        print(f"  - {model}")
+
     # Determine which models to evaluate
     if args.models:
         models_to_evaluate = []
@@ -475,7 +520,8 @@ def main():
     for model_name in models_to_evaluate:
         model_dir_path = os.path.join(args.json_path, model_name)
 
-        print(f"\nEvaluating model: {model_name}")
+        print(f"\n🚀 Evaluating model: {model_name}")
+        print(f"📂 Model directory: {model_dir_path}")
         results_df, summary = evaluate_model_outputs(model_name, model_dir_path, args.gt_path)
 
         if results_df is not None and summary is not None:
@@ -485,7 +531,7 @@ def main():
             # Print summary
             print_evaluation_summary(summary)
 
-            print(f"\nResults saved:")
+            print(f"\n💾 Results saved:")
             print(f"  CSV: {saved_files['csv']}")
             print(f"  Summary: {saved_files['summary']}")
             print(f"  Metrics: {saved_files['metrics']}")
@@ -493,13 +539,13 @@ def main():
             all_summaries.append(summary)
             all_results_dfs.append(results_df)
         else:
-            print(f"Failed to evaluate model: {model_name}")
+            print(f"❌ Failed to evaluate model: {model_name}")
 
     # Print comparison if multiple models were evaluated
     if len(all_summaries) > 1:
         compare_models(all_summaries)
 
-    print(f"\n=== EVALUATION COMPLETE ===")
+    print(f"\n🎉 === EVALUATION COMPLETE ===")
     print(f"Evaluated {len(all_summaries)} models successfully")
     print(f"Results saved to: {args.output_dir}")
 
