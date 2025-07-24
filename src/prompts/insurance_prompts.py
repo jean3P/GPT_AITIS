@@ -699,7 +699,7 @@ class InsurancePrompts:
             "{{RETRIEVED_POLICY_TEXT}}\n\n"
             "QUESTION:\n"
             "{{USER_QUESTION}}\n\n"
-
+            "{{QUERY_ANALYSIS}}\n\n"
             # ---------- TASK ----------
             "TASK: Produce exactly one JSON object with this schema — and nothing else:\n"
             "{\n"
@@ -797,6 +797,125 @@ class InsurancePrompts:
         )
 
     @classmethod
+    def precise_coverage_v5_phi4(cls) -> str:
+        """
+        Enhanced prompt for Phi-4 that reduces false negatives while maintaining accuracy.
+        """
+        return (
+            # STRICT COPYING REQUIREMENT
+            "YOU ARE A POLICY TEXT SCANNER. YOU COPY EXACT SENTENCES FROM POLICY_CONTEXT.\n"
+            "YOU CANNOT CREATE NEW SENTENCES OR PARAPHRASE.\n\n"
+
+            # CONTEXT UNDERSTANDING
+            "UNDERSTANDING THE CONTEXT:\n"
+            "• The POLICY_CONTEXT below contains excerpts from an insurance policy\n"
+            "• Some policies cover MANY scenarios (look for 'ALL RISKS' or 'Assistenza in Viaggio')\n"
+            "• Some policies cover SPECIFIC scenarios only\n"
+            "• Your job: determine if the scenario IS or IS NOT addressed in the context\n\n"
+
+            "POLICY_CONTEXT:\n"
+            "{{RETRIEVED_POLICY_TEXT}}\n\n"
+
+            "QUESTION:\n"
+            "{{USER_QUESTION}}\n\n"
+
+            "SCANNING RULES:\n"
+            "1. SCAN the POLICY_CONTEXT for any mention of:\n"
+            "   • The specific event type (theft, illness, delay, etc.)\n"
+            "   • General categories that include the event (baggage, medical, assistance)\n"
+            "   • 'ALL RISKS' or comprehensive coverage statements\n\n"
+
+            "2. CLASSIFY the scenario:\n"
+            "   • FOUND with coverage → 'Yes'\n"
+            "   • FOUND with exclusion/condition → 'No - condition(s) not met'\n"
+            "   • NOT FOUND anywhere → 'No - Unrelated event'\n\n"
+
+            "3. IMPORTANT MATCHES TO RECOGNIZE:\n"
+            "   • 'bagaglio' or 'baggage' → covers ALL baggage issues (theft, loss, damage)\n"
+            "   • 'spese mediche' or 'medical' → covers ALL medical issues\n"
+            "   • 'assistenza' or 'assistance' → covers help/support scenarios\n"
+            "   • 'ALL RISKS' → covers MOST scenarios unless excluded\n\n"
+
+            "4. COPY TEXT:\n"
+            "   • outcome_justification: Copy the EXACT sentence(s) that mention the coverage\n"
+            "   • payment_justification: Copy amount sentences if present, else null\n"
+            "   • For 'No - Unrelated event': use empty string \"\"\n\n"
+
+            "OUTPUT (exactly this format):\n"
+            "{\n"
+            "  \"answer\": {\n"
+            "    \"eligibility\": \"Yes|No - Unrelated event|No - condition(s) not met\",\n"
+            "    \"outcome_justification\": \"<copied text or empty string>\",\n"
+            "    \"payment_justification\": \"<copied text or null>\"\n"
+            "  }\n"
+            "}\n\n"
+
+            "NEVER write 'The policy does not cover...' - only copy existing text!"
+        )
+
+    @classmethod
+    def precise_coverage_v5_qwen(cls) -> str:
+        """
+        Enhanced prompt for Qwen that reduces false negatives with strict format.
+        """
+        return (
+            # ROLE DEFINITION
+            "ROLE: Insurance policy text extractor (not interpreter)\n"
+            "CONSTRAINT: Output only text that exists in POLICY_CONTEXT\n\n"
+
+            # MATCHING RULES
+            "MATCHING RULES:\n"
+            "1. Event categories (match ANY of these):\n"
+            "   BAGGAGE: 'bagaglio', 'baggage', 'luggage' → includes theft/loss/damage\n"
+            "   MEDICAL: 'mediche', 'medical', 'hospital' → includes illness/injury\n"
+            "   CANCELLATION: 'annullamento', 'cancellation' → includes trip changes\n"
+            "   ASSISTANCE: 'assistenza', 'assistance' → includes help/support\n"
+            "   ALL-RISKS: 'ALL RISKS', 'all risks' → includes most scenarios\n\n"
+
+            "2. Scenario mapping:\n"
+            "   'stolen bag' → BAGGAGE category\n"
+            "   'sick/doctor' → MEDICAL category\n"
+            "   'can't leave' → CANCELLATION category\n"
+            "   'help needed' → ASSISTANCE category\n\n"
+
+            # INPUT SECTIONS
+            "POLICY_CONTEXT:\n"
+            "{{RETRIEVED_POLICY_TEXT}}\n\n"
+
+            "QUESTION:\n"
+            "{{USER_QUESTION}}\n\n"
+
+            # DECISION WORKFLOW
+            "WORKFLOW:\n"
+            "1. Find category match:\n"
+            "   ✓ Category found + coverage stated → 'Yes'\n"
+            "   ✓ Category found + exclusion stated → 'No - condition(s) not met'\n"
+            "   ✗ No category match → 'No - Unrelated event'\n\n"
+
+            "2. Copy sentences:\n"
+            "   • 'Yes': copy coverage sentence(s) + amount sentence(s)\n"
+            "   • 'No - condition(s) not met': copy exclusion sentence(s)\n"
+            "   • 'No - Unrelated event': use \"\"\n\n"
+
+            # OUTPUT FORMAT
+            "OUTPUT:\n"
+            "{\n"
+            "  \"answer\": {\n"
+            "    \"eligibility\": \"[exact_value]\",\n"
+            "    \"outcome_justification\": \"[copied_text_or_empty]\",\n"
+            "    \"payment_justification\": \"[copied_text_or_null]\"\n"
+            "  }\n"
+            "}\n\n"
+
+            # STRICT RULES
+            "FORBIDDEN:\n"
+            "• Creating new sentences\n"
+            "• Using [...] or ellipsis\n"
+            "• Paraphrasing\n"
+            "• Adding explanations\n"
+        )
+
+    @classmethod
     def get_prompt(cls, prompt_name: str) -> str:
         """
         Get a specific prompt by name.
@@ -824,7 +943,9 @@ class InsurancePrompts:
             "precise_v2_qwen": cls.precise_coverage_qwen_v2(),
             "precise_v3_qwen": cls.precise_coverage_qwen_v3(),
             "precise_v4_qwen": cls.precise_coverage_qwen_v4(),
-            "precise_v3_phi-4_v2": cls.precise_coverage_v3_phi4()
+            "precise_v3_phi-4_v2": cls.precise_coverage_v3_phi4(),
+            "precise_v5": cls.precise_coverage_v5_phi4(),
+            "precise_v5_qwen": cls.precise_coverage_v5_qwen()
         }
 
         if prompt_name not in prompt_map:

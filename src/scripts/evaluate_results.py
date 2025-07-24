@@ -3,13 +3,13 @@
 import os
 import json
 import re
+from datetime import datetime
+from typing import Dict, List, Tuple, Optional
 
 import editdistance
 import pandas as pd
 import numpy as np
 import argparse
-from datetime import datetime
-from typing import Dict, List, Tuple
 import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -99,6 +99,20 @@ def numpy_to_python(obj):
     return obj
 
 
+def parse_timestamp_dirname(dirname: str) -> Optional[datetime]:
+    """
+    Parse timestamp from directory name in format DD-MM-YY--HH-MM-SS.
+
+    Returns:
+        datetime object if parsing successful, None otherwise
+    """
+    try:
+        # Expected format: DD-MM-YY--HH-MM-SS
+        return datetime.strptime(dirname, "%d-%m-%y--%H-%M-%S")
+    except ValueError:
+        return None
+
+
 def get_model_directories(json_path: str) -> List[str]:
     """Get all model directories from the JSON output path."""
     if not os.path.exists(json_path):
@@ -108,77 +122,291 @@ def get_model_directories(json_path: str) -> List[str]:
     for item in os.listdir(json_path):
         item_path = os.path.join(json_path, item)
         if os.path.isdir(item_path):
-            # Check if directory contains policy output files
+            # Check if directory contains policy output files (either directly or in k/complete-policy subdirectories)
+            has_policy_files = False
+
+            # Check for direct policy files (old structure)
             files = os.listdir(item_path)
-            if any(f.startswith("policy_id-") and f.endswith(".json") for f in files):
+            if any(f.startswith("policy_") and f.endswith(".json") for f in files):
+                has_policy_files = True
+
+            # Check for k subdirectories and complete-policy directory (new structure)
+            for subitem in os.listdir(item_path):
+                subitem_path = os.path.join(item_path, subitem)
+                if os.path.isdir(subitem_path) and (subitem.startswith("k=") or subitem == "complete-policy"):
+                    # Check for timestamp directories
+                    for timestamp_dir in os.listdir(subitem_path):
+                        timestamp_path = os.path.join(subitem_path, timestamp_dir)
+                        if os.path.isdir(timestamp_path):
+                            subfiles = os.listdir(timestamp_path)
+                            if any(f.startswith("policy_") and f.endswith(".json") for f in subfiles):
+                                has_policy_files = True
+                                break
+
+                    # Also check old structure (files directly in k/complete-policy directory)
+                    if not has_policy_files:
+                        subfiles = os.listdir(subitem_path)
+                        if any(f.startswith("policy_") and f.endswith(".json") for f in subfiles):
+                            has_policy_files = True
+
+            if has_policy_files:
                 model_dirs.append(item)
 
     return sorted(model_dirs)
 
+def get_latest_timestamp_dir(k_dir_path: str) -> Optional[str]:
+    """
+    Find the latest timestamp directory in a k directory.
 
-def get_latest_output_files(model_dir_path: str) -> List[str]:
-    """Find the most recent output file for each policy ID in a model directory."""
+    Args:
+        k_dir_path: Path to k directory (e.g., /path/to/model/k=3)
+
+    Returns:
+        Path to latest timestamp directory or None if not found
+    """
+    if not os.path.exists(k_dir_path):
+        return None
+
+    timestamp_dirs = []
+    for item in os.listdir(k_dir_path):
+        item_path = os.path.join(k_dir_path, item)
+        if os.path.isdir(item_path):
+            timestamp = parse_timestamp_dirname(item)
+            if timestamp:
+                timestamp_dirs.append((timestamp, item_path))
+
+    if not timestamp_dirs:
+        return None
+
+    # Sort by timestamp and return the latest
+    timestamp_dirs.sort(key=lambda x: x[0], reverse=True)
+    return timestamp_dirs[0][1]
+
+
+def get_specific_timestamp_dir(k_dir_path: str, date_str: str) -> Optional[str]:
+    """
+    Find a specific timestamp directory matching the given date.
+
+    Args:
+        k_dir_path: Path to k directory
+        date_str: Date string to match (can be partial, e.g., "24-07-25" or full "24-07-25--10-30-45")
+
+    Returns:
+        Path to matching timestamp directory or None if not found
+    """
+    if not os.path.exists(k_dir_path):
+        return None
+
+    for item in os.listdir(k_dir_path):
+        item_path = os.path.join(k_dir_path, item)
+        if os.path.isdir(item_path) and item.startswith(date_str):
+            return item_path
+
+    return None
+
+
+def get_latest_output_files(model_dir_path: str, k_value: str = None,
+                            use_latest: bool = False, date_str: str = None,
+                            complete_policy: bool = False) -> List[Tuple[str, str]]:
+    """
+    Find output files for each policy ID in a model directory.
+
+    Args:
+        model_dir_path: Path to the model directory
+        k_value: Specific k value to look for (e.g., "3" for k=3), or None to search all
+        use_latest: If True, use the latest timestamp directory
+        date_str: Specific date string to match timestamp directories
+        complete_policy: If True, look in complete-policy directory instead of k directories
+
+    Returns:
+        List of tuples: (file_path, file_name)
+    """
     if not os.path.exists(model_dir_path):
         return []
 
-    all_files = [f for f in os.listdir(model_dir_path)
-                 if f.startswith("policy_id-") and f.endswith(".json")]
+    all_files = []
 
-    print(f"  📁 Found {len(all_files)} policy output files in directory:")
-    for file in sorted(all_files):
-        print(f"    - {file}")
+    if complete_policy:
+        # Look for complete-policy directory
+        complete_policy_path = os.path.join(model_dir_path, "complete-policy")
+        if os.path.exists(complete_policy_path):
+            print(f"  📁 Checking complete-policy directory...")
+
+            # Check for timestamp directories
+            has_timestamp_dirs = any(
+                parse_timestamp_dirname(d) is not None
+                for d in os.listdir(complete_policy_path)
+                if os.path.isdir(os.path.join(complete_policy_path, d))
+            )
+
+            if has_timestamp_dirs:
+                # New structure with timestamp directories
+                if use_latest:
+                    # Find the latest timestamp directory
+                    timestamp_dir = get_latest_timestamp_dir(complete_policy_path)
+                    if timestamp_dir:
+                        timestamp_name = os.path.basename(timestamp_dir)
+                        print(f"    📅 Using latest timestamp: {timestamp_name}")
+                        for file in os.listdir(timestamp_dir):
+                            if file.startswith("policy_") and file.endswith(".json"):
+                                all_files.append((os.path.join(timestamp_dir, file), file))
+                elif date_str:
+                    # Find specific timestamp directory
+                    timestamp_dir = get_specific_timestamp_dir(complete_policy_path, date_str)
+                    if timestamp_dir:
+                        timestamp_name = os.path.basename(timestamp_dir)
+                        print(f"    📅 Using timestamp: {timestamp_name}")
+                        for file in os.listdir(timestamp_dir):
+                            if file.startswith("policy_") and file.endswith(".json"):
+                                all_files.append((os.path.join(timestamp_dir, file), file))
+                    else:
+                        print(f"    ⚠️  No timestamp directory found matching: {date_str}")
+                else:
+                    # Process all timestamp directories
+                    for timestamp_item in sorted(os.listdir(complete_policy_path)):
+                        timestamp_path = os.path.join(complete_policy_path, timestamp_item)
+                        if os.path.isdir(timestamp_path) and parse_timestamp_dirname(timestamp_item):
+                            print(f"    📅 Processing timestamp: {timestamp_item}")
+                            for file in os.listdir(timestamp_path):
+                                if file.startswith("policy_") and file.endswith(".json"):
+                                    all_files.append((os.path.join(timestamp_path, file), file))
+            else:
+                # Old structure - files directly in complete-policy directory
+                print(f"    📁 No timestamp directories found, checking main complete-policy directory...")
+                for file in os.listdir(complete_policy_path):
+                    if file.startswith("policy_") and file.endswith(".json"):
+                        all_files.append((os.path.join(complete_policy_path, file), file))
+        else:
+            print(f"  ⚠️  No complete-policy directory found")
+            return []
+    else:
+        # Original k-based directory structure code
+        # Check for k subdirectories (new structure)
+        k_dirs_found = False
+        for item in os.listdir(model_dir_path):
+            item_path = os.path.join(model_dir_path, item)
+            if os.path.isdir(item_path) and item.startswith("k="):
+                k_dirs_found = True
+                # Extract k value from directory name
+                dir_k_value = item.split("=")[1]
+
+                # If specific k_value requested, only look in that directory
+                if k_value is not None and dir_k_value != k_value:
+                    continue
+
+                print(f"  📁 Checking k={dir_k_value} subdirectory...")
+
+                # Check for timestamp directories
+                has_timestamp_dirs = any(
+                    parse_timestamp_dirname(d) is not None
+                    for d in os.listdir(item_path)
+                    if os.path.isdir(os.path.join(item_path, d))
+                )
+
+                if has_timestamp_dirs:
+                    # New structure with timestamp directories
+                    if use_latest:
+                        # Find the latest timestamp directory
+                        timestamp_dir = get_latest_timestamp_dir(item_path)
+                        if timestamp_dir:
+                            timestamp_name = os.path.basename(timestamp_dir)
+                            print(f"    📅 Using latest timestamp: {timestamp_name}")
+                            for file in os.listdir(timestamp_dir):
+                                if file.startswith("policy_") and file.endswith(".json"):
+                                    all_files.append((os.path.join(timestamp_dir, file), file))
+                    elif date_str:
+                        # Find specific timestamp directory
+                        timestamp_dir = get_specific_timestamp_dir(item_path, date_str)
+                        if timestamp_dir:
+                            timestamp_name = os.path.basename(timestamp_dir)
+                            print(f"    📅 Using timestamp: {timestamp_name}")
+                            for file in os.listdir(timestamp_dir):
+                                if file.startswith("policy_") and file.endswith(".json"):
+                                    all_files.append((os.path.join(timestamp_dir, file), file))
+                        else:
+                            print(f"    ⚠️  No timestamp directory found matching: {date_str}")
+                    else:
+                        # Process all timestamp directories
+                        for timestamp_item in sorted(os.listdir(item_path)):
+                            timestamp_path = os.path.join(item_path, timestamp_item)
+                            if os.path.isdir(timestamp_path) and parse_timestamp_dirname(timestamp_item):
+                                print(f"    📅 Processing timestamp: {timestamp_item}")
+                                for file in os.listdir(timestamp_path):
+                                    if file.startswith("policy_") and file.endswith(".json"):
+                                        all_files.append((os.path.join(timestamp_path, file), file))
+                else:
+                    # Old structure - files directly in k directory
+                    print(f"    📁 No timestamp directories found, checking main k directory...")
+                    for file in os.listdir(item_path):
+                        if file.startswith("policy_") and file.endswith(".json"):
+                            all_files.append((os.path.join(item_path, file), file))
+
+        # If no k directories found, check for direct files (old structure)
+        if not k_dirs_found:
+            print(f"  📁 No k subdirectories found, checking main directory...")
+            for file in os.listdir(model_dir_path):
+                if file.startswith("policy_") and file.endswith(".json"):
+                    all_files.append((os.path.join(model_dir_path, file), file))
+
+    print(f"  📁 Found {len(all_files)} policy output files total")
 
     # Group files by policy ID
     policy_files = {}
-    for file in all_files:
-        # Extract policy ID from filename: policy_id-{id}__{model}__{timestamp}.json
-        parts = file.split("__")
-        if len(parts) >= 2:
-            policy_id_part = parts[0]
-            policy_id = policy_id_part.replace("policy_id-", "")
-
+    for file_path, file_name in all_files:
+        # Extract policy ID from filename: policy_{id}_results.json
+        match = re.match(r'policy_(\d+[-\d]*)_results\.json', file_name)
+        if match:
+            policy_id = match.group(1)
             if policy_id not in policy_files:
                 policy_files[policy_id] = []
-            policy_files[policy_id].append(file)
+            policy_files[policy_id].append((file_path, file_name))
 
-    def parse_timestamp(filename):
-        """Parse timestamp from filename and return datetime object for proper sorting."""
-        try:
-            # Extract timestamp part: DD-MM-YYYY_HH-MM-SS
-            timestamp_str = filename.split("__")[-1].split(".")[0]
-            # Parse DD-MM-YYYY_HH-MM-SS format
-            return datetime.strptime(timestamp_str, "%d-%m-%Y_%H-%M-%S")
-        except (ValueError, IndexError):
-            # If parsing fails, return a very old date so it gets sorted last
-            return datetime.min
-
-    # For each policy ID, find the most recent file
+    # For each policy ID, select the file (if multiple, take the first one)
     latest_files = []
-    for policy_id, files in policy_files.items():
-        # Sort files by parsed timestamp (most recent first)
-        sorted_files = sorted(files, key=parse_timestamp, reverse=True)
-        if sorted_files:
-            latest_files.append(sorted_files[0])
+    for policy_id, files in sorted(policy_files.items()):
+        if files:
+            # If multiple files for same policy, take the first one
+            selected_file = files[0]
+            latest_files.append(selected_file)
 
-            # Debug: show all files and their timestamps for this policy
-            print(f"  🔍 Policy {policy_id} timestamp analysis:")
-            for file in files:
-                timestamp = parse_timestamp(file)
-                selected = "✅ SELECTED" if file == sorted_files[0] else "  "
-                print(f"    {selected} {file} -> {timestamp.strftime('%Y-%m-%d %H:%M:%S')}")
+            if len(files) > 1:
+                print(f"  ⚠️  Policy {policy_id}: Found {len(files)} files, using {selected_file[1]}")
 
-    print(f"  ✅ Selected {len(latest_files)} latest files for evaluation:")
-    for file in sorted(latest_files):
-        policy_id = file.split("__")[0].replace("policy_id-", "")
-        timestamp = parse_timestamp(file)
-        print(f"    - Policy {policy_id}: {file} (from {timestamp.strftime('%Y-%m-%d %H:%M:%S')})")
+    print(f"  ✅ Selected {len(latest_files)} files for evaluation:")
+    for file_path, file_name in sorted(latest_files, key=lambda x: x[1]):
+        policy_id = re.match(r'policy_(\d+[-\d]*)_results\.json', file_name).group(1)
+        # Extract k value, complete-policy, and timestamp from path if present
+        k_match = re.search(r'/k=(\d+)/', file_path)
+        complete_match = re.search(r'/complete-policy/', file_path)
+        timestamp_match = re.search(r'/(\d{2}-\d{2}-\d{2}--\d{2}-\d{2}-\d{2})/', file_path)
+
+        info_parts = []
+        if k_match:
+            info_parts.append(f"k={k_match.group(1)}")
+        elif complete_match:
+            info_parts.append("complete-policy")
+        if timestamp_match:
+            info_parts.append(f"timestamp={timestamp_match.group(1)}")
+
+        info_str = f" ({', '.join(info_parts)})" if info_parts else ""
+        print(f"    - Policy {policy_id}: {file_name}{info_str}")
 
     return latest_files
 
 
-def evaluate_model_outputs(model_name: str, model_dir_path: str, gt_path: str) -> Tuple[pd.DataFrame, Dict]:
+def evaluate_model_outputs(model_name: str, model_dir_path: str, gt_path: str,
+                           k_value: str = None, use_latest: bool = False,
+                           date_str: str = None, complete_policy: bool = False) -> Tuple[pd.DataFrame, Dict]:
     """Evaluate outputs for a single model against ground truth files."""
     print(f"\n=== Evaluating Model: {model_name} ===")
+    if complete_policy:
+        print(f"  📄 Using complete policy mode")
+    elif k_value:
+        print(f"  🎯 Filtering for k={k_value}")
+    if use_latest:
+        print(f"  📅 Using latest experiment")
+    if date_str:
+        print(f"  📅 Using experiments from date: {date_str}")
 
     # Lists to store evaluation results
     all_results = []
@@ -192,8 +420,8 @@ def evaluate_model_outputs(model_name: str, model_dir_path: str, gt_path: str) -
         "No - condition(s) not met"
     ]
 
-    # Get the latest output file for each policy ID
-    output_files = get_latest_output_files(model_dir_path)
+    # Get the output files based on criteria
+    output_files = get_latest_output_files(model_dir_path, k_value, use_latest, date_str, complete_policy)
 
     # Get all ground truth files
     gt_files = [f for f in os.listdir(gt_path) if f.startswith("GT_policy_") and f.endswith(".json")]
@@ -204,6 +432,14 @@ def evaluate_model_outputs(model_name: str, model_dir_path: str, gt_path: str) -
 
     if not output_files:
         print(f"Error: No output files found in {model_dir_path}")
+        if complete_policy:
+            print(f"       (Looking for complete-policy results)")
+        elif k_value:
+            print(f"       (Looking specifically for k={k_value})")
+        if use_latest:
+            print(f"       (Looking for latest experiment)")
+        if date_str:
+            print(f"       (Looking for date: {date_str})")
         return None, None
 
     if not gt_files:
@@ -223,25 +459,45 @@ def evaluate_model_outputs(model_name: str, model_dir_path: str, gt_path: str) -
     total_evaluated_questions = 0
 
     print(f"\n  🔍 Processing File Pairs:")
-    for output_file in output_files:
+    for output_file_path, output_file_name in output_files:
         # Extract policy ID from filename
-        policy_id = output_file.split("__")[0].replace("policy_id-", "")
+        match = re.match(r'policy_(\d+[-\d]*)_results\.json', output_file_name)
+        if not match:
+            print(f"    ❌ Could not extract policy ID from {output_file_name}")
+            continue
+
+        policy_id = match.group(1)
 
         # Find corresponding ground truth file
         if policy_id not in gt_file_map:
-            print(f"    ❌ Policy {policy_id}: No ground truth file found for output {output_file}")
+            print(f"    ❌ Policy {policy_id}: No ground truth file found for output {output_file_name}")
             continue
 
         gt_file_name = gt_file_map[policy_id]
         gt_file_path = os.path.join(gt_path, gt_file_name)
 
-        print(f"    ✅ Policy {policy_id}:")
-        print(f"       Output: {output_file}")
+        # Extract k value, complete-policy, and timestamp from path if present
+        k_match = re.search(r'/k=(\d+)/', output_file_path)
+        complete_match = re.search(r'/complete-policy/', output_file_path)
+        timestamp_match = re.search(r'/(\d{2}-\d{2}-\d{2}--\d{2}-\d{2}-\d{2})/', output_file_path)
+
+        info_parts = []
+        if k_match:
+            info_parts.append(f"k={k_match.group(1)}")
+        elif complete_match:
+            info_parts.append("complete-policy")
+        if timestamp_match:
+            info_parts.append(f"timestamp={timestamp_match.group(1)}")
+
+        info_str = f" ({', '.join(info_parts)})" if info_parts else ""
+
+        print(f"    ✅ Policy {policy_id}{info_str}:")
+        print(f"       Output: {output_file_name}")
         print(f"       Ground Truth: {gt_file_name}")
 
         # Load files
         try:
-            with open(os.path.join(model_dir_path, output_file), 'r', encoding='utf-8') as f:
+            with open(output_file_path, 'r', encoding='utf-8') as f:
                 output_data = json.load(f)
 
             with open(gt_file_path, 'r', encoding='utf-8') as f:
@@ -298,9 +554,21 @@ def evaluate_model_outputs(model_name: str, model_dir_path: str, gt_path: str) -
             gt_payment = normalize_field(gt_question.get("payment_justification"))
             payment_similarity = calculate_similarity_score(output_payment, gt_payment)
 
+            # Add k value or "complete" and timestamp to results if available
+            if complete_match:
+                k_value_extracted = "complete"
+            elif k_match:
+                k_value_extracted = k_match.group(1)
+            else:
+                k_value_extracted = None
+
+            timestamp_extracted = timestamp_match.group(1) if timestamp_match else None
+
             # Add to results
             all_results.append({
                 "model_name": model_name,
+                "k_value": k_value_extracted,
+                "timestamp": timestamp_extracted,
                 "policy_id": policy_id,
                 "request_id": request_id,
                 "question": gt_question.get("question", ""),
@@ -341,9 +609,23 @@ def evaluate_model_outputs(model_name: str, model_dir_path: str, gt_path: str) -
                 "support": class_report[category]["support"]
             }
 
+    # Extract k value or complete-policy info and timestamp info for summary
+    if complete_policy:
+        k_info = "complete-policy"
+    else:
+        k_values = results_df['k_value'].dropna().unique()
+        # Filter out "complete" values when not in complete_policy mode
+        k_values = [v for v in k_values if v != "complete"]
+        k_info = f"k={','.join(k_values)}" if len(k_values) > 0 else "k=unknown"
+
+    timestamps = results_df['timestamp'].dropna().unique() if 'timestamp' in results_df else []
+    timestamp_info = timestamps[0] if len(timestamps) == 1 else "multiple" if len(timestamps) > 1 else "unknown"
+
     # Calculate summary statistics
     summary = {
         "model_name": model_name,
+        "k_configuration": k_info,
+        "experiment_timestamp": timestamp_info,
         "total_output_questions": total_output_questions,
         "total_evaluated_questions": total_evaluated_questions,
         "outcome_classification": {
@@ -376,17 +658,29 @@ def save_evaluation_results(results_df: pd.DataFrame, summary: Dict,
     # Generate timestamped filename
     timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
 
+    # Add k configuration and experiment timestamp to filename if available
+    k_config = summary.get('k_configuration', '')
+    exp_timestamp = summary.get('experiment_timestamp', '')
+
+    suffix_parts = []
+    if k_config and k_config != "k=unknown":
+        suffix_parts.append(k_config)
+    if exp_timestamp and exp_timestamp != "unknown":
+        suffix_parts.append(f"exp_{exp_timestamp}")
+
+    suffix = f"_{'_'.join(suffix_parts)}" if suffix_parts else ""
+
     # Save detailed results to CSV
-    csv_filename = os.path.join(model_output_dir, f"evaluation_results_{timestamp}.csv")
+    csv_filename = os.path.join(model_output_dir, f"evaluation_results{suffix}_{timestamp}.csv")
     results_df.to_csv(csv_filename, index=False, na_rep='')
 
     # Save summary statistics
-    summary_filename = os.path.join(model_output_dir, f"evaluation_summary_{timestamp}.json")
+    summary_filename = os.path.join(model_output_dir, f"evaluation_summary{suffix}_{timestamp}.json")
     with open(summary_filename, 'w', encoding='utf-8') as f:
         json.dump(summary, f, indent=2)
 
     # Save classification metrics
-    metrics_filename = os.path.join(model_output_dir, f"classification_metrics_{timestamp}.json")
+    metrics_filename = os.path.join(model_output_dir, f"classification_metrics{suffix}_{timestamp}.json")
 
     # Extract classification metrics from summary
     conf_matrix = confusion_matrix(
@@ -405,7 +699,9 @@ def save_evaluation_results(results_df: pd.DataFrame, summary: Dict,
 
     metrics_data = {
         "confusion_matrix": numpy_to_python(conf_matrix),
-        "classification_report": class_report
+        "classification_report": class_report,
+        "k_configuration": summary.get('k_configuration', 'unknown'),
+        "experiment_timestamp": summary.get('experiment_timestamp', 'unknown')
     }
 
     with open(metrics_filename, 'w', encoding='utf-8') as f:
@@ -421,16 +717,16 @@ def save_evaluation_results(results_df: pd.DataFrame, summary: Dict,
 def print_evaluation_summary(summary: Dict):
     """Print evaluation summary for a model."""
     model_name = summary.get('model_name', 'Unknown')
+    k_config = summary.get('k_configuration', '')
+    exp_timestamp = summary.get('experiment_timestamp', 'unknown')
 
-    print(f"\n=== EVALUATION RESULTS FOR {model_name.upper()} ===")
+    print(f"\n=== EVALUATION RESULTS FOR {model_name.upper()} ({k_config}) ===")
+    print(f"Experiment Timestamp: {exp_timestamp}")
     print(f"Total Questions in Output: {summary['total_output_questions']}")
     print(f"Total Questions Evaluated: {summary['total_evaluated_questions']}")
     print(f"Outcome Classification Accuracy: {summary['outcome_classification']['accuracy']:.4f} "
           f"({summary['exact_outcome_match_percentage']:.2f}%)")
-    # print(f"Average Justification Similarity: {summary['avg_justification_similarity']:.4f}")
     print(f"Average Justification IoU: {summary['avg_justification_iou']:.4f}")
-    # print(f"Average Payment Similarity: {summary['avg_payment_similarity']:.4f}")
-    # print(f"Average Combined Justification Similarity: {summary['avg_combined_justification_similarity']:.4f}")
 
 
 def compare_models(summaries: List[Dict]):
@@ -439,27 +735,54 @@ def compare_models(summaries: List[Dict]):
         return
 
     print(f"\n=== MODEL COMPARISON ===")
-    print(f"{'Metric':<35} | " + " | ".join([f"{s['model_name']:<15}" for s in summaries]))
-    print("-" * (35 + len(summaries) * 18))
+
+    # Include k configuration and timestamp in model names
+    model_headers = []
+    for s in summaries:
+        k_config = s.get('k_configuration', '')
+        exp_timestamp = s.get('experiment_timestamp', 'unknown')
+        model_name = s['model_name']
+
+        header_parts = [model_name]
+        if k_config and k_config != 'k=unknown':
+            header_parts.append(k_config)
+        if exp_timestamp != 'unknown' and exp_timestamp != 'multiple':
+            # Shorten timestamp for display
+            if len(exp_timestamp) > 10:
+                header_parts.append(exp_timestamp[:8] + "...")
+            else:
+                header_parts.append(exp_timestamp)
+
+        model_headers.append(" ".join(header_parts))
+
+    print(f"{'Metric':<35} | " + " | ".join([f"{h:<30}" for h in model_headers]))
+    print("-" * (35 + len(summaries) * 33))
 
     metrics = [
         ("Outcome Accuracy (%)", "exact_outcome_match_percentage", ".2f"),
-        # ("Justification Similarity", "avg_justification_similarity", ".4f"),
         ("Justification IoU", "avg_justification_iou", ".4f"),
-        # ("Payment Similarity", "avg_payment_similarity", ".4f"),
-        # ("Combined Similarity", "avg_combined_justification_similarity", ".4f")
     ]
 
     for metric_name, key, fmt in metrics:
         values = [f"{s[key]:{fmt}}" for s in summaries]
-        print(f"{metric_name:<35} | " + " | ".join([f"{v:<15}" for v in values]))
+        print(f"{metric_name:<35} | " + " | ".join([f"{v:<30}" for v in values]))
 
 
 def main():
     parser = argparse.ArgumentParser(description='Evaluate insurance policy analysis results')
     parser.add_argument('--models', nargs='+',
-                        help='Model names to evaluate (e.g., phi-4 qwen-2-5-72b-instruct). '
+                        help='Model names to evaluate (e.g., microsoft_phi-4 qwen_qwen-2.5-72b-instruct). '
                              'If not specified, all available models will be evaluated.')
+    parser.add_argument('--k', type=str,
+                        help='Specific k value to evaluate (e.g., 3 for k=3). '
+                             'If not specified, all k values will be evaluated.')
+    parser.add_argument('--complete-policy', action='store_true',
+                        help='Evaluate complete-policy results instead of RAG results')
+    parser.add_argument('--latest', action='store_true',
+                        help='Use the latest experiment for each model/k combination')
+    parser.add_argument('--date', type=str,
+                        help='Specific date to evaluate (e.g., "24-07-25" or "24-07-25--10-30-45"). '
+                             'Can be partial date.')
     parser.add_argument('--json-path', default=JSON_PATH,
                         help='Path to JSON output directory')
     parser.add_argument('--gt-path', default=GT_PATH,
@@ -468,6 +791,15 @@ def main():
                         help='Directory to save evaluation results')
 
     args = parser.parse_args()
+
+    # Validate arguments
+    if args.latest and args.date:
+        print("Error: Cannot use both --latest and --date options simultaneously")
+        return
+
+    if args.complete_policy and args.k:
+        print("Error: Cannot use both --complete-policy and --k options simultaneously")
+        return
 
     # Install required libraries if missing
     try:
@@ -495,7 +827,42 @@ def main():
 
     print(f"\n🔍 Available Model Directories Found:")
     for model in available_models:
-        print(f"  - {model}")
+        model_path = os.path.join(args.json_path, model)
+        # Check for k subdirectories and complete-policy directory
+        k_dirs = [d for d in os.listdir(model_path) if
+                  os.path.isdir(os.path.join(model_path, d)) and d.startswith("k=")]
+        complete_policy_dir = os.path.join(model_path, "complete-policy")
+        has_complete_policy = os.path.exists(complete_policy_dir) and os.path.isdir(complete_policy_dir)
+
+        info_parts = []
+        if k_dirs:
+            # Check for timestamp directories in each k directory
+            k_info = []
+            for k_dir in sorted(k_dirs):
+                k_path = os.path.join(model_path, k_dir)
+                timestamp_dirs = [d for d in os.listdir(k_path)
+                                  if os.path.isdir(os.path.join(k_path, d))
+                                  and parse_timestamp_dirname(d) is not None]
+                if timestamp_dirs:
+                    k_info.append(f"{k_dir} ({len(timestamp_dirs)} experiments)")
+                else:
+                    k_info.append(k_dir)
+            info_parts.extend(k_info)
+
+        if has_complete_policy:
+            # Check for timestamp directories in complete-policy
+            timestamp_dirs = [d for d in os.listdir(complete_policy_dir)
+                              if os.path.isdir(os.path.join(complete_policy_dir, d))
+                              and parse_timestamp_dirname(d) is not None]
+            if timestamp_dirs:
+                info_parts.append(f"complete-policy ({len(timestamp_dirs)} experiments)")
+            else:
+                info_parts.append("complete-policy")
+
+        if info_parts:
+            print(f"  - {model} (with {', '.join(info_parts)})")
+        else:
+            print(f"  - {model}")
 
     # Determine which models to evaluate
     if args.models:
@@ -522,7 +889,24 @@ def main():
 
         print(f"\n🚀 Evaluating model: {model_name}")
         print(f"📂 Model directory: {model_dir_path}")
-        results_df, summary = evaluate_model_outputs(model_name, model_dir_path, args.gt_path)
+
+        if args.complete_policy:
+            print(f"📄 Mode: Complete policy")
+        elif args.k:
+            print(f"🎯 Mode: k={args.k}")
+
+        if args.latest:
+            print(f"📅 Mode: Latest experiment")
+        elif args.date:
+            print(f"📅 Mode: Specific date - {args.date}")
+        else:
+            print(f"📅 Mode: All experiments")
+
+        results_df, summary = evaluate_model_outputs(
+            model_name, model_dir_path, args.gt_path,
+            k_value=args.k, use_latest=args.latest, date_str=args.date,
+            complete_policy=args.complete_policy
+        )
 
         if results_df is not None and summary is not None:
             # Save results
@@ -552,3 +936,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

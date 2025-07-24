@@ -135,9 +135,11 @@ QUESTIONS="2,3,4,5,6,7,8,9,10,11,12,14,16,17,18,19,20,21,22,23,24,25,26,29,30,31
 
 # Store the command for easier modification
 # Replace your current RAG_COMMAND with this:
-#RAG_COMMAND="$VENV_PYTHON src/main.py --model openrouter --model-name $MODEL_NAME --prompt precise_v4_qwen --k 5 --log-level DEBUG --questions $QUESTIONS --batch --rag-strategy semantic"
+#RAG_COMMAND="$VENV_PYTHON src/main.py --model openrouter --model-name $MODEL_NAME --prompt precise_v4_qwen --k 3 --log-level DEBUG --questions $QUESTIONS --batch --rag-strategy semantic"
 #RAG_COMMAND="$VENV_PYTHON src/main.py --model openrouter --model-name $MODEL_NAME --prompt precise_v4_qwen --k 3 --log-level DEBUG --questions $QUESTIONS --batch --rag-strategy smart_size"
-RAG_COMMAND="$VENV_PYTHON src/main.py --model hf --model-name $MODEL_NAME --prompt precise_v3_phi-4_v2 --k 7 --log-level DEBUG --questions $QUESTIONS --batch --rag-strategy smart_size"
+RAG_COMMAND="$VENV_PYTHON src/main.py --model hf --model-name $MODEL_NAME --prompt precise_v3_phi-4_v2 --log-level DEBUG --questions $QUESTIONS --batch --complete-policy"
+#RAG_COMMAND="$VENV_PYTHON src/main.py --model hf --model-name $MODEL_NAME --prompt precise_v4_qwen --log-level DEBUG --questions $QUESTIONS --batch --complete-policy"
+#RAG_COMMAND="$VENV_PYTHON src/main.py --model hf --model-name $MODEL_NAME --prompt precise_v5 --k 3 --log-level DEBUG --questions $QUESTIONS --batch --rag-strategy section"
 #RAG_COMMAND="$VENV_PYTHON src/main.py --model hf --model-name $MODEL_NAME --prompt precise_v2_1 --k 3 --log-level DEBUG --batch"
 
 #--rag-strategy smart_size
