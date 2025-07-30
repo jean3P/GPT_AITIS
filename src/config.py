@@ -105,7 +105,7 @@ MODEL_CONFIGS = {
         "device_map": "auto",
         "trust_remote_code": True,
         "low_cpu_mem_usage": True,
-        "max_new_tokens": 1024,
+        "max_new_tokens": 1020,
         "temperature": 0.1,
         "do_sample": False,
         "repetition_penalty": 1.05,

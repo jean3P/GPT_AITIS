@@ -12,7 +12,8 @@ if __name__ == "__main__":
     # Get available prompt names for the help message
     available_prompts = ", ".join([
         "standard", "detailed", "precise", "precise_v2", "precise_v3", "precise_v4",
-        "precise_v2_1", "precise_v2_2", "precise_v2_qwen",
+        "precise_v2_1", "precise_v2_2", "precise_v2_qwen", "precise_v3_qwen", "precise_v4_qwen", "precise_v3_phi-4_v2",
+        "precise_v5", "precise_v5_qwen"
     ])
 
     # Get available relevance filter prompts
@@ -46,6 +47,10 @@ if __name__ == "__main__":
                         help="Filter out obviously irrelevant queries before processing")
     parser.add_argument("--prompt-relevant", default="relevance_filter_v1",
                         help=f"Relevance filter prompt to use. Available: {available_relevance_prompts}")
+    parser.add_argument("--rag-strategy", choices=["simple", "section", "smart_size", "semantic", "graph", "semantic_graph"], default="simple",
+                        help="RAG strategy to use (simple, section, smart_size, semantic)")
+    parser.add_argument("--complete-policy", action="store_true",
+                        help="Pass the complete policy document instead of using RAG retrieval")
 
     args = parser.parse_args()
 
@@ -97,6 +102,8 @@ if __name__ == "__main__":
             k=args.k,
             filter_irrelevant=args.filter_irrelevant,
             relevance_prompt_name=args.prompt_relevant,
+            rag_strategy=args.rag_strategy,
+            complete_policy=args.complete_policy,
         )
     else:
         run_rag(
@@ -111,6 +118,8 @@ if __name__ == "__main__":
             k=args.k,
             filter_irrelevant=args.filter_irrelevant,
             relevance_prompt_name=args.prompt_relevant,
+            rag_strategy=args.rag_strategy,
+            complete_policy=args.complete_policy,
         )
 
     logger.info("RAG pipeline completed successfully")

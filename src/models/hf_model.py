@@ -103,28 +103,19 @@ class HuggingFaceModelClient(BaseModelClient):
             {
               "answer": {
                 "eligibility": "Yes | No - Unrelated event | No - condition(s) not met",
-                "eligibility_policy": "Quoted text from policy",
-                "amount_policy": "Amount like '1000 CHF' or null"
+                "outcome_justification": "Quoted text from policy",
+                "payment_justification": "Amount like '1000 CHF' or null"
               }
             }
             """
 
     def _create_error_response(self, error_message: str) -> Dict[str, Any]:
-        """
-        Create a formatted error response.
-
-        Args:
-            error_message: The error message to include
-
-        Returns:
-            Formatted error response dictionary
-        """
+        """Create a formatted error response."""
         return {
             "answer": {
                 "eligibility": "Error",
-                "eligibility_policy": error_message,
-                "amount_policy": None,
-                "amount_policy_line": None
+                "outcome_justification": error_message,  # NEW field name
+                "payment_justification": None  # NEW field name
             }
         }
 
@@ -177,12 +168,16 @@ class HuggingFaceModelClient(BaseModelClient):
         """
         Build the full prompt for Phi-4 using the original simple format that was working.
         """
+        # Replace placeholders in base_prompt with actual values
+        prompt_with_replacements = self.base_prompt.replace("{{RETRIEVED_POLICY_TEXT}}", context_text.strip())
+        prompt_with_replacements = prompt_with_replacements.replace("{{USER_QUESTION}}", question)
+
         prompt_final = "\nThen the JSON Solution is:\n\n"
 
         if persona_text:
-            full_prompt = f"{self.base_prompt}\n\n{context_text}\n\nQuestion: {question}\n\n{persona_text}\n\n{prompt_final}"
+            full_prompt = f"{prompt_with_replacements}\n\n{persona_text}\n\n{prompt_final}"
         else:
-            full_prompt = f"{self.base_prompt}\n\n{context_text}\n\nQuestion: {question}\n\n{prompt_final}"
+            full_prompt = f"{prompt_with_replacements}\n\n{prompt_final}"
 
         logger.debug(f"Phi-4 prompt: {full_prompt}")
         return full_prompt
@@ -191,17 +186,17 @@ class HuggingFaceModelClient(BaseModelClient):
         """
         Build the full prompt for Qwen using chat template format.
         """
+        # Replace placeholders in base_prompt with actual values
+        prompt_with_replacements = self.base_prompt.replace("{{RETRIEVED_POLICY_TEXT}}", context_text.strip())
+        prompt_with_replacements = prompt_with_replacements.replace("{{USER_QUESTION}}", question)
+
         if persona_text:
-            user_content = f"{context_text}\n\nQuestion: {question}\n\n{persona_text}"
+            user_content = f"{prompt_with_replacements}\n\n{persona_text}"
         else:
-            user_content = f"{context_text}\n\nQuestion: {question}"
+            user_content = f"{prompt_with_replacements}"
 
-        # Use Qwen chat template format - DO NOT repeat JSON schema in user message
-        # system_message = f"<|im_start|>system\n{self.base_prompt}<|im_end|>\n"
-        user_message = f"{user_content}\n"
-        # assistant_start = "<|im_start|>assistant\n"
-
-        full_prompt = user_message
+        # Use Qwen chat template format
+        full_prompt = user_content
         logger.debug(f"Qwen chat template prompt: {full_prompt}")
         return full_prompt
 
@@ -266,17 +261,12 @@ class HuggingFaceModelClient(BaseModelClient):
             return self._create_default_no_conditions_response()
 
     def _create_default_no_conditions_response(self) -> Dict[str, Any]:
-        """
-        Create a default 'No - condition(s) not met' response when JSON extraction fails.
-
-        Returns:
-            Default structured response indicating conditions not met
-        """
+        """Create a default response when JSON extraction fails."""
         return {
             "answer": {
                 "eligibility": "",
-                "eligibility_policy": "",
-                "amount_policy": ""
+                "outcome_justification": "",  # NEW field name
+                "payment_justification": ""  # NEW field name
             }
         }
 

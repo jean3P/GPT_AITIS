@@ -45,54 +45,53 @@ class JSONExtractor:
 
     def _normalize_json_fields(self, json_obj: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Enhanced normalization to handle Qwen model variations.
+        Normalize model output JSON to the standard structure:
+        {
+          "answer": {
+            "eligibility": <str>,
+            "outcome_justification": <str>,
+            "payment_justification": <str|null>
+          }
+        }
         """
         if "answer" in json_obj and isinstance(json_obj["answer"], dict):
             answer = json_obj["answer"]
             normalized_answer = {}
 
-            # Enhanced eligibility field normalization
-            eligibility_value = ""
-            eligibility_fields = [
-                "eligibility", "elgibility", "eligiblity", "eligibilty",
-                "eligibilaty", "eligiblity", "eligibilit", "eligibilyt",
-                "eligible"  # Add this common Qwen variant
-            ]
-            for field in eligibility_fields:
-                if field in answer:
-                    eligibility_value = answer[field]
+            # 1. Normalize eligibility
+            eligibility = ""
+            for key in ["eligibility", "elgibility", "eligiblity", "eligible"]:
+                if key in answer and isinstance(answer[key], str):
+                    eligibility = answer[key].strip()
                     break
-            normalized_answer["eligibility"] = eligibility_value
+            normalized_answer["eligibility"] = eligibility
 
-            # Enhanced eligibility_policy field normalization
-            policy_value = ""
-            policy_fields = [
-                "eligibility_policy", "elgibility_policy", "eligibility_text",
-                "eligiblity_policy", "eligibilty_policy", "policy_text",
-                "eligible_policy",  # Add this common Qwen variant
-                "description", "text", "justification"
-            ]
-            for field in policy_fields:
-                if field in answer:
-                    value = answer[field]
-                    if isinstance(value, list):
-                        policy_value = value[0] if value else ""
+            # 2. Normalize outcome_justification
+            outcome = ""
+            for key in ["outcome_justification", "eligibility_policy", "justification", "text", "description"]:
+                if key in answer:
+                    val = answer[key]
+                    if isinstance(val, str):
+                        outcome = val.strip()
+                    elif isinstance(val, dict):
+                        # flatten if nested keys contain single string values
+                        outcome = "; ".join(str(v) for v in val.values() if isinstance(v, str))
+                    elif isinstance(val, list):
+                        outcome = "; ".join(str(v) for v in val if isinstance(v, str))
+                    break
+            normalized_answer["outcome_justification"] = outcome
+
+            # 3. Normalize payment_justification
+            payment = None
+            for key in ["payment_justification", "amount_policy", "amount", "coverage_amount", "payment"]:
+                if key in answer:
+                    val = answer[key]
+                    if isinstance(val, str) and val.strip():
+                        payment = val.strip()
                     else:
-                        policy_value = str(value) if value else ""
+                        payment = None
                     break
-            normalized_answer["eligibility_policy"] = policy_value
-
-            # Amount field normalization (unchanged)
-            amount_value = None
-            amount_fields = [
-                "amount_policy", "amount_policey", "amount_polcy",
-                "amount_policy_line", "coverage", "coverage_amount", "amount", "payment"
-            ]
-            for field in amount_fields:
-                if field in answer:
-                    amount_value = answer[field]
-                    break
-            normalized_answer["amount_policy"] = amount_value
+            normalized_answer["payment_justification"] = payment
 
             json_obj["answer"] = normalized_answer
 

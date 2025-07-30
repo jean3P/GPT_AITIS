@@ -125,17 +125,24 @@ echo "=== STARTING RAG PIPELINE at $(date) ==="
 # Fix the model name - remove extra quotes!
 #MODEL_NAME="Qwen/Qwen3-32B"
 MODEL_NAME="microsoft/phi-4"
+#MODEL_NAME="qwen/qwen3-235b-a22b:free"
+#MODEL_NAME="qwen/qwen3-235b-a22b"
 #QUESTIONS="18,21"
-QUESTIONS="2,3,4,5,6,7,8,9,10,11,12,14,16,17,18,19,20,21,22,23,24,25,26,29,30,31,33,34,36,38,39,40"
-#QUESTIONS="7,16"
+#QUESTIONS="2,3,4,5,6,7,8,9,10,11,12,14,16,17,18,19,20,21,22,23,24,25,26,29,30,31,33"
+#QUESTIONS="19"
 #POLICY_ID="20"
 
 
 # Store the command for easier modification
 # Replace your current RAG_COMMAND with this:
-RAG_COMMAND="$VENV_PYTHON src/main.py --model openrouter --model-name qwen/qwen3-235b-a22b --prompt precise_v2_qwen --k 3 --log-level DEBUG --questions $QUESTIONS --batch"
+#RAG_COMMAND="$VENV_PYTHON src/main.py --model openrouter --model-name $MODEL_NAME --prompt precise_v4_qwen --k 3 --log-level DEBUG --questions $QUESTIONS --batch --rag-strategy semantic"
+#RAG_COMMAND="$VENV_PYTHON src/main.py --model openrouter --model-name $MODEL_NAME --prompt precise_v4_qwen --k 3 --log-level DEBUG --questions $QUESTIONS --batch --rag-strategy smart_size"
+RAG_COMMAND="$VENV_PYTHON src/main.py --model hf --model-name $MODEL_NAME --prompt precise_v3_phi-4_v2 --log-level DEBUG --questions $QUESTIONS --batch --complete-policy"
+#RAG_COMMAND="$VENV_PYTHON src/main.py --model hf --model-name $MODEL_NAME --prompt precise_v4_qwen --log-level DEBUG --questions $QUESTIONS --batch --complete-policy"
+#RAG_COMMAND="$VENV_PYTHON src/main.py --model hf --model-name $MODEL_NAME --prompt precise_v5 --k 3 --log-level DEBUG --questions $QUESTIONS --batch --rag-strategy section"
 #RAG_COMMAND="$VENV_PYTHON src/main.py --model hf --model-name $MODEL_NAME --prompt precise_v2_1 --k 3 --log-level DEBUG --batch"
-#RAG_COMMAND="$VENV_PYTHON src/main.py --model hf --model-name $MODEL_NAME --prompt precise_v2 --k 3 --log-level DEBUG --questions $QUESTIONS --batch"
+
+#--rag-strategy smart_size
 #RAG_COMMAND="$VENV_PYTHON src/main.py --model hf --model-name $MODEL_NAME --prompt precise_v2_qwen --k 3 --log-level DEBUG --questions $QUESTIONS --policy-id $POLICY_ID --batch"
 #RAG_COMMAND="$VENV_PYTHON src/main.py --model hf --model-name $MODEL_NAME --prompt precise_v2 --k 3 --log-level DEBUG --questions $QUESTIONS --batch"
 
@@ -150,7 +157,7 @@ wait $MAIN_PID
 EXIT_CODE=$?
 
 echo "=== RAG PIPELINE COMPLETED with exit code: $EXIT_CODE ==="
-
+62
 # =============================================================================
 # RESULTS SUMMARY
 # =============================================================================

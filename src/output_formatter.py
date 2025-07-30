@@ -119,53 +119,130 @@ def format_results_as_json(policy_path: str, question_results: List[List[str]]) 
     return policy_json
 
 
-def create_model_specific_output_dir(base_output_dir: str, model_name: str) -> str:
+def get_timestamp_dir() -> str:
     """
-    Create a model-specific output directory.
-
-    Args:
-        base_output_dir: Base output directory
-        model_name: Full model name (e.g., "microsoft/phi-4", "qwen/qwen-2.5-72b-instruct")
+    Generate a timestamp-based directory name in the format DD-MM-YY--HH-MM-SS.
 
     Returns:
-        Path to the model-specific directory
+        Timestamp string for directory naming
     """
-    clean_model_name = get_clean_model_name(model_name)
-    model_output_dir = os.path.join(base_output_dir, clean_model_name)
-    os.makedirs(model_output_dir, exist_ok=True)
-    logger.info(f"Created model-specific output directory: {model_output_dir}")
-    return model_output_dir
+    now = datetime.datetime.now()
+    return now.strftime("%d-%m-%y--%H-%M-%S")
+
+# Global variable to store the current run's timestamp
+_current_run_timestamp = None
 
 
-def save_policy_json(policy_json: Dict[str, Any], output_dir: str, model_name: str) -> str:
+def get_or_create_run_timestamp() -> str:
     """
-    Save the policy JSON to a model-specific file.
+    Get the current run's timestamp, creating it if it doesn't exist.
+    This ensures all outputs from a single run use the same timestamp.
+
+    Returns:
+        The timestamp for the current run
+    """
+    global _current_run_timestamp
+    if _current_run_timestamp is None:
+        _current_run_timestamp = get_timestamp_dir()
+    return _current_run_timestamp
+
+
+def reset_run_timestamp() -> None:
+    """Reset the run timestamp (useful for testing or new runs)."""
+    global _current_run_timestamp
+    _current_run_timestamp = None
+
+
+def create_model_specific_output_dir(base_output_dir: str, model_name: str, k: int = None,
+                                     use_timestamp: bool = True, complete_policy: bool = False) -> str:
+    """
+    Create a directory structure based on model name, k parameter (or complete-policy), and timestamp.
 
     Args:
-        policy_json: JSON-serializable dictionary
+        base_output_dir: Base directory for outputs
+        model_name: Name of the model (e.g., "microsoft/phi-4", "qwen/qwen-2.5-72b-instruct")
+        k: Number of chunks parameter (optional, ignored if complete_policy=True)
+        use_timestamp: Whether to include timestamp in directory structure (default: True)
+        complete_policy: Whether using complete policy mode (default: False)
+
+    Returns:
+        Path to the created directory
+
+    Directory structure:
+        For RAG mode:
+            base_output_dir/model_name/k=3/DD-MM-YY--HH-MM-SS/
+        For complete policy mode:
+            base_output_dir/model_name/complete-policy/DD-MM-YY--HH-MM-SS/
+    """
+    # Clean the model name for directory naming
+    if "/" in model_name:
+        # For patterns like "microsoft/phi-4" or "qwen/qwen-2.5-72b"
+        clean_model_name = model_name.replace("/", "_").replace(":", "_")
+    else:
+        clean_model_name = model_name
+
+    # Build the directory path step by step
+    path_components = [base_output_dir, clean_model_name]
+
+    # Add mode-specific subdirectory
+    if complete_policy:
+        path_components.append("complete-policy")
+    elif k is not None:
+        path_components.append(f"k={k}")
+
+    # Add timestamp directory if requested
+    if use_timestamp:
+        timestamp = get_or_create_run_timestamp()
+        path_components.append(timestamp)
+
+    # Create the full path
+    output_dir = os.path.join(*path_components)
+
+    # Create the directory if it doesn't exist
+    os.makedirs(output_dir, exist_ok=True)
+    logger.info(f"Created output directory: {output_dir}")
+
+    return output_dir
+
+
+def save_policy_json(policy_data: Dict[str, Any], output_dir: str, model_name: str = None,
+                     k: int = None, use_timestamp: bool = True, complete_policy: bool = False) -> str:
+    """
+    Save policy results to a JSON file in the appropriate directory.
+
+    Args:
+        policy_data: Dictionary containing policy results
         output_dir: Base output directory
-        model_name: Model name for creating subdirectory
+        model_name: Model name for directory organization
+        k: Number of chunks parameter for subdirectory (ignored if complete_policy=True)
+        use_timestamp: Whether to use timestamp in directory structure
+        complete_policy: Whether using complete policy mode
 
     Returns:
-        Path to the saved file
+        Path to the saved JSON file
     """
-    # Create model-specific output directory
-    model_output_dir = create_model_specific_output_dir(output_dir, model_name)
+    # Create the appropriate output directory
+    if model_name:
+        final_output_dir = create_model_specific_output_dir(
+            output_dir, model_name, k, use_timestamp=use_timestamp,
+            complete_policy=complete_policy
+        )
+    else:
+        final_output_dir = output_dir
+        os.makedirs(final_output_dir, exist_ok=True)
 
-    timestamp = datetime.datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
-    policy_id = policy_json["policy_id"]
+    # Create filename based on policy ID
+    policy_id = policy_data.get("policy_id", "unknown")
+    filename = f"policy_{policy_id}_results.json"
+    filepath = os.path.join(final_output_dir, filename)
 
-    # Include clean model name in filename for clarity
-    clean_model_name = get_clean_model_name(model_name)
-    output_filename = f"policy_id-{policy_id}__{clean_model_name}__{timestamp}.json"
-    output_path = os.path.join(model_output_dir, output_filename)
+    # Save the JSON file
+    with open(filepath, 'w', encoding='utf-8') as f:
+        json.dump(policy_data, f, indent=2, ensure_ascii=False)
 
-    # Save JSON to file
-    with open(output_path, 'w', encoding='utf-8') as f:
-        json.dump(policy_json, f, indent=2, ensure_ascii=False)
+    logger.info(f"Saved policy results to: {filepath}")
 
-    logger.info(f"Saved policy JSON to {output_path}")
-    return output_path
+    return filepath
 
 
 def process_policy_results(policy_paths: List[str], all_results: List[List[str]],
