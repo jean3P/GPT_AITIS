@@ -5,6 +5,7 @@ from typing import Optional, Tuple, List
 
 from config import *
 from models.factory import get_model_client, get_shared_relevance_client
+from models.verifier import SharedModelVerifier
 from utils import read_questions, list_policy_paths
 from models.vector_store import LocalVectorStore, EnhancedLocalVectorStore
 from output_formatter import extract_policy_id, format_results_as_json, save_policy_json, \
@@ -91,6 +92,7 @@ def check_policy_size_for_model(policy_text: str, model_name: str) -> None:
                 )
             break
 
+
 def get_vector_store(strategy: str, model_name: str):
     """Factory function to get appropriate vector store based on strategy."""
     if strategy == "simple":
@@ -160,6 +162,20 @@ def get_vector_store(strategy: str, model_name: str):
                 "sequential_weight": 0.8
             }
         )
+    elif strategy == "hybrid":
+        return EnhancedLocalVectorStore(
+            model_name=model_name,
+            chunking_strategy="hybrid",
+            chunking_config={
+                "max_chunk_words": 500,
+                "min_chunk_words": 50,
+                "overlap_words": 20,
+                "semantic_threshold": 0.75,
+                "embedding_model": "all-MiniLM-L6-v2",
+                "include_cross_references": True,
+                "preserve_tables": False
+            }
+        )
     else:
         raise ValueError(f"Unknown RAG strategy: {strategy}")
 
@@ -212,6 +228,8 @@ def run_rag(
         relevance_prompt_name: str = "relevance_filter_v1",
         rag_strategy: str = "simple",
         complete_policy: bool = False,
+        use_verifier: bool = False,
+        verifier_iterations: int = 1,
 ) -> None:
     """
     Executes the RAG pipeline using a modular model client, either OpenAI or HuggingFace.
@@ -231,6 +249,8 @@ def run_rag(
         relevance_prompt_name (str): Name of the prompt template to use for relevance filtering.
         rag_strategy (str): Name of the approach strategy
         complete_policy (bool): Whether to pass the complete policy document instead of using RAG (default: False)
+        use_verifier (bool): Whether to use verification to review and correct results (default: False)
+        verifier_iterations (int): Number of verification iterations to perform (default: 1)
     """
     # Select the prompt template
     try:
@@ -247,7 +267,7 @@ def run_rag(
         output_dir = os.path.join(base_dir, JSON_PATH)
 
     model_output_dir = create_model_specific_output_dir(
-        output_dir, model_name, k, complete_policy=complete_policy
+        output_dir, model_name, k, complete_policy=complete_policy, prompt_name=prompt_name
     )
     logger.info(f"JSON output will be saved to: {model_output_dir}")
 
@@ -298,6 +318,14 @@ def run_rag(
         # Initialize the model client
         model_client = get_model_client(model_provider, model_name, sys_prompt)
 
+        # Set up verifier if requested
+        verifier = None
+        if use_verifier:
+            # Determine model type for verification prompt selection
+            model_type = "phi4" if "phi" in model_name.lower() else "qwen"
+            verifier = SharedModelVerifier(model_client, model_type=model_type)
+            logger.info(f"Verification enabled with {verifier_iterations} iteration(s)")
+
         # Initialize relevance checking client if filtering is enabled and not in complete policy mode
         relevance_client = None
         if filter_irrelevant and not complete_policy:
@@ -341,6 +369,7 @@ def run_rag(
 
         # Process all questions for this policy
         policy_results = []
+        verification_info_dict = {}  # Store verification info for each question
 
         for q_id, question in questions:
             try:
@@ -392,6 +421,25 @@ def run_rag(
                 logger.info(f"=== RAG RESPONSE LOGGING Q{q_id} ===")
                 logger.info(f"Raw model response: {response}")
                 logger.info(f"Response type: {type(response)}")
+
+                # Apply verification if enabled
+                verification_info = None
+                if use_verifier and verifier:
+                    logger.info(f"=== STARTING VERIFICATION FOR Q{q_id} ===")
+                    try:
+                        response, verification_info = verifier.verify_result(
+                            question=question,
+                            context_texts=context_texts,
+                            previous_result=response,
+                            iterations=verifier_iterations
+                        )
+                        logger.info(f"Verification completed: {verification_info}")
+                        logger.info(f"Final verified response: {response}")
+                        verification_info_dict[str(q_id)] = verification_info
+                    except Exception as e:
+                        logger.error(f"Verification failed: {e}, using original response")
+                        verification_info = {"status": "error", "error": str(e)}
+                        verification_info_dict[str(q_id)] = verification_info
 
                 if isinstance(response, dict) and "answer" in response:
                     answer = response["answer"]
@@ -465,7 +513,7 @@ def run_rag(
 
         save_policy_json(
             policy_json, output_dir, model_name, k,
-            use_timestamp=True, complete_policy=complete_policy
+            use_timestamp=True, complete_policy=complete_policy, prompt_name=prompt_name
         )
         logger.info(f"Saved JSON for policy {current_policy_id}")
 
@@ -486,6 +534,8 @@ def run_batch_rag(
         relevance_prompt_name: str = "relevance_filter_v1",
         rag_strategy: str = "simple",
         complete_policy: bool = False,
+        use_verifier: bool = False,
+        verifier_iterations: int = 1,
 ) -> None:
     """
     Alternative implementation that processes all policies together and then
@@ -505,6 +555,8 @@ def run_batch_rag(
         relevance_prompt_name (str): Name of the prompt template to use for relevance filtering.
         rag_strategy (str): Name of the approach strategy
         complete_policy (bool): Whether to pass the complete policy document instead of using RAG (default: False)
+        use_verifier (bool): Whether to use verification to review and correct results (default: False)
+        verifier_iterations (int): Number of verification iterations to perform (default: 1)
     """
     # Select the prompt template
     try:
@@ -518,6 +570,14 @@ def run_batch_rag(
 
     # Initialize the model client
     model_client = get_model_client(model_provider, model_name, sys_prompt)
+
+    # Set up verifier if requested
+    verifier = None
+    if use_verifier:
+        # Determine model type for verification prompt selection
+        model_type = "phi4" if "phi" in model_name.lower() else "qwen"
+        verifier = SharedModelVerifier(model_client, model_type=model_type)
+        logger.info(f"Verification enabled with {verifier_iterations} iteration(s)")
 
     # Initialize relevance checking client if filtering is enabled and not in complete policy mode
     relevance_client = None
@@ -552,13 +612,14 @@ def run_batch_rag(
 
     # Structure to store results by policy
     policy_results = {}
+    policy_verification_info = {}  # Store verification info by policy
 
     # Create output directory for JSON files
     if output_dir is None:
         output_dir = os.path.join(base_dir, "resources/results/json_output")
 
     model_output_dir = create_model_specific_output_dir(
-        output_dir, model_name, k, complete_policy=complete_policy
+        output_dir, model_name, k, complete_policy=complete_policy, prompt_name=prompt_name
     )
     logger.info(f"JSON output will be saved to: {model_output_dir}")
 
@@ -616,6 +677,7 @@ def run_batch_rag(
             "policy_path": pdf_path,
             "results": []
         }
+        policy_verification_info[current_policy_id] = {}
 
     # Process all questions for all policies
     for q_id, question in questions:
@@ -681,6 +743,25 @@ def run_batch_rag(
                 logger.info(f"Raw model response: {response}")
                 logger.info(f"Response type: {type(response)}")
 
+                # Apply verification if enabled
+                verification_info = None
+                if use_verifier and verifier:
+                    logger.info(f"=== STARTING VERIFICATION FOR Q{q_id} P{current_policy_id} ===")
+                    try:
+                        response, verification_info = verifier.verify_result(
+                            question=question,
+                            context_texts=context_texts,
+                            previous_result=response,
+                            iterations=verifier_iterations
+                        )
+                        logger.info(f"Verification completed: {verification_info}")
+                        logger.info(f"Final verified response: {response}")
+                        policy_verification_info[current_policy_id][str(q_id)] = verification_info
+                    except Exception as e:
+                        logger.error(f"Verification failed: {e}, using original response")
+                        verification_info = {"status": "error", "error": str(e)}
+                        policy_verification_info[current_policy_id][str(q_id)] = verification_info
+
                 if isinstance(response, dict) and "answer" in response:
                     answer = response["answer"]
                     logger.info(f"Answer section: {answer}")
@@ -735,6 +816,9 @@ def run_batch_rag(
             logger.info(f"Result {i}: {result}")
         logger.info(f"=== END BATCH POLICY RESULTS ===")
 
+        # Get verification info for this policy if available
+        # verification_dict = policy_verification_info.get(current_policy_id, {}) if use_verifier else None
+
         policy_json = format_results_as_json(data["policy_path"], data["results"])
 
         # COMPREHENSIVE LOGGING OF FINAL JSON (BATCH VERSION)
@@ -755,9 +839,8 @@ def run_batch_rag(
 
         save_policy_json(
             policy_json, output_dir, model_name, k,
-            use_timestamp=True, complete_policy=complete_policy
+            use_timestamp=True, complete_policy=complete_policy, prompt_name=prompt_name
         )
         logger.info(f"Saved JSON for policy {current_policy_id}")
 
     logger.info("✅ RAG run completed successfully.")
-

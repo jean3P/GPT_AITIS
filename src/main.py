@@ -47,10 +47,15 @@ if __name__ == "__main__":
                         help="Filter out obviously irrelevant queries before processing")
     parser.add_argument("--prompt-relevant", default="relevance_filter_v1",
                         help=f"Relevance filter prompt to use. Available: {available_relevance_prompts}")
-    parser.add_argument("--rag-strategy", choices=["simple", "section", "smart_size", "semantic", "graph", "semantic_graph"], default="simple",
+    parser.add_argument("--rag-strategy", choices=["simple", "section", "smart_size", "semantic",
+                                                   "graph", "semantic_graph", "hybrid"], default="simple",
                         help="RAG strategy to use (simple, section, smart_size, semantic)")
     parser.add_argument("--complete-policy", action="store_true",
                         help="Pass the complete policy document instead of using RAG retrieval")
+    parser.add_argument("--verifier", action="store_true",
+                        help="Enable verification to review and potentially correct results")
+    parser.add_argument("--verifier-iterations", type=int, default=1,
+                        help="Number of verification iterations to perform (default: 1)")
 
     args = parser.parse_args()
 
@@ -65,6 +70,11 @@ if __name__ == "__main__":
     logger.info(f"Starting RAG pipeline with model: {args.model}/{args.model_name}")
     logger.info(f"Using prompt template: {args.prompt}")
     logger.info(f"Log level set to: {args.log_level}")
+
+
+    # After parsing args, add logging for verification:
+    if args.verifier:
+        logger.info(f"Verification enabled with {args.verifier_iterations} iteration(s)")
 
     # Add OpenRouter-specific logging
     if args.model == "openrouter":
@@ -104,6 +114,8 @@ if __name__ == "__main__":
             relevance_prompt_name=args.prompt_relevant,
             rag_strategy=args.rag_strategy,
             complete_policy=args.complete_policy,
+            use_verifier=args.verifier,
+            verifier_iterations=args.verifier_iterations,
         )
     else:
         run_rag(
@@ -120,6 +132,8 @@ if __name__ == "__main__":
             relevance_prompt_name=args.prompt_relevant,
             rag_strategy=args.rag_strategy,
             complete_policy=args.complete_policy,
+            use_verifier=args.verifier,
+            verifier_iterations=args.verifier_iterations,
         )
 
     logger.info("RAG pipeline completed successfully")

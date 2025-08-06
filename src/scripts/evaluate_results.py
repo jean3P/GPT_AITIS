@@ -134,46 +134,42 @@ def get_model_directories(json_path: str) -> List[str]:
             for subitem in os.listdir(item_path):
                 subitem_path = os.path.join(item_path, subitem)
                 if os.path.isdir(subitem_path) and (subitem.startswith("k=") or subitem == "complete-policy"):
-                    # Check for timestamp directories
-                    for timestamp_dir in os.listdir(subitem_path):
-                        timestamp_path = os.path.join(subitem_path, timestamp_dir)
-                        if os.path.isdir(timestamp_path):
-                            subfiles = os.listdir(timestamp_path)
-                            if any(f.startswith("policy_") and f.endswith(".json") for f in subfiles):
-                                has_policy_files = True
-                                break
-
-                    # Also check old structure (files directly in k/complete-policy directory)
-                    if not has_policy_files:
-                        subfiles = os.listdir(subitem_path)
-                        if any(f.startswith("policy_") and f.endswith(".json") for f in subfiles):
-                            has_policy_files = True
+                    has_policy_files = True
+                    break
 
             if has_policy_files:
                 model_dirs.append(item)
 
     return sorted(model_dirs)
 
-def get_latest_timestamp_dir(k_dir_path: str) -> Optional[str]:
+
+def get_latest_timestamp_dir(parent_dir: str, prompt_name: str = None) -> Optional[str]:
     """
-    Find the latest timestamp directory in a k directory.
+    Find the latest timestamp directory, optionally filtered by prompt name.
 
     Args:
-        k_dir_path: Path to k directory (e.g., /path/to/model/k=3)
+        parent_dir: Path to parent directory (e.g., /path/to/model/k=3)
+        prompt_name: Optional prompt name to filter by
 
     Returns:
         Path to latest timestamp directory or None if not found
     """
-    if not os.path.exists(k_dir_path):
+    if not os.path.exists(parent_dir):
         return None
 
     timestamp_dirs = []
-    for item in os.listdir(k_dir_path):
-        item_path = os.path.join(k_dir_path, item)
+    for item in os.listdir(parent_dir):
+        item_path = os.path.join(parent_dir, item)
         if os.path.isdir(item_path):
             timestamp = parse_timestamp_dirname(item)
             if timestamp:
-                timestamp_dirs.append((timestamp, item_path))
+                # If prompt_name is specified, check if this timestamp dir contains that prompt
+                if prompt_name:
+                    prompt_path = os.path.join(item_path, prompt_name)
+                    if os.path.exists(prompt_path) and os.path.isdir(prompt_path):
+                        timestamp_dirs.append((timestamp, item_path))
+                else:
+                    timestamp_dirs.append((timestamp, item_path))
 
     if not timestamp_dirs:
         return None
@@ -183,31 +179,54 @@ def get_latest_timestamp_dir(k_dir_path: str) -> Optional[str]:
     return timestamp_dirs[0][1]
 
 
-def get_specific_timestamp_dir(k_dir_path: str, date_str: str) -> Optional[str]:
+def get_specific_timestamp_dir(parent_dir: str, date_str: str, prompt_name: str = None) -> Optional[str]:
     """
     Find a specific timestamp directory matching the given date.
 
     Args:
-        k_dir_path: Path to k directory
+        parent_dir: Path to parent directory
         date_str: Date string to match (can be partial, e.g., "24-07-25" or full "24-07-25--10-30-45")
+        prompt_name: Optional prompt name to filter by
 
     Returns:
         Path to matching timestamp directory or None if not found
     """
-    if not os.path.exists(k_dir_path):
+    if not os.path.exists(parent_dir):
         return None
 
-    for item in os.listdir(k_dir_path):
-        item_path = os.path.join(k_dir_path, item)
+    for item in os.listdir(parent_dir):
+        item_path = os.path.join(parent_dir, item)
         if os.path.isdir(item_path) and item.startswith(date_str):
-            return item_path
+            # If prompt_name is specified, check if this timestamp dir contains that prompt
+            if prompt_name:
+                prompt_path = os.path.join(item_path, prompt_name)
+                if os.path.exists(prompt_path) and os.path.isdir(prompt_path):
+                    return item_path
+            else:
+                return item_path
 
     return None
 
 
+def get_prompt_directories(timestamp_dir: str) -> List[str]:
+    """Get all prompt directories within a timestamp directory."""
+    if not os.path.exists(timestamp_dir):
+        return []
+
+    prompt_dirs = []
+    for item in os.listdir(timestamp_dir):
+        item_path = os.path.join(timestamp_dir, item)
+        if os.path.isdir(item_path):
+            # Check if it contains policy files
+            if any(f.startswith("policy_") and f.endswith(".json") for f in os.listdir(item_path)):
+                prompt_dirs.append(item)
+
+    return sorted(prompt_dirs)
+
+
 def get_latest_output_files(model_dir_path: str, k_value: str = None,
                             use_latest: bool = False, date_str: str = None,
-                            complete_policy: bool = False) -> List[Tuple[str, str]]:
+                            complete_policy: bool = False, prompt_name: str = None) -> List[Tuple[str, str]]:
     """
     Find output files for each policy ID in a model directory.
 
@@ -217,6 +236,7 @@ def get_latest_output_files(model_dir_path: str, k_value: str = None,
         use_latest: If True, use the latest timestamp directory
         date_str: Specific date string to match timestamp directories
         complete_policy: If True, look in complete-policy directory instead of k directories
+        prompt_name: Specific prompt name to filter by (e.g., "precise_v4_qwen")
 
     Returns:
         List of tuples: (file_path, file_name)
@@ -225,6 +245,21 @@ def get_latest_output_files(model_dir_path: str, k_value: str = None,
         return []
 
     all_files = []
+
+    def process_prompt_directory(prompt_dir_path: str, prompt_name_found: str, timestamp_info: str = None):
+        """Helper function to process a prompt directory and collect files."""
+        files_in_prompt = []
+        for file in os.listdir(prompt_dir_path):
+            if file.startswith("policy_") and file.endswith(".json"):
+                files_in_prompt.append((os.path.join(prompt_dir_path, file), file))
+
+        if files_in_prompt:
+            info_str = f"prompt={prompt_name_found}"
+            if timestamp_info:
+                info_str = f"{timestamp_info}, {info_str}"
+            print(f"      📁 Found {len(files_in_prompt)} files in {info_str}")
+
+        return files_in_prompt
 
     if complete_policy:
         # Look for complete-policy directory
@@ -243,22 +278,64 @@ def get_latest_output_files(model_dir_path: str, k_value: str = None,
                 # New structure with timestamp directories
                 if use_latest:
                     # Find the latest timestamp directory
-                    timestamp_dir = get_latest_timestamp_dir(complete_policy_path)
+                    timestamp_dir = get_latest_timestamp_dir(complete_policy_path, prompt_name)
                     if timestamp_dir:
                         timestamp_name = os.path.basename(timestamp_dir)
                         print(f"    📅 Using latest timestamp: {timestamp_name}")
-                        for file in os.listdir(timestamp_dir):
-                            if file.startswith("policy_") and file.endswith(".json"):
-                                all_files.append((os.path.join(timestamp_dir, file), file))
+
+                        # Check for prompt directories
+                        prompt_dirs = get_prompt_directories(timestamp_dir)
+                        if prompt_dirs:
+                            # New structure with prompt directories
+                            if prompt_name:
+                                # Look for specific prompt
+                                if prompt_name in prompt_dirs:
+                                    prompt_path = os.path.join(timestamp_dir, prompt_name)
+                                    all_files.extend(process_prompt_directory(prompt_path, prompt_name,
+                                                                              f"timestamp={timestamp_name}"))
+                                else:
+                                    print(f"    ⚠️  Prompt '{prompt_name}' not found in timestamp directory")
+                            else:
+                                # Process all prompts
+                                for prompt_dir in prompt_dirs:
+                                    prompt_path = os.path.join(timestamp_dir, prompt_dir)
+                                    all_files.extend(process_prompt_directory(prompt_path, prompt_dir,
+                                                                              f"timestamp={timestamp_name}"))
+                        else:
+                            # Old structure - files directly in timestamp directory
+                            for file in os.listdir(timestamp_dir):
+                                if file.startswith("policy_") and file.endswith(".json"):
+                                    all_files.append((os.path.join(timestamp_dir, file), file))
                 elif date_str:
                     # Find specific timestamp directory
-                    timestamp_dir = get_specific_timestamp_dir(complete_policy_path, date_str)
+                    timestamp_dir = get_specific_timestamp_dir(complete_policy_path, date_str, prompt_name)
                     if timestamp_dir:
                         timestamp_name = os.path.basename(timestamp_dir)
                         print(f"    📅 Using timestamp: {timestamp_name}")
-                        for file in os.listdir(timestamp_dir):
-                            if file.startswith("policy_") and file.endswith(".json"):
-                                all_files.append((os.path.join(timestamp_dir, file), file))
+
+                        # Check for prompt directories
+                        prompt_dirs = get_prompt_directories(timestamp_dir)
+                        if prompt_dirs:
+                            # New structure with prompt directories
+                            if prompt_name:
+                                # Look for specific prompt
+                                if prompt_name in prompt_dirs:
+                                    prompt_path = os.path.join(timestamp_dir, prompt_name)
+                                    all_files.extend(process_prompt_directory(prompt_path, prompt_name,
+                                                                              f"timestamp={timestamp_name}"))
+                                else:
+                                    print(f"    ⚠️  Prompt '{prompt_name}' not found in timestamp directory")
+                            else:
+                                # Process all prompts
+                                for prompt_dir in prompt_dirs:
+                                    prompt_path = os.path.join(timestamp_dir, prompt_dir)
+                                    all_files.extend(process_prompt_directory(prompt_path, prompt_dir,
+                                                                              f"timestamp={timestamp_name}"))
+                        else:
+                            # Old structure - files directly in timestamp directory
+                            for file in os.listdir(timestamp_dir):
+                                if file.startswith("policy_") and file.endswith(".json"):
+                                    all_files.append((os.path.join(timestamp_dir, file), file))
                     else:
                         print(f"    ⚠️  No timestamp directory found matching: {date_str}")
                 else:
@@ -267,9 +344,28 @@ def get_latest_output_files(model_dir_path: str, k_value: str = None,
                         timestamp_path = os.path.join(complete_policy_path, timestamp_item)
                         if os.path.isdir(timestamp_path) and parse_timestamp_dirname(timestamp_item):
                             print(f"    📅 Processing timestamp: {timestamp_item}")
-                            for file in os.listdir(timestamp_path):
-                                if file.startswith("policy_") and file.endswith(".json"):
-                                    all_files.append((os.path.join(timestamp_path, file), file))
+
+                            # Check for prompt directories
+                            prompt_dirs = get_prompt_directories(timestamp_path)
+                            if prompt_dirs:
+                                # New structure with prompt directories
+                                if prompt_name:
+                                    # Look for specific prompt
+                                    if prompt_name in prompt_dirs:
+                                        prompt_path = os.path.join(timestamp_path, prompt_name)
+                                        all_files.extend(process_prompt_directory(prompt_path, prompt_name,
+                                                                                  f"timestamp={timestamp_item}"))
+                                else:
+                                    # Process all prompts
+                                    for prompt_dir in prompt_dirs:
+                                        prompt_path = os.path.join(timestamp_path, prompt_dir)
+                                        all_files.extend(process_prompt_directory(prompt_path, prompt_dir,
+                                                                                  f"timestamp={timestamp_item}"))
+                            else:
+                                # Old structure - files directly in timestamp directory
+                                for file in os.listdir(timestamp_path):
+                                    if file.startswith("policy_") and file.endswith(".json"):
+                                        all_files.append((os.path.join(timestamp_path, file), file))
             else:
                 # Old structure - files directly in complete-policy directory
                 print(f"    📁 No timestamp directories found, checking main complete-policy directory...")
@@ -307,22 +403,64 @@ def get_latest_output_files(model_dir_path: str, k_value: str = None,
                     # New structure with timestamp directories
                     if use_latest:
                         # Find the latest timestamp directory
-                        timestamp_dir = get_latest_timestamp_dir(item_path)
+                        timestamp_dir = get_latest_timestamp_dir(item_path, prompt_name)
                         if timestamp_dir:
                             timestamp_name = os.path.basename(timestamp_dir)
                             print(f"    📅 Using latest timestamp: {timestamp_name}")
-                            for file in os.listdir(timestamp_dir):
-                                if file.startswith("policy_") and file.endswith(".json"):
-                                    all_files.append((os.path.join(timestamp_dir, file), file))
+
+                            # Check for prompt directories
+                            prompt_dirs = get_prompt_directories(timestamp_dir)
+                            if prompt_dirs:
+                                # New structure with prompt directories
+                                if prompt_name:
+                                    # Look for specific prompt
+                                    if prompt_name in prompt_dirs:
+                                        prompt_path = os.path.join(timestamp_dir, prompt_name)
+                                        all_files.extend(process_prompt_directory(prompt_path, prompt_name,
+                                                                                  f"timestamp={timestamp_name}"))
+                                    else:
+                                        print(f"    ⚠️  Prompt '{prompt_name}' not found in timestamp directory")
+                                else:
+                                    # Process all prompts
+                                    for prompt_dir in prompt_dirs:
+                                        prompt_path = os.path.join(timestamp_dir, prompt_dir)
+                                        all_files.extend(process_prompt_directory(prompt_path, prompt_dir,
+                                                                                  f"timestamp={timestamp_name}"))
+                            else:
+                                # Old structure - files directly in timestamp directory
+                                for file in os.listdir(timestamp_dir):
+                                    if file.startswith("policy_") and file.endswith(".json"):
+                                        all_files.append((os.path.join(timestamp_dir, file), file))
                     elif date_str:
                         # Find specific timestamp directory
-                        timestamp_dir = get_specific_timestamp_dir(item_path, date_str)
+                        timestamp_dir = get_specific_timestamp_dir(item_path, date_str, prompt_name)
                         if timestamp_dir:
                             timestamp_name = os.path.basename(timestamp_dir)
                             print(f"    📅 Using timestamp: {timestamp_name}")
-                            for file in os.listdir(timestamp_dir):
-                                if file.startswith("policy_") and file.endswith(".json"):
-                                    all_files.append((os.path.join(timestamp_dir, file), file))
+
+                            # Check for prompt directories
+                            prompt_dirs = get_prompt_directories(timestamp_dir)
+                            if prompt_dirs:
+                                # New structure with prompt directories
+                                if prompt_name:
+                                    # Look for specific prompt
+                                    if prompt_name in prompt_dirs:
+                                        prompt_path = os.path.join(timestamp_dir, prompt_name)
+                                        all_files.extend(process_prompt_directory(prompt_path, prompt_name,
+                                                                                  f"timestamp={timestamp_name}"))
+                                    else:
+                                        print(f"    ⚠️  Prompt '{prompt_name}' not found in timestamp directory")
+                                else:
+                                    # Process all prompts
+                                    for prompt_dir in prompt_dirs:
+                                        prompt_path = os.path.join(timestamp_dir, prompt_dir)
+                                        all_files.extend(process_prompt_directory(prompt_path, prompt_dir,
+                                                                                  f"timestamp={timestamp_name}"))
+                            else:
+                                # Old structure - files directly in timestamp directory
+                                for file in os.listdir(timestamp_dir):
+                                    if file.startswith("policy_") and file.endswith(".json"):
+                                        all_files.append((os.path.join(timestamp_dir, file), file))
                         else:
                             print(f"    ⚠️  No timestamp directory found matching: {date_str}")
                     else:
@@ -331,9 +469,28 @@ def get_latest_output_files(model_dir_path: str, k_value: str = None,
                             timestamp_path = os.path.join(item_path, timestamp_item)
                             if os.path.isdir(timestamp_path) and parse_timestamp_dirname(timestamp_item):
                                 print(f"    📅 Processing timestamp: {timestamp_item}")
-                                for file in os.listdir(timestamp_path):
-                                    if file.startswith("policy_") and file.endswith(".json"):
-                                        all_files.append((os.path.join(timestamp_path, file), file))
+
+                                # Check for prompt directories
+                                prompt_dirs = get_prompt_directories(timestamp_path)
+                                if prompt_dirs:
+                                    # New structure with prompt directories
+                                    if prompt_name:
+                                        # Look for specific prompt
+                                        if prompt_name in prompt_dirs:
+                                            prompt_path = os.path.join(timestamp_path, prompt_name)
+                                            all_files.extend(process_prompt_directory(prompt_path, prompt_name,
+                                                                                      f"timestamp={timestamp_item}"))
+                                    else:
+                                        # Process all prompts
+                                        for prompt_dir in prompt_dirs:
+                                            prompt_path = os.path.join(timestamp_path, prompt_dir)
+                                            all_files.extend(process_prompt_directory(prompt_path, prompt_dir,
+                                                                                      f"timestamp={timestamp_item}"))
+                                else:
+                                    # Old structure - files directly in timestamp directory
+                                    for file in os.listdir(timestamp_path):
+                                        if file.startswith("policy_") and file.endswith(".json"):
+                                            all_files.append((os.path.join(timestamp_path, file), file))
                 else:
                     # Old structure - files directly in k directory
                     print(f"    📁 No timestamp directories found, checking main k directory...")
@@ -375,10 +532,19 @@ def get_latest_output_files(model_dir_path: str, k_value: str = None,
     print(f"  ✅ Selected {len(latest_files)} files for evaluation:")
     for file_path, file_name in sorted(latest_files, key=lambda x: x[1]):
         policy_id = re.match(r'policy_(\d+[-\d]*)_results\.json', file_name).group(1)
-        # Extract k value, complete-policy, and timestamp from path if present
+        # Extract k value, complete-policy, timestamp, and prompt from path if present
         k_match = re.search(r'/k=(\d+)/', file_path)
         complete_match = re.search(r'/complete-policy/', file_path)
         timestamp_match = re.search(r'/(\d{2}-\d{2}-\d{2}--\d{2}-\d{2}-\d{2})/', file_path)
+        # Extract prompt name - it should be the last directory before the file
+        path_parts = file_path.split(os.sep)
+        prompt_match = None
+        if len(path_parts) >= 2:
+            # Check if the parent directory looks like a prompt name (not a timestamp or k value)
+            parent_dir = path_parts[-2]
+            if not parse_timestamp_dirname(parent_dir) and not parent_dir.startswith(
+                    "k=") and parent_dir != "complete-policy":
+                prompt_match = parent_dir
 
         info_parts = []
         if k_match:
@@ -387,6 +553,8 @@ def get_latest_output_files(model_dir_path: str, k_value: str = None,
             info_parts.append("complete-policy")
         if timestamp_match:
             info_parts.append(f"timestamp={timestamp_match.group(1)}")
+        if prompt_match:
+            info_parts.append(f"prompt={prompt_match}")
 
         info_str = f" ({', '.join(info_parts)})" if info_parts else ""
         print(f"    - Policy {policy_id}: {file_name}{info_str}")
@@ -396,13 +564,16 @@ def get_latest_output_files(model_dir_path: str, k_value: str = None,
 
 def evaluate_model_outputs(model_name: str, model_dir_path: str, gt_path: str,
                            k_value: str = None, use_latest: bool = False,
-                           date_str: str = None, complete_policy: bool = False) -> Tuple[pd.DataFrame, Dict]:
+                           date_str: str = None, complete_policy: bool = False,
+                           prompt_name: str = None) -> Tuple[pd.DataFrame, Dict]:
     """Evaluate outputs for a single model against ground truth files."""
     print(f"\n=== Evaluating Model: {model_name} ===")
     if complete_policy:
         print(f"  📄 Using complete policy mode")
     elif k_value:
         print(f"  🎯 Filtering for k={k_value}")
+    if prompt_name:
+        print(f"  📝 Filtering for prompt: {prompt_name}")
     if use_latest:
         print(f"  📅 Using latest experiment")
     if date_str:
@@ -421,7 +592,7 @@ def evaluate_model_outputs(model_name: str, model_dir_path: str, gt_path: str,
     ]
 
     # Get the output files based on criteria
-    output_files = get_latest_output_files(model_dir_path, k_value, use_latest, date_str, complete_policy)
+    output_files = get_latest_output_files(model_dir_path, k_value, use_latest, date_str, complete_policy, prompt_name)
 
     # Get all ground truth files
     gt_files = [f for f in os.listdir(gt_path) if f.startswith("GT_policy_") and f.endswith(".json")]
@@ -436,6 +607,8 @@ def evaluate_model_outputs(model_name: str, model_dir_path: str, gt_path: str,
             print(f"       (Looking for complete-policy results)")
         elif k_value:
             print(f"       (Looking specifically for k={k_value})")
+        if prompt_name:
+            print(f"       (Looking specifically for prompt={prompt_name})")
         if use_latest:
             print(f"       (Looking for latest experiment)")
         if date_str:
@@ -476,10 +649,20 @@ def evaluate_model_outputs(model_name: str, model_dir_path: str, gt_path: str,
         gt_file_name = gt_file_map[policy_id]
         gt_file_path = os.path.join(gt_path, gt_file_name)
 
-        # Extract k value, complete-policy, and timestamp from path if present
+        # Extract k value, complete-policy, timestamp, and prompt from path if present
         k_match = re.search(r'/k=(\d+)/', output_file_path)
         complete_match = re.search(r'/complete-policy/', output_file_path)
         timestamp_match = re.search(r'/(\d{2}-\d{2}-\d{2}--\d{2}-\d{2}-\d{2})/', output_file_path)
+
+        # Extract prompt name - it should be the last directory before the file
+        path_parts = output_file_path.split(os.sep)
+        prompt_extracted = None
+        if len(path_parts) >= 2:
+            # Check if the parent directory looks like a prompt name (not a timestamp or k value)
+            parent_dir = path_parts[-2]
+            if not parse_timestamp_dirname(parent_dir) and not parent_dir.startswith(
+                    "k=") and parent_dir != "complete-policy":
+                prompt_extracted = parent_dir
 
         info_parts = []
         if k_match:
@@ -488,6 +671,8 @@ def evaluate_model_outputs(model_name: str, model_dir_path: str, gt_path: str,
             info_parts.append("complete-policy")
         if timestamp_match:
             info_parts.append(f"timestamp={timestamp_match.group(1)}")
+        if prompt_extracted:
+            info_parts.append(f"prompt={prompt_extracted}")
 
         info_str = f" ({', '.join(info_parts)})" if info_parts else ""
 
@@ -569,6 +754,7 @@ def evaluate_model_outputs(model_name: str, model_dir_path: str, gt_path: str,
                 "model_name": model_name,
                 "k_value": k_value_extracted,
                 "timestamp": timestamp_extracted,
+                "prompt_name": prompt_extracted,
                 "policy_id": policy_id,
                 "request_id": request_id,
                 "question": gt_question.get("question", ""),
@@ -621,11 +807,16 @@ def evaluate_model_outputs(model_name: str, model_dir_path: str, gt_path: str,
     timestamps = results_df['timestamp'].dropna().unique() if 'timestamp' in results_df else []
     timestamp_info = timestamps[0] if len(timestamps) == 1 else "multiple" if len(timestamps) > 1 else "unknown"
 
+    # Extract prompt names
+    prompt_names = results_df['prompt_name'].dropna().unique() if 'prompt_name' in results_df else []
+    prompt_info = prompt_names[0] if len(prompt_names) == 1 else "multiple" if len(prompt_names) > 1 else "unknown"
+
     # Calculate summary statistics
     summary = {
         "model_name": model_name,
         "k_configuration": k_info,
         "experiment_timestamp": timestamp_info,
+        "prompt_name": prompt_info,
         "total_output_questions": total_output_questions,
         "total_evaluated_questions": total_evaluated_questions,
         "outcome_classification": {
@@ -658,15 +849,18 @@ def save_evaluation_results(results_df: pd.DataFrame, summary: Dict,
     # Generate timestamped filename
     timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
 
-    # Add k configuration and experiment timestamp to filename if available
+    # Add k configuration, experiment timestamp, and prompt to filename if available
     k_config = summary.get('k_configuration', '')
     exp_timestamp = summary.get('experiment_timestamp', '')
+    prompt_name = summary.get('prompt_name', '')
 
     suffix_parts = []
     if k_config and k_config != "k=unknown":
         suffix_parts.append(k_config)
     if exp_timestamp and exp_timestamp != "unknown":
         suffix_parts.append(f"exp_{exp_timestamp}")
+    if prompt_name and prompt_name != "unknown" and prompt_name != "multiple":
+        suffix_parts.append(prompt_name)
 
     suffix = f"_{'_'.join(suffix_parts)}" if suffix_parts else ""
 
@@ -701,7 +895,8 @@ def save_evaluation_results(results_df: pd.DataFrame, summary: Dict,
         "confusion_matrix": numpy_to_python(conf_matrix),
         "classification_report": class_report,
         "k_configuration": summary.get('k_configuration', 'unknown'),
-        "experiment_timestamp": summary.get('experiment_timestamp', 'unknown')
+        "experiment_timestamp": summary.get('experiment_timestamp', 'unknown'),
+        "prompt_name": summary.get('prompt_name', 'unknown')
     }
 
     with open(metrics_filename, 'w', encoding='utf-8') as f:
@@ -719,9 +914,11 @@ def print_evaluation_summary(summary: Dict):
     model_name = summary.get('model_name', 'Unknown')
     k_config = summary.get('k_configuration', '')
     exp_timestamp = summary.get('experiment_timestamp', 'unknown')
+    prompt_name = summary.get('prompt_name', 'unknown')
 
     print(f"\n=== EVALUATION RESULTS FOR {model_name.upper()} ({k_config}) ===")
     print(f"Experiment Timestamp: {exp_timestamp}")
+    print(f"Prompt Name: {prompt_name}")
     print(f"Total Questions in Output: {summary['total_output_questions']}")
     print(f"Total Questions Evaluated: {summary['total_evaluated_questions']}")
     print(f"Outcome Classification Accuracy: {summary['outcome_classification']['accuracy']:.4f} "
@@ -736,11 +933,12 @@ def compare_models(summaries: List[Dict]):
 
     print(f"\n=== MODEL COMPARISON ===")
 
-    # Include k configuration and timestamp in model names
+    # Include k configuration, timestamp, and prompt in model names
     model_headers = []
     for s in summaries:
         k_config = s.get('k_configuration', '')
         exp_timestamp = s.get('experiment_timestamp', 'unknown')
+        prompt_name = s.get('prompt_name', 'unknown')
         model_name = s['model_name']
 
         header_parts = [model_name]
@@ -752,11 +950,17 @@ def compare_models(summaries: List[Dict]):
                 header_parts.append(exp_timestamp[:8] + "...")
             else:
                 header_parts.append(exp_timestamp)
+        if prompt_name != 'unknown' and prompt_name != 'multiple':
+            # Shorten prompt name for display
+            if len(prompt_name) > 15:
+                header_parts.append(prompt_name[:12] + "...")
+            else:
+                header_parts.append(prompt_name)
 
         model_headers.append(" ".join(header_parts))
 
-    print(f"{'Metric':<35} | " + " | ".join([f"{h:<30}" for h in model_headers]))
-    print("-" * (35 + len(summaries) * 33))
+    print(f"{'Metric':<35} | " + " | ".join([f"{h:<40}" for h in model_headers]))
+    print("-" * (35 + len(summaries) * 43))
 
     metrics = [
         ("Outcome Accuracy (%)", "exact_outcome_match_percentage", ".2f"),
@@ -765,7 +969,7 @@ def compare_models(summaries: List[Dict]):
 
     for metric_name, key, fmt in metrics:
         values = [f"{s[key]:{fmt}}" for s in summaries]
-        print(f"{metric_name:<35} | " + " | ".join([f"{v:<30}" for v in values]))
+        print(f"{metric_name:<35} | " + " | ".join([f"{v:<40}" for v in values]))
 
 
 def main():
@@ -778,6 +982,9 @@ def main():
                              'If not specified, all k values will be evaluated.')
     parser.add_argument('--complete-policy', action='store_true',
                         help='Evaluate complete-policy results instead of RAG results')
+    parser.add_argument('--prompt', type=str,
+                        help='Specific prompt name to evaluate (e.g., precise_v4_qwen). '
+                             'If not specified, all prompts will be evaluated.')
     parser.add_argument('--latest', action='store_true',
                         help='Use the latest experiment for each model/k combination')
     parser.add_argument('--date', type=str,
@@ -895,6 +1102,9 @@ def main():
         elif args.k:
             print(f"🎯 Mode: k={args.k}")
 
+        if args.prompt:
+            print(f"📝 Mode: Prompt={args.prompt}")
+
         if args.latest:
             print(f"📅 Mode: Latest experiment")
         elif args.date:
@@ -905,7 +1115,7 @@ def main():
         results_df, summary = evaluate_model_outputs(
             model_name, model_dir_path, args.gt_path,
             k_value=args.k, use_latest=args.latest, date_str=args.date,
-            complete_policy=args.complete_policy
+            complete_policy=args.complete_policy, prompt_name=args.prompt
         )
 
         if results_df is not None and summary is not None:
@@ -936,4 +1146,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
