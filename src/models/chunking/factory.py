@@ -6,6 +6,7 @@ import logging
 from .graph_chunker import GraphChunker
 from .semantic_graph_chunker import SemanticGraphChunker
 from .simple_chunker import SimpleChunker
+from .hybrid_chunker import HybridChunker
 from .base import ChunkingStrategy, ChunkingError
 
 logger = logging.getLogger(__name__)
@@ -222,6 +223,27 @@ CHUNKING_PRESETS = {
             'community_size': 100,
             'enable_hierarchical': True
         }
+    },
+    'hybrid_balanced': {
+        'strategy': 'hybrid',
+        'config': {
+            'max_chunk_words': 200,
+            'min_chunk_words': 50,
+            'overlap_words': 15,
+            'semantic_threshold': 0.75,
+            'include_cross_references': True
+        }
+    },
+    'hybrid_comprehensive': {
+        'strategy': 'hybrid',
+        'config': {
+            'max_chunk_words': 300,
+            'min_chunk_words': 75,
+            'overlap_words': 25,
+            'semantic_threshold': 0.7,
+            'include_cross_references': True,
+            'preserve_tables': True
+        }
     }
 }
 
@@ -403,6 +425,24 @@ def auto_register_strategies():
             logger.info("Successfully registered SemanticGraphChunker strategy")
         except ImportError as e:
             logger.debug(f"SemanticGraphChunker not available: {e}")
+
+        try:
+            ChunkingFactory.register_strategy(
+                'hybrid',
+                HybridChunker,
+                {
+                    'max_chunk_words': 250,
+                    'min_chunk_words': 50,
+                    'overlap_words': 20,
+                    'semantic_threshold': 0.75,
+                    'embedding_model': 'all-MiniLM-L6-v2',
+                    'include_cross_references': True,
+                    'preserve_tables': True
+                }
+            )
+            logger.info("Successfully registered HybridChunker strategy")
+        except ImportError:
+            logger.debug("HybridChunker not available")
 
     except Exception as e:
         logger.error(f"Error during auto-registration: {e}")
