@@ -236,36 +236,6 @@ resources/results/eval_new/
   - Partial match scores
 - **Payment Accuracy**: Correctness of payment amount extraction
 
-## 📈 Visualization & Analytics
-
-### Generate Performance Dashboard
-
-Create an interactive HTML dashboard to visualize results:
-
-```bash
-python ./src/scripts/create_dashboard.py \
-    --eval-dir ./resources/results/eval_new/ \
-    --output ./resources/results/dashboard.html
-```
-
-The dashboard includes:
-- Model performance comparison charts
-- Per-policy accuracy heatmaps
-- Question difficulty analysis
-- Confusion matrices
-- Justification quality visualizations
-
-### Compare Multiple Models
-
-For side-by-side model comparison:
-
-```bash
-python ./src/scripts/compare_models.py \
-    --models "qwen3-235b-a22b,microsoft_phi-4,gpt-4o" \
-    --eval-dir ./resources/results/eval_new/ \
-    --output-dir ./resources/results/comparisons/
-```
-
 ## 📊 Output Structure
 
 ### Model Predictions
@@ -310,33 +280,6 @@ Ground truth files should follow the same structure:
     }
   ]
 }
-```
-
-## 🔧 Advanced Scripts
-
-### 1. Batch Ground Truth Conversion
-Convert Excel ground truth to JSON format:
-```bash
-python ./src/scripts/convert_gt_to_json.py \
-    --excel-path ./resources/raw_ground_truth/ \
-    --output-dir ./resources/ground_truth/
-```
-
-### 2. Result Aggregation
-Aggregate results across multiple runs:
-```bash
-python ./src/scripts/aggregate_results.py \
-    --input-dirs "run1/,run2/,run3/" \
-    --output ./resources/results/aggregated/
-```
-
-### 3. Error Analysis
-Detailed error analysis for specific questions:
-```bash
-python ./src/scripts/analyze_errors.py \
-    --model-output ./path/to/model/results/ \
-    --gt-path ./resources/ground_truth/ \
-    --question-ids "1,5,10"
 ```
 
 ## 🚀 Running on HPC/SLURM
@@ -453,33 +396,6 @@ python ./src/scripts/create_dashboard.py \
 open ./resources/results/dashboard.html  # macOS
 # or
 xdg-open ./resources/results/dashboard.html  # Linux
-```
-
-### Comparing Multiple Configurations
-```bash
-# Run with different RAG strategies
-for strategy in simple section semantic hybrid; do
-    python src/main.py \
-        --model hf \
-        --model-name microsoft/phi-4 \
-        --prompt precise_v5 \
-        --k 3 \
-        --rag-strategy $strategy \
-        --batch
-done
-
-# Evaluate all runs
-python ./src/scripts/evaluate_results.py \
-    --models microsoft_phi-4 \
-    --json-path ./resources/results/json_output/ \
-    --gt-path ./resources/ground_truth/ \
-    --output-dir ./resources/results/eval_strategies/
-
-# Compare strategies
-python ./src/scripts/compare_models.py \
-    --eval-dir ./resources/results/eval_strategies/ \
-    --group-by rag_strategy \
-    --output ./resources/results/strategy_comparison.html
 ```
 
 ## 🤝 Contributing
