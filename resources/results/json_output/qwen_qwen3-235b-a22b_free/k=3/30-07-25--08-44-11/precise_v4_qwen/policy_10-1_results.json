@@ -1,0 +1,12 @@
+{
+  "policy_id": "10-1",
+  "questions": [
+    {
+      "request_id": "19",
+      "question": "I have an existing patology that got incredibly worst during the last days, I am afraid I won't be able to leave. Will the insurance reimburse my trip?",
+      "outcome": "Yes",
+      "outcome_justification": "The Company shall indemnify, under the terms of this policy, the Insured and a single Travel Companion, provided that they are insured and registered for the same trip, for the withdrawal fee resulting from the cancellation of tourist services, determined in accordance with the General Terms and Conditions, which is a consequence of circumstances unforeseeable at the time of booking the trip or tourist services determined by: Death, illness or injury resulting in hospitalization (including Covid 19 infection provided that the latter results in the need for hospitalization and that the Insured proves that the full course of vaccines has been carried out or that there are documented health reasons preventing the administration of the vaccines) of the Insured or the Traveling Companion of their spouses/domestic partners more uxorio, parents, brothers, sisters, children, in-laws, sons-in-law, daughters-in-law, grandparents, uncles and nephews up to the 3rd degree of kinship, brothers-in-law, Co-owner Partner of the Insured's Firm or direct supervisor, of such severity as to prevent the Insured from undertaking the trip due to his or her health condition or the need to provide care for the above-mentioned ill or injured persons.",
+      "payment_justification": "The Insurance is provided up to the total cost of the trip within the maximum amount per Insured of € 5,000.00 with a limit of € 15,000.00 per event (i.e. fact affecting one or more persons objectively connected by the purchase of the same trip booked by the Policyholder. Included, as long as they have been included in the total cost of the insured trip, are practice management costs, fuel adjustments already provided for on the policy issue date, as long as they result from the booking statement, and the cost of visas. Airport taxes are always excluded if they are reimbursable)."
+    }
+  ]
+}
