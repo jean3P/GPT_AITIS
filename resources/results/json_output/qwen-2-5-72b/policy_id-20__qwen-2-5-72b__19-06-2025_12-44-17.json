@@ -1,0 +1,19 @@
+{
+  "policy_id": "20",
+  "questions": [
+    {
+      "request_id": "2",
+      "question": "I am traveling with my family, they stole all our bags from our rented car, will the insurance reimburse the value of what stolen?",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "This section consists of 1 chapter (Travel Cancellation)",
+      "payment_justification": null
+    },
+    {
+      "request_id": "3",
+      "question": "I got a precious handbag stolen while in a bar in  Paris, with mobile phone and documents in it, can you help me with the costs I'll have to bear?",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "The guarantees are valid only if the policy was purchased",
+      "payment_justification": null
+    }
+  ]
+}

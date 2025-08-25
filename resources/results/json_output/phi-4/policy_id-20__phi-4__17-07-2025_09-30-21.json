@@ -1,0 +1,12 @@
+{
+  "policy_id": "20",
+  "questions": [
+    {
+      "request_id": "19",
+      "question": "I have an existing patology that got incredibly worst during the last days, I am afraid I won't be able to leave. Will the insurance reimburse my trip?",
+      "outcome": "No - condition(s) not met",
+      "outcome_justification": "Earthquakes, tsunamis, tidal waves, storm surges, hail, floods, fires, volcanic eruptions and/or other atmospheric phenomena as well as phenomena occurring in connection with energy transformation or settling of the atom, whether natural or artificially caused",
+      "payment_justification": null
+    }
+  ]
+}
