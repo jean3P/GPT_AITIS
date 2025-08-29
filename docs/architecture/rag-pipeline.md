@@ -49,6 +49,31 @@ graph TD
     style VS fill:#fff3e0,stroke:#f57c00
 ```
 
+The RAG pipeline diagram shows the complete flow of how GPT_AITIS processes insurance questions. Let me explain the key paths:
+
+**Document Processing Path (Left side - one-time setup):**
+
+- Policy PDFs → Text Extraction → Chunking Strategy Selection → Document Chunking → Embedding Generation → Vector Store
+- This happens once when policies are loaded into the system, creating a searchable database of policy chunks
+
+**Query Processing Path (Center - per question):**
+
+- Question enters the system and optionally goes through Persona Extraction (extracting who/where/when information)
+- The RAG Retrieval component queries the Vector Store to find the k most relevant chunks
+- Retrieved chunks optionally pass through a Relevance Filter to remove noise
+- Context Assembly combines the filtered chunks into a coherent prompt
+
+**Generation and Verification Path (Right side):**
+
+- Model Inference generates an initial answer based on the assembled context
+- If verification is enabled, the system checks if the response is valid
+- Failed checks trigger a Correction Pass where the model regenerates with guidance
+- Final output is formatted as JSON
+
+The diagram uses decision diamonds (Persona Extraction?, Relevance Filter?, Verification Enabled?, Passes Check?) to show optional components that can be enabled/disabled based on configuration. The color coding indicates input sources (blue), processing components (orange), storage (yellow), and output (green).
+
+The key insight is that this is actually two separate workflows: document indexing (happens once) and query processing (happens for each question), with the Vector Store serving as the bridge between them.
+
 ## Core Components
 
 ### 📄 **Document Processing**

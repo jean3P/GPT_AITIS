@@ -4,7 +4,7 @@ This document presents comprehensive evaluation results and methodology from var
 
 ## Summary
 
-The evaluation followed a systematic progression:
+The evaluation followed a systematic progression through four phases:
 
 1. **Prompt Engineering Phase** (Policies 18 & 20, Phi-4 with Simple RAG):
     - V1 Baseline: Established 75% accuracy benchmark
@@ -25,6 +25,90 @@ The evaluation followed a systematic progression:
     - Tested 9 RAG strategies on Phi-4 and Qwen3-235b-a22b
     - Complete Policy processing achieved best results
     - Qwen3-235b-a22b: 79.6% accuracy, Phi-4: 75.9% accuracy
+
+## Evaluation Phases Overview
+
+The evaluation of GPT_AITIS progressed through four distinct phases, each building upon the insights from the previous phase to systematically improve the system's performance in insurance coverage determination.
+
+### Phase 1: Prompt Engineering (Policies 18 & 20)
+
+This foundational phase focused on iterative prompt refinement using a limited dataset of 20-40 questions across two policies. All experiments used the Phi-4 model with simple RAG strategy (k=3).
+
+**Key Activities:**
+
+- Established baseline performance with Prompt V1
+- Iteratively refined prompts through V2, V3, and V4
+- Tested on Nobis Baggage Loss (Policy 18) and Travel Cancellation (Policy 20)
+
+**Results:**
+
+- **V1 Baseline**: 75% accuracy - established initial benchmark
+- **V2 Optimization**: 80% accuracy - significant 5% improvement through better prompt structure
+- **V3 Testing**: 77.5% accuracy - alternative minimal format showed no advantage
+- **V4 Validation**: 80% accuracy - confirmed V2's effectiveness with added validation
+
+**Finding:** Prompt V2 emerged as the optimal formulation, balancing clarity with effectiveness.
+
+### Phase 2: Parameter Optimization
+
+With the optimal prompt identified, this phase explored key parameter variations to understand their impact on performance.
+
+**Key Activities:**
+
+- Compared different k values (number of retrieved chunks)
+- Expanded testing to 72 questions for statistical robustness
+- Maintained focus on policies 18 and 20
+
+**Results:**
+
+- **k=3 vs k=5**: Performance dropped from 80% to 60% with k=5
+- **Large-scale testing (72 questions)**: Achieved 84.72% accuracy with k=3
+
+**Finding:** More context (higher k) actually degraded performance, suggesting that focused, relevant chunks are more valuable than broader context. The system showed improved performance with larger test sets.
+
+### Phase 3: Relevance Filtering Analysis
+
+This phase investigated whether pre-filtering irrelevant chunks could improve the system's accuracy by reducing noise in the retrieval process.
+
+**Key Activities:**
+
+- Tested three configurations on 69 questions
+- Compared baseline, standard filtering, and modified prompt with filtering
+- Continued using policies 18 and 20
+
+**Results:**
+
+- **Baseline without filter**: 86.96% accuracy (best overall result)
+- **With relevance filter**: 85.51% accuracy - slight degradation
+- **Modified prompt with filter**: 63.77% accuracy - significant drop
+
+**Finding:** The model inherently handles irrelevant content well without explicit filtering. Adding filtering mechanisms actually decreased performance, possibly by removing marginally relevant context.
+
+### Phase 4: Multi-Model & RAG Strategy Comparison
+
+The final phase expanded evaluation to the mature system, testing multiple models and RAG strategies across a broader set of policies.
+
+**Key Activities:**
+
+- Expanded to 4 policies (10, 18, 19, 20) covering different insurance types
+- Tested 9 different RAG strategies
+- Compared Phi-4 vs Qwen3-235b-a22b models
+- Used 27 carefully selected questions (excluding "Maybe" outcomes)
+
+**Results:**
+
+- **Complete Policy processing**: Best for both models
+  - Phi-4: 75.9% accuracy, 0.6 IoU
+  - Qwen3-235b-a22b: 79.6% accuracy, 0.7 IoU
+- **Best chunking strategies**:
+  - Phi-4: Section-based (75% accuracy)
+  - Qwen3-235b-a22b: Semantic with k=3 (77.8% accuracy)
+
+**Finding:** Complete policy processing achieves best results despite computational costs. When chunking is necessary, model-specific strategies optimize performance. Qwen3-235b-a22b demonstrated superior outcome prediction while Phi-4 excelled at justification quality.
+
+---
+
+These four phases represent a systematic approach to optimizing the GPT_AITIS system, moving from basic prompt engineering to comprehensive strategy evaluation. The progression from 75% to 86.96% accuracy (and ultimately to 79.6% with the best model configuration) demonstrates the value of methodical experimentation and iterative refinement in developing AI systems for complex domain-specific tasks such as insurance policy analysis.
 
 ## Experimental Timeline and Evolution
 
@@ -111,8 +195,8 @@ The performance metrics demonstrated better handling of positive cases, with rec
 | **Predicted Outcome Accuracy** | **60.00%** |
 | Justification Outcome (IoU) | 0.6293 |
 
-!!! warning "Performance Drop with k=5"
-    Increasing the number of retrieved chunks (k) from 3 to 5 resulted in a significant performance drop, suggesting that more context doesn't always improve results. This counterintuitive finding emphasized the importance of quality over quantity in RAG systems.
+> **⚠️ Performance Drop with k=5**  
+> Increasing the number of retrieved chunks (k) from 3 to 5 resulted in a significant performance drop, suggesting that more context doesn't always improve results. This counterintuitive finding emphasized the importance of quality over quantity in RAG systems.
 
 ### Prompt Precise V3 - Policies 18 & 20
 
@@ -174,8 +258,8 @@ Three experiments compared relevance filtering approaches on 69 questions using 
 | Pv2 + Relevance Filter | 85.51% | 0.8660 |
 | Modified Pv2 + Relevance Filter | 63.77% | 0.6626 |
 
-!!! note "Key Finding"
-    The baseline Pv2 without relevance filtering achieved the best performance. Adding a relevance filter slightly decreased performance, while modifying the prompt structure with the filter led to significant performance degradation. The model already handled irrelevant content well without explicit filtering.
+> **📝 Key Finding**  
+> The baseline Pv2 without relevance filtering achieved the best performance. Adding a relevance filter slightly decreased performance, while modifying the prompt structure with the filter led to significant performance degradation. The model already handled irrelevant content well without explicit filtering.
 
 ### Detailed Results: Pv2 with Relevance Filter v2
 
@@ -202,8 +286,8 @@ Three experiments compared relevance filtering approaches on 69 questions using 
 
 **Note:** The "cleanup" refers to a post-processing script that normalizes the extracted justification and payment text from the model outputs to better match the formatting of the original PDF text. This cleaning process removes extra whitespace, standardizes punctuation, and aligns formatting differences between the model's quoted text and the source document.
 
-!!! info "Observation"
-    Policy 18 consistently shows higher IoU scores compared to Policy 20, suggesting it may have clearer or more structured content that's easier for the system to process. The minimal difference between cleaned and uncleaned scores indicates that the model is already extracting text that closely matches the original PDF format.
+> **ℹ️ Observation**  
+> Policy 18 consistently shows higher IoU scores compared to Policy 20, suggesting it may have clearer or more structured content that's easier for the system to process. The minimal difference between cleaned and uncleaned scores indicates that the model is already extracting text that closely matches the original PDF format.
 
 ## Model Comparison: Phi-4 vs Qwen3-235b
 
@@ -224,8 +308,8 @@ Testing was conducted on 27 carefully selected questions (2,3,4,5,6,7,8,9,10,11,
 | **Predicted Outcome Accuracy** | 60.19% | **68.52%** |
 | **Justification Outcome (IoU)** | **0.5995** | 0.0648 |
 
-!!! warning "Trade-off Alert"
-    While Qwen3-235b-a22b achieved higher accuracy in outcome prediction, Phi-4 demonstrated significantly better performance in justification quality (IoU), suggesting different strengths for each model.
+> **⚠️ Trade-off Alert**  
+> While Qwen3-235b-a22b achieved higher accuracy in outcome prediction, Phi-4 demonstrated significantly better performance in justification quality (IoU), suggesting different strengths for each model.
 
 ### Performance by Category
 
@@ -251,9 +335,9 @@ Testing was conducted on 27 carefully selected questions (2,3,4,5,6,7,8,9,10,11,
 | Semantic (k=7) | 68.5% / 0.6 | 74.1% / 0.7 |
 | **Complete Policy** | **75.9% / 0.6** | **79.6% / 0.7** |
 
-!!! success "Best Performers"
-    - **Phi-4**: Complete Policy (75.9% accuracy) and By Section (75.0% accuracy)
-    - **Qwen3-235b-a22b**: Complete Policy (79.6% accuracy) and Semantic k=3 (77.8% accuracy)
+> **✅ Best Performers**  
+> - **Phi-4**: Complete Policy (75.9% accuracy) and By Section (75.0% accuracy)
+> - **Qwen3-235b-a22b**: Complete Policy (79.6% accuracy) and Semantic k=3 (77.8% accuracy)
 
 Complete Policy processing achieved the best results for both models, with Qwen3-235b-a22b reaching 79.6% accuracy and 0.7 IoU. Among chunking strategies, Section-based chunking performed best for Phi-4 (75.0% accuracy), while Semantic chunking with k=3 showed optimal results for Qwen3-235b-a22b (77.8% accuracy, 0.7 IoU).
 
@@ -265,7 +349,7 @@ Complete Policy processing achieved the best results for both models, with Qwen3
 
 3. **Relevance Filtering**: Contrary to expectations, adding relevance filtering slightly decreased performance, indicating the model already handles irrelevant information well.
 
-4. **Model Trade-offs**: 
+4. **Model Trade-offs**:
     - Phi-4: Better justification quality (higher IoU)
     - Qwen3-235b: Better outcome prediction accuracy
     - Qwen3-235b-a22b with Complete Policy processing provides the best overall results (79.6% accuracy)
@@ -276,9 +360,10 @@ Complete Policy processing achieved the best results for both models, with Qwen3
 
 7. **Policy Coverage**: The system successfully handles diverse insurance types including travel cancellation, baggage loss, flight delay, and comprehensive travel insurance.
 
-!!! note "Metrics Explanation"
-    - **IoU**: Intersection over Union - measures word-level overlap between predicted and ground truth justifications
-    - **Accuracy**: Percentage of correct outcome predictions
-    - **Precision**: True positives / (True positives + False positives)
-    - **Recall**: True positives / (True positives + False negatives)
-    - **F1-Score**: Harmonic mean of precision and recall
+> **📊 Metrics Explanation**
+
+ - **IoU**: Intersection over Union - measures word-level overlap between predicted and ground truth justifications
+ - **Accuracy**: Percentage of correct outcome predictions
+ - **Precision**: True positives / (True positives + False positives)
+ - **Recall**: True positives / (True positives + False negatives)
+ - **F1-Score**: Harmonic mean of precision and recall

@@ -56,7 +56,7 @@ The main pipeline script provides:
 --prompt-relevant PROMPT_NAME     # Relevance filter prompt (default: relevance_filter_v1)
 
 # RAG Strategy
---rag-strategy {simple,section,semantic,graph,hybrid}  # Chunking strategy
+--rag-strategy {simple,section,semantic}  # Chunking strategy
 
 # Persona Extraction
 --use-persona                     # Enable persona extraction
@@ -72,6 +72,7 @@ python src/main.py --model openai --model-name gpt-4o \
 ```
 
 **Available Models**:
+
 - `gpt-4o` - Latest GPT-4 model
 - `gpt-4` - Standard GPT-4
 - `gpt-3.5-turbo` - Faster, cost-effective option
@@ -87,11 +88,13 @@ python src/main.py --model hf --model-name microsoft/phi-4 \
 ```
 
 **Available Models**:
+
 - `microsoft/phi-4` - Efficient 14B parameter model
 - `Qwen/Qwen2.5-7B` - Smaller Qwen model
 - `Qwen/Qwen2.5-32B` - Large Qwen model
 
 **Requirements**:
+
 - Models downloaded to `/cluster/scratch/$USER/models/`
 - Sufficient GPU memory
 
@@ -103,11 +106,13 @@ python src/main.py --model openrouter --model-name qwen/qwen-2.5-72b-instruct \
 ```
 
 **Available Models**:
+
 - `qwen/qwen-2.5-72b-instruct` - Large Qwen model
 - `anthropic/claude-3-opus` - Claude 3 Opus
 - Various other cloud models
 
 **Requirements**:
+
 - API key in `.env`: `OPENROUTER_API_KEY=...`
 
 ## Analysis Modes
@@ -139,6 +144,7 @@ python src/main.py --model hf --model-name microsoft/phi-4 \
 ```
 
 **Considerations**:
+
 - Requires models with large context windows
 - Higher computational cost
 - May exceed token limits for some models
@@ -151,36 +157,22 @@ python src/main.py --model hf --model-name microsoft/phi-4 \
    ```bash
    --rag-strategy simple
    ```
-   - Basic paragraph-based chunking
-   - Fixed size chunks
+    - Basic paragraph-based chunking
+    - Fixed size chunks
 
 2. **Section-based**
    ```bash
    --rag-strategy section
    ```
-   - Preserves document structure
-   - Respects section boundaries
+    - Preserves document structure
+    - Respects section boundaries
 
 3. **Semantic**
    ```bash
    --rag-strategy semantic
    ```
-   - Groups semantically similar content
-   - Uses embeddings for coherence
-
-4. **Graph-based**
-   ```bash
-   --rag-strategy graph
-   ```
-   - Entity and relationship aware
-   - Advanced structural understanding
-
-5. **Hybrid**
-   ```bash
-   --rag-strategy hybrid
-   ```
-   - Combines multiple strategies
-   - Balanced approach
+    - Groups semantically similar content
+    - Uses embeddings for coherence
 
 ### Strategy Comparison
 
@@ -211,6 +203,7 @@ python src/main.py --model hf --model-name microsoft/phi-4 \
 ```
 
 **Verification Process**:
+
 1. Initial analysis generates result
 2. Verifier reviews result against policy text
 3. Corrections applied if errors found
@@ -227,6 +220,7 @@ python src/main.py --model hf --model-name microsoft/phi-4 \
 ```
 
 **Benefits**:
+
 - Reduces false positives
 - Improves processing efficiency
 - Better handling of out-of-scope questions
@@ -242,6 +236,7 @@ python src/main.py --model hf --model-name microsoft/phi-4 \
 ```
 
 **Extracts**:
+
 - Policy holder identity
 - Affected person
 - Location of incident

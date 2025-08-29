@@ -1,7 +1,5 @@
 # Chunking Strategies Architecture
 
-## Overview
-
 Chunking is the process of breaking down large insurance policy documents into smaller, semantically meaningful segments that can be efficiently searched and retrieved. GPT_AITIS implements 7 sophisticated chunking strategies, each optimized for different document structures and query patterns common in insurance analysis.
 
 ## Strategy Architecture
@@ -14,13 +12,7 @@ graph TD
     CF --> S2[Section<br/>Structure-Aware]
     CF --> S3[Smart Size<br/>Adaptive]
     CF --> S4[Semantic<br/>Meaning-Based]
-    
-    S1 --> EVAL{Evaluate}
-    S2 --> EVAL
-    S3 --> EVAL
-    S4 --> EVAL
-    
-    EVAL --> OPT[Optimal<br/>Chunks]
+
     
     %% Annotations
     S1 -.-> |Fast| PERF[Performance]
@@ -29,9 +21,29 @@ graph TD
     S4 -.-> |Coherent| COH[Coherence]
     
     style DOC fill:#e3f2fd,stroke:#1976d2
-    style OPT fill:#e8f5e9,stroke:#388e3c
     style CF fill:#fff3e0,stroke:#f57c00
 ```
+The Chunking Strategies diagram illustrates how the system intelligently breaks down insurance policy documents. Here's the flow:
+
+**Document Processing Flow:**
+
+- A Policy Document enters the Chunking Factory, which serves as the strategy selector
+- The Factory chooses one of four strategies based on configuration:
+   - **Simple**: Splits text into fixed-size chunks (e.g., every 200 words)
+   - **Section**: Recognizes document structure (headers, articles, sections)
+   - **Smart Size**: Adjusts chunk size based on content importance
+   - **Semantic**: Groups sentences by meaning similarity
+- All strategies feed into an Evaluation step that validates chunk quality
+- Output is Optimal Chunks ready for embedding and storage
+
+**Strategy Characteristics (dotted lines):**
+
+- Simple → Fast: Quickest processing but least intelligent
+- Section → Structured: Preserves document organization
+- Smart Size → Balanced: Optimizes between size and importance
+- Semantic → Coherent: Best semantic grouping but slowest
+
+The Factory pattern allows easy switching between strategies without changing downstream components.
 
 ## Core Architecture
 

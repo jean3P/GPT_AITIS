@@ -1,9 +1,5 @@
 # LaTeX Tables Script
 
-The `latex_tables.py` script generates publication-ready LaTeX tables from evaluation results. It creates formatted tables suitable for academic papers, including individual model performance tables and multi-model comparison tables.
-
-## Overview
-
 The LaTeX tables script:
 
 - **Reads** evaluation results from `evaluate_results.py`

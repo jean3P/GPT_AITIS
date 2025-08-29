@@ -91,6 +91,17 @@ graph LR
 
 **Result**: Hundreds of queries processed with only one model load!
 
+The Model Architecture diagram shows the system's multi-model support structure and how it handles both API-based and locally-hosted models. Here's the flow:
+
+**Model Creation Flow:**
+
+- The Model Factory serves as the central creation point, implementing the factory pattern
+- It creates appropriate Model Clients based on configuration (OpenAI, HuggingFace, Qwen, or OpenRouter)
+- Each client inherits from the Base Model Interface, ensuring consistent methods across all model types
+- The Prompt Manager provides standardized prompt formatting regardless of which model is used
+
+The architecture separates concerns: the Model Factory handles creation, individual clients handle model-specific communication, the Shared Manager handles resource optimization for local models, and the unified interface ensures the rest of the system doesn't need to know which model type is being used.
+
 ## Model Providers
 
 ###  **OpenAI Models**

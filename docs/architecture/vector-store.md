@@ -44,10 +44,29 @@ graph TD
     style RANKED fill:#e8f5e9,stroke:#388e3c
     style CHROMA fill:#fff3e0,stroke:#f57c00
 ```
+The Vector Store architecture diagram illustrates the complete lifecycle of how insurance policy text becomes searchable knowledge. Here's how the flow works:
+
+**Document Indexing Flow (Top to Bottom):**
+
+- Policy PDFs enter the system and go through Text Extraction
+- The Chunking Strategy selector chooses one of four strategies (Simple, Section, Smart Size, or Semantic) based on configuration
+- Selected strategy creates Text Chunks with rich metadata (location, importance scores, entities)
+- The Embedding Model (all-MiniLM-L6-v2) converts each chunk into a 384-dimensional vector
+- Both the vectors and original text chunks are stored in ChromaDB, with metadata flowing in separately
+
+**Query Processing Flow (Bottom Section):**
+
+- User Query gets converted into a Query Vector using the same embedding model (ensuring compatibility)
+- Similarity Search compares the query vector against all stored chunk vectors in ChromaDB
+- Results are ranked by similarity score, with the most relevant chunks returned first
+
+The diagram uses color coding to distinguish inputs (blue), outputs (green), and the central storage system (orange). The parallel paths show that both the text content and its vector representation are stored together, enabling both semantic search (via embeddings) and metadata filtering (via stored attributes).
 
 ## Core Components
 
 ### **ChromaDB Integration**
+
+ChromaDB serves as GPT_AITIS's vector database, storing insurance policy chunks alongside their semantic embeddings in a persistent, searchable format. It enables fast similarity search by comparing query embeddings against stored chunk embeddings, returning the most relevant policy sections for each insurance question while supporting metadata filtering (by policy type, section, etc.) to improve retrieval precision.
 
 ```python
 class EnhancedLocalVectorStore:
@@ -87,6 +106,8 @@ class EnhancedLocalVectorStore:
 
 ### **Data Model**
 
+The data model structures each text chunk with rich metadata that enables intelligent filtering and ranking during retrieval. ChunkMetadata captures essential attributes like source location (document_id, page_number), content characteristics (has_monetary_value, entities), and importance scoring, while TextChunk combines this metadata with the actual text content and its vector embedding, creating a comprehensive unit that can be searched semantically and filtered precisely based on insurance-specific criteria.
+
 ```python
 @dataclass
 class ChunkMetadata:
@@ -114,6 +135,8 @@ class TextChunk:
 ```
 
 ### **Embedding Pipeline**
+
+The embedding pipeline transforms text chunks into 384-dimensional numerical vectors using SentenceTransformer models, enabling semantic similarity search by converting human language into a mathematical space where similar meanings are positioned closer together. It processes chunks in batches of 32 for GPU efficiency, normalizes embeddings for consistent similarity calculations, and attaches these vectors directly to the chunk objects, preparing them for storage and retrieval in the vector database.
 
 ```python
 class EmbeddingPipeline:

@@ -1,9 +1,5 @@
 # Evaluation Script
 
-The `evaluate_results.py` script compares model outputs against ground truth annotations to assess the performance of insurance policy analysis models. It provides comprehensive metrics and supports flexible filtering for different experimental configurations.
-
-## Overview
-
 The evaluation script:
 
 - **Compares** model outputs with human-annotated ground truth
