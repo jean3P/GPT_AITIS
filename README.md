@@ -61,6 +61,62 @@ OPENROUTER_SITE_URL=http://localhost:3000  # Optional
 OPENROUTER_SITE_NAME=YourSiteName  # Optional
 ```
 
+## 📚 Documentation
+
+The project includes comprehensive MkDocs documentation covering installation, usage, API reference, and development guides.
+
+### Running Documentation Locally
+
+1. **Install MkDocs** (if not already installed):
+```bash
+uv pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin
+```
+
+2. **Start the MkDocs development server**:
+```bash
+# From the project root directory
+mkdocs serve
+```
+
+3. **For remote server access** (e.g., HPC cluster):
+
+If you're running MkDocs on a remote server, set up an SSH tunnel to view the documentation on your local machine:
+
+```bash
+# From your local machine
+ssh -L 8000:localhost:8000 your_username@slurm-login01.isc.heia-fr.ch
+
+# Then in the SSH session, navigate to the project and run:
+cd /path/to/GPT_AITIS
+source .venv/bin/activate
+mkdocs serve
+```
+
+4. **Access the documentation**:
+
+Open your web browser and navigate to:
+```
+http://localhost:8000
+```
+
+### Documentation Structure
+
+The documentation includes:
+- **Getting Started**: Installation, quick start guide
+- **User Guide**: Detailed usage instructions, configuration options
+- **API Reference**: Complete API documentation for all modules
+- **Development**: Contributing guidelines, architecture overview
+- **Examples**: Sample configurations and use cases
+
+### Building Static Documentation
+
+To build the documentation as static HTML files:
+```bash
+mkdocs build
+```
+
+The built documentation will be available in the `site/` directory.
+
 ## 📁 Project Structure
 
 ```
@@ -81,6 +137,13 @@ GPT_AITIS/
 │       ├── evaluate_results.py # Model evaluation
 │       ├── create_dashboard.py # Generate visual analytics
 │       └── compare_models.py   # Model comparison tools
+├── docs/                      # MkDocs documentation source
+│   ├── index.md              # Documentation homepage
+│   ├── getting-started/      # Installation and setup guides
+│   ├── user-guide/           # Usage documentation
+│   ├── api/                  # API reference
+│   └── development/          # Developer documentation
+├── mkdocs.yml                # MkDocs configuration
 ├── resources/
 │   ├── documents/policies/    # Place PDF policies here
 │   ├── questions/            # Questions Excel file
