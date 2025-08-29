@@ -1,0 +1,96 @@
+% LaTeX Tables for Evaluation Results
+% Generated on 2025-05-08 14:20:29
+% Based on evaluation files:
+% - evaluation_results_08-05-2025_14-19-29.csv
+% - evaluation_summary_08-05-2025_14-19-29.json
+% - classification_metrics_08-05-2025_14-19-29.json
+
+\begin{table}[H]
+\centering
+\caption{Evaluation Summary Table}
+\label{tab:evaluation_summary}
+\begin{tabular}{@{}lp{2cm}@{}}
+\toprule
+\textbf{Field} & \textbf{Result} \\
+\midrule
+Predicted Outcome & \textbf{64.63\%} \\
+Justification Outcome &  \textbf{0.0853} \\
+Justification Payment &  \textbf{0.8465} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[!ht]
+\centering
+\caption{String Edit Distance Similarity Results}
+\label{tab:string_edit_distance_results}
+\begin{tabular}{lc}
+\toprule
+\textbf{Similarity Metric} & \textbf{Average Score} \\
+\midrule
+Outcome Justification Similarity & 0.0853 \\
+Payment Justification Similarity & 0.8465 \\
+Combined Justification Similarity & 0.4659 \\
+\midrule
+\multicolumn{2}{p{13cm}}{\textit{Note:} Similarity scores range from 0.0 (completely different) to 1.0 (identical). 
+The scores measure the normalized Levenshtein edit distance between predicted and ground truth justifications.} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[!ht]
+\centering
+\caption{String Edit Distance Similarity Interpretation}
+\label{tab:string_edit_distance_interpretation}
+\begin{tabular}{p{3cm}p{10cm}}
+\toprule
+\textbf{Similarity Score} & \textbf{Interpretation} \\
+\midrule
+$1.0$ & Perfect match (identical strings or both null/empty) \\
+$0.8 - 0.99$ & Very high similarity (minor differences) \\
+$0.6 - 0.79$ & Substantial similarity (some differences) \\
+$0.4 - 0.59$ & Moderate similarity (significant differences) \\
+$0.2 - 0.39$ & Low similarity (major differences) \\
+$0.0 - 0.19$ & Very low similarity (almost completely different) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[!ht]
+\centering
+\caption{Confusion Matrix of Outcome Classifications}
+\label{tab:confusion_matrix}
+\begin{tabular}{lcccc|c}
+\toprule
+\multirow{2}{*}{\textbf{Actual Outcome}} & \multicolumn{4}{c}{\textbf{Predicted Outcome}} & \multirow{2}{*}{\textbf{Total}} \\
+\cmidrule{2-5}
+& \textbf{Yes} & \textbf{\begin{tabular}[c]{@{}c@{}}No - Unrelated\\event\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}No - condition(s)\\not met\end{tabular}} & \textbf{Maybe} & \\
+\midrule
+\textbf{Yes} & 5 & 0 & 2 & 0 & 7 \\
+\textbf{No \- Unrelated event} & 3 & 47 & 6 & 0 & 56 \\
+\textbf{No \- condition(s) not met} & 2 & 3 & 1 & 0 & 6 \\
+\textbf{Maybe} & 2 & 4 & 7 & 0 & 13 \\
+\midrule
+\textbf{Total} & 12 & 54 & 16 & 0 & 82 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[!ht]
+\centering
+\caption{Performance Metrics by Outcome Category}
+\label{tab:classification_metrics}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Outcome Category} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Support} & \textbf{Accuracy} \\
+\midrule
+Yes & 0.4167 & 0.7143 & 0.5263 & 7 & \multirow{1}{*}{} \\
+No \- Unrelated event & 0.8704 & 0.8393 & 0.8545 & 56 & \multirow{1}{*}{} \\
+No \- condition(s) not met & 0.0625 & 0.1667 & 0.0909 & 6 & \multirow{1}{*}{} \\
+Maybe & 0.0000 & 0.0000 & 0.0000 & 13 & \multirow{1}{*}{} \\
+\midrule
+\textbf{Weighted Average} & 0.6345 & 0.6463 & 0.6352 & 82 & 0.6463 \\
+\bottomrule
+\multicolumn{6}{p{14cm}}{\textit{Note:} Overall outcome classification accuracy: 0.6463 (64.63\%).} \\
+\end{tabular}
+\end{table}

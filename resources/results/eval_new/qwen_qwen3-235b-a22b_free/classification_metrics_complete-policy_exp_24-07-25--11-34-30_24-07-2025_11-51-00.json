@@ -1,0 +1,54 @@
+{
+  "confusion_matrix": [
+    [
+      16,
+      3,
+      5
+    ],
+    [
+      3,
+      61,
+      4
+    ],
+    [
+      1,
+      6,
+      9
+    ]
+  ],
+  "classification_report": {
+    "Yes": {
+      "precision": 0.8,
+      "recall": 0.6666666666666666,
+      "f1-score": 0.7272727272727273,
+      "support": 24.0
+    },
+    "No - Unrelated event": {
+      "precision": 0.8714285714285714,
+      "recall": 0.8970588235294118,
+      "f1-score": 0.8840579710144928,
+      "support": 68.0
+    },
+    "No - condition(s) not met": {
+      "precision": 0.5,
+      "recall": 0.5625,
+      "f1-score": 0.5294117647058824,
+      "support": 16.0
+    },
+    "accuracy": 0.7962962962962963,
+    "macro avg": {
+      "precision": 0.7238095238095239,
+      "recall": 0.7087418300653594,
+      "f1-score": 0.7135808209977008,
+      "support": 108.0
+    },
+    "weighted avg": {
+      "precision": 0.8005291005291005,
+      "recall": 0.7962962962962963,
+      "f1-score": 0.7966766270261582,
+      "support": 108.0
+    }
+  },
+  "k_configuration": "complete-policy",
+  "experiment_timestamp": "24-07-25--11-34-30"
+}

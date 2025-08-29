@@ -1,0 +1,39 @@
+{
+  "total_output_questions": 40,
+  "total_evaluated_questions": 40,
+  "outcome_classification": {
+    "accuracy": 0.7,
+    "category_metrics": {
+      "Yes": {
+        "precision": 0.3333333333333333,
+        "recall": 0.4,
+        "f1-score": 0.36363636363636365,
+        "support": 5.0
+      },
+      "No - Unrelated event": {
+        "precision": 0.8928571428571429,
+        "recall": 0.8620689655172413,
+        "f1-score": 0.8771929824561403,
+        "support": 29.0
+      },
+      "No - condition(s) not met": {
+        "precision": 0.2,
+        "recall": 0.2,
+        "f1-score": 0.2,
+        "support": 5.0
+      },
+      "Maybe": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1-score": 0.0,
+        "support": 1.0
+      }
+    }
+  },
+  "exact_outcome_matches": 28,
+  "exact_outcome_match_percentage": 70.0,
+  "avg_justification_similarity": 0.10171005513596695,
+  "avg_justification_iou": 0.10095212929771753,
+  "avg_payment_similarity": 0.7594210206344097,
+  "avg_combined_justification_similarity": 0.4305655378851883
+}

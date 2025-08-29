@@ -1,0 +1,97 @@
+% LaTeX Tables for Evaluation Results
+% Generated on 2025-05-14 11:55:16
+% Based on evaluation files:
+% - evaluation_results_14-05-2025_11-53-13.csv
+% - evaluation_summary_14-05-2025_11-53-13.json
+% - classification_metrics_14-05-2025_11-53-13.json
+
+\begin{table}[H]
+\centering
+\caption{Evaluation Summary Table}
+\label{tab:evaluation_summary}
+\begin{tabular}{@{}lp{2cm}@{}}
+\toprule
+\textbf{Field} & \textbf{Result} \\
+\midrule
+Predicted Outcome (Accu.) & \textbf{62.50\%} \\
+Justification Outcome (SED) &  \textbf{0.6761} \\
+Justification Payment (SED) &  \textbf{0.7594} \\
+Justification Outcome (IoU) &  \textbf{0.6799} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[!ht]
+\centering
+\caption{String Edit Distance Similarity Results}
+\label{tab:string_edit_distance_results}
+\begin{tabular}{lc}
+\toprule
+\textbf{Similarity Metric} & \textbf{Average Score} \\
+\midrule
+Outcome Justification Similarity & 0.6761 \\
+Payment Justification Similarity & 0.7594 \\
+Combined Justification Similarity & 0.7178 \\
+Justification IoU & 0.6799 \\
+\midrule
+\multicolumn{2}{p{13cm}}{\textit{Note:} Similarity scores range from 0.0 (completely different) to 1.0 (identical). 
+The scores measure the normalized Levenshtein edit distance between predicted and ground truth justifications.
+IoU (Intersection over Union) measures the word-level overlap between texts.} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[!ht]
+\centering
+\caption{String Edit Distance Similarity Interpretation}
+\label{tab:string_edit_distance_interpretation}
+\begin{tabular}{p{3cm}p{10cm}}
+\toprule
+\textbf{Similarity Score} & \textbf{Interpretation} \\
+\midrule
+$1.0$ & Perfect match (identical strings or both null/empty) \\
+$0.8 - 0.99$ & Very high similarity (minor differences) \\
+$0.6 - 0.79$ & Substantial similarity (some differences) \\
+$0.4 - 0.59$ & Moderate similarity (significant differences) \\
+$0.2 - 0.39$ & Low similarity (major differences) \\
+$0.0 - 0.19$ & Very low similarity (almost completely different) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[!ht]
+\centering
+\caption{Confusion Matrix of Outcome Classifications}
+\label{tab:confusion_matrix}
+\begin{tabular}{lccc|c}
+\toprule
+\multirow{2}{*}{\textbf{Actual Outcome}} & \multicolumn{3}{c}{\textbf{Predicted Outcome}} & \multirow{2}{*}{\textbf{Total}} \\
+\cmidrule{2-4}
+& \textbf{Yes} & \textbf{\begin{tabular}[c]{@{}c@{}}No - Unrelated\\event\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}No - condition(s)\\not met\end{tabular}} & \\
+\midrule
+\textbf{Yes} & 2 & 0 & 3 & 5 \\
+\textbf{No \- Unrelated event} & 2 & 22 & 5 & 29 \\
+\textbf{No \- condition(s) not met} & 2 & 2 & 1 & 5 \\
+\midrule
+\textbf{Total} & 6 & 24 & 9 & 39 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[!ht]
+\centering
+\caption{Performance Metrics by Outcome Category}
+\label{tab:classification_metrics}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Outcome Category} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Support} & \textbf{Accuracy} \\
+\midrule
+Yes & 0.3333 & 0.4000 & 0.3636 & 5 & \multirow{1}{*}{} \\
+No \- Unrelated event & 0.8800 & 0.7586 & 0.8148 & 29 & \multirow{1}{*}{} \\
+No \- condition(s) not met & 0.1111 & 0.2000 & 0.1429 & 5 & \multirow{1}{*}{} \\
+\midrule
+\textbf{Weighted Average} & 0.7113 & 0.6410 & 0.6708 & 39 & 0.6250 \\
+\bottomrule
+\multicolumn{6}{p{14cm}}{\textit{Note:} Overall outcome classification accuracy: 0.6250 (62.50\%).} \\
+\end{tabular}
+\end{table}

@@ -1,0 +1,36 @@
+{
+  "model_name": "microsoft_phi-4",
+  "k_configuration": "complete-policy",
+  "experiment_timestamp": "24-07-25--12-20-00",
+  "total_output_questions": 108,
+  "total_evaluated_questions": 108,
+  "outcome_classification": {
+    "accuracy": 0.7592592592592593,
+    "category_metrics": {
+      "Yes": {
+        "precision": 0.6842105263157895,
+        "recall": 0.5416666666666666,
+        "f1-score": 0.6046511627906976,
+        "support": 24.0
+      },
+      "No - Unrelated event": {
+        "precision": 0.9661016949152542,
+        "recall": 0.8382352941176471,
+        "f1-score": 0.8976377952755905,
+        "support": 68.0
+      },
+      "No - condition(s) not met": {
+        "precision": 0.4,
+        "recall": 0.75,
+        "f1-score": 0.5217391304347826,
+        "support": 16.0
+      }
+    }
+  },
+  "exact_outcome_matches": 82,
+  "exact_outcome_match_percentage": 75.92592592592592,
+  "avg_justification_similarity": 0.6339852718620927,
+  "avg_justification_iou": 0.6231404335630941,
+  "avg_payment_similarity": 0.8518518518518519,
+  "avg_combined_justification_similarity": 0.7429185618569724
+}

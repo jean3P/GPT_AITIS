@@ -1,0 +1,19 @@
+{
+  "policy_id": "10-1",
+  "questions": [
+    {
+      "request_id": "2",
+      "question": "I am traveling with my family, they stole all our bags from our rented car, will the insurance reimburse the value of what stolen?",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "Baggage must have been duly checked in by the Insured",
+      "payment_justification": null
+    },
+    {
+      "request_id": "3",
+      "question": "I got a precious handbag stolen while in a bar in  Paris, with mobile phone and documents in it, can you help me with the costs I'll have to bear?",
+      "outcome": "",
+      "outcome_justification": "",
+      "payment_justification": ""
+    }
+  ]
+}

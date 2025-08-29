@@ -1,0 +1,34 @@
+{
+  "model_name": "phi-4",
+  "total_output_questions": 108,
+  "total_evaluated_questions": 108,
+  "outcome_classification": {
+    "accuracy": 0.3425925925925926,
+    "category_metrics": {
+      "Yes": {
+        "precision": 0.6666666666666666,
+        "recall": 0.4166666666666667,
+        "f1-score": 0.5128205128205128,
+        "support": 24.0
+      },
+      "No - Unrelated event": {
+        "precision": 0.8823529411764706,
+        "recall": 0.22058823529411764,
+        "f1-score": 0.35294117647058826,
+        "support": 68.0
+      },
+      "No - condition(s) not met": {
+        "precision": 0.2857142857142857,
+        "recall": 0.75,
+        "f1-score": 0.41379310344827586,
+        "support": 16.0
+      }
+    }
+  },
+  "exact_outcome_matches": 37,
+  "exact_outcome_match_percentage": 34.25925925925926,
+  "avg_justification_similarity": 0.25093886490262746,
+  "avg_justification_iou": 0.20694678907007621,
+  "avg_payment_similarity": 0.5034508465678242,
+  "avg_combined_justification_similarity": 0.3771948557352258
+}

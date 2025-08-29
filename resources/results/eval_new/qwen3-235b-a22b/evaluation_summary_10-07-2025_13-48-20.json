@@ -1,0 +1,34 @@
+{
+  "model_name": "qwen3-235b-a22b",
+  "total_output_questions": 108,
+  "total_evaluated_questions": 108,
+  "outcome_classification": {
+    "accuracy": 0.7777777777777778,
+    "category_metrics": {
+      "Yes": {
+        "precision": 0.7647058823529411,
+        "recall": 0.5416666666666666,
+        "f1-score": 0.6341463414634146,
+        "support": 24.0
+      },
+      "No - Unrelated event": {
+        "precision": 0.7804878048780488,
+        "recall": 0.9411764705882353,
+        "f1-score": 0.8533333333333334,
+        "support": 68.0
+      },
+      "No - condition(s) not met": {
+        "precision": 0.7777777777777778,
+        "recall": 0.4375,
+        "f1-score": 0.56,
+        "support": 16.0
+      }
+    }
+  },
+  "exact_outcome_matches": 84,
+  "exact_outcome_match_percentage": 77.77777777777779,
+  "avg_justification_similarity": 0.6702134819555682,
+  "avg_justification_iou": 0.6501439059780443,
+  "avg_payment_similarity": 0.8274228641421535,
+  "avg_combined_justification_similarity": 0.7488181730488608
+}

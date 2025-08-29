@@ -1,0 +1,18 @@
+{
+  "policy_id": "20",
+  "questions": [
+    {
+      "request_id": "19",
+      "question": "I have an existing patology that got incredibly worst during the last days, I am afraid I won't be able to leave. Will the insurance reimburse my trip?",
+      "outcome": "",
+      "outcome_justification": "",
+      "payment_justification": ""
+    }
+  ],
+  "verification_stats": {
+    "total_verified": 1,
+    "corrections_made": 0,
+    "consensus_reached": 0,
+    "arbitrations_needed": 0
+  }
+}

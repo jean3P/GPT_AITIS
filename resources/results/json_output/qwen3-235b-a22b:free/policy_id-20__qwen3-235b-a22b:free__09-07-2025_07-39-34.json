@@ -1,0 +1,194 @@
+{
+  "policy_id": "20",
+  "questions": [
+    {
+      "request_id": "2",
+      "question": "I am traveling with my family, they stole all our bags from our rented car, will the insurance reimburse the value of what stolen?",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
+      "payment_justification": null
+    },
+    {
+      "request_id": "3",
+      "question": "I got a precious handbag stolen while in a bar in  Paris, with mobile phone and documents in it, can you help me with the costs I'll have to bear?",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
+      "payment_justification": null
+    },
+    {
+      "request_id": "4",
+      "question": "I had dinner at our the resort yesterday, and I had an awful night with pain in the stomach and diharreha, I want to see a doctor, can you send one to our hotel?",
+      "outcome": "No - condition(s) not met",
+      "outcome_justification": "The Company shall indemnify [...] for the withdrawal fee resulting from the cancellation of tourist services [...] due to [...] illness [...] resulting in hospitalization",
+      "payment_justification": null
+    },
+    {
+      "request_id": "5",
+      "question": "My daughter had an accident by bike and needs to see a doctor. We are in Amsterdam, shall we advance the payment of the hospital? ",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
+      "payment_justification": null
+    },
+    {
+      "request_id": "6",
+      "question": "My daughter had an accident by bike and needs to see a doctor. We are in Tokyo, is the insurance going to anticipate the costs? ",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
+      "payment_justification": null
+    },
+    {
+      "request_id": "7",
+      "question": "I am traveling alone, my business partner had a hearth attack and I have to go back home. Will you reimbuse the rest of the trip?",
+      "outcome": "No - Unrelated event",
+      "outcome_justification": "",
+      "payment_justification": null
+    },
+    {
+      "request_id": "8",
+      "question": "I am traveling with my family, my business partner had a hearth attack and we have to go back home. Will you reimbuse the rest of the trip?",
+      "outcome": "Yes",
+      "outcome_justification": "The Company shall indemnify the Insured and a single Travel Companion for cancellation due to illness of a Co-owner Partner of the Insured's Firm resulting in hospitalization.",
+      "payment_justification": "€15,000.00 per event"
+    },
+    {
+      "request_id": "9",
+      "question": "My business partner had a hearth attack and I can't leave any more. Will you reimburse the cost of the trip? ",
+      "outcome": "Yes",
+      "outcome_justification": "The Company shall indemnify [...] Co-owner Partner of the Insured's Firm [...] of such severity as to prevent the Insured from undertaking the trip",
+      "payment_justification": "€ 5,000.00 with a limit of € 15,000.00 per event"
+    },
+    {
+      "request_id": "10",
+      "question": "I had to be in Mayorca for 15 days, but after 5 days my mother in law had a health issue and I have to go back home, will you reimburse the rest of my holidays?",
+      "outcome": "No - condition(s) not met",
+      "outcome_justification": "The 'Trip Cancellation' guarantee starts from the date of booking [...] and ends when the Insured begins to use the first service purchased from the Contractor.",
+      "payment_justification": null
+    },
+    {
+      "request_id": "11",
+      "question": "My mother in law had a health issue and I can't leave any more. Will you reimburse my trip?",
+      "outcome": "",
+      "outcome_justification": "",
+      "payment_justification": ""
+    },
+    {
+      "request_id": "12",
+      "question": "(Cruise) My son twisted and akle at the swimmingpool, and won't be able to walk out of the cabin for 2 days, have we got the right to a reimbursemet?",
+      "outcome": "No - condition(s) not met",
+      "outcome_justification": "resulting in hospitalization (including Covid 19 infection provided that the latter results in the need for hospitalization...)",
+      "payment_justification": null
+    },
+    {
+      "request_id": "14",
+      "question": "My aunt died yesterday, we shall leave on holidays tomorrow, but obviously we need to attend the funeral and deal with family issues, will the insurance reimburse us?",
+      "outcome": "Yes",
+      "outcome_justification": "Death, illness or injury resulting in hospitalization (including Covid 19 infection...) of the Insured or the Traveling Companion of their spouses/domestic partners... up to the 3rd degree of kinship",
+      "payment_justification": "€ 5,000.00 with a limit of € 15,000.00 per event"
+    },
+    {
+      "request_id": "16",
+      "question": "Our flight was late in Dubai and we have missed the coincidence for Tokyo, the next flight will be in 10 hours. Will you reimburse us the lounge or a day hotel?",
+      "outcome": "Error",
+      "outcome_justification": "Error during OpenRouter API call: Error code: 429 - {'error': {'message': 'Rate limit exceeded: free-models-per-min. ', 'code': 429, 'metadata': {'headers': {'X-RateLimit-Limit': '20', 'X-RateLimit-Remaining': '0', 'X-RateLimit-Reset': '1752045780000'}, 'provider_name': None}}, 'user_id': 'user_2owTQ1VHzo8BHUr02hiCE1ivwbi'}",
+      "payment_justification": null
+    },
+    {
+      "request_id": "17",
+      "question": "We had to leave for Toronto with American Airlines today, but our flight was cancelled. We will need to take the next fight depending on availability. Will you pay for an upgrade in case only more expensive tickets are available?",
+      "outcome": "Error",
+      "outcome_justification": "Error during OpenRouter API call: Error code: 429 - {'error': {'message': 'Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day', 'code': 429, 'metadata': {'headers': {'X-RateLimit-Limit': '50', 'X-RateLimit-Remaining': '0', 'X-RateLimit-Reset': '1752105600000'}, 'provider_name': None}}, 'user_id': 'user_2owTQ1VHzo8BHUr02hiCE1ivwbi'}",
+      "payment_justification": null
+    },
+    {
+      "request_id": "18",
+      "question": "My flight landed 3 hours late in Sao Paulo, will you reimburse us?",
+      "outcome": "Error",
+      "outcome_justification": "Error during OpenRouter API call: Error code: 429 - {'error': {'message': 'Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day', 'code': 429, 'metadata': {'headers': {'X-RateLimit-Limit': '50', 'X-RateLimit-Remaining': '0', 'X-RateLimit-Reset': '1752105600000'}, 'provider_name': None}}, 'user_id': 'user_2owTQ1VHzo8BHUr02hiCE1ivwbi'}",
+      "payment_justification": null
+    },
+    {
+      "request_id": "19",
+      "question": "I have an existing patology that got incredibly worst during the last days, I am afraid I won't be able to leave. Will the insurance reimburse my trip?",
+      "outcome": "Error",
+      "outcome_justification": "Error during OpenRouter API call: Error code: 429 - {'error': {'message': 'Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day', 'code': 429, 'metadata': {'headers': {'X-RateLimit-Limit': '50', 'X-RateLimit-Remaining': '0', 'X-RateLimit-Reset': '1752105600000'}, 'provider_name': None}}, 'user_id': 'user_2owTQ1VHzo8BHUr02hiCE1ivwbi'}",
+      "payment_justification": null
+    },
+    {
+      "request_id": "20",
+      "question": "(Cruise) I have an issue at work and need to stop my 2 weeks cruise in advance. Will I be reimbursed of the remaining days?",
+      "outcome": "Error",
+      "outcome_justification": "Error during OpenRouter API call: Error code: 429 - {'error': {'message': 'Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day', 'code': 429, 'metadata': {'headers': {'X-RateLimit-Limit': '50', 'X-RateLimit-Remaining': '0', 'X-RateLimit-Reset': '1752105600000'}, 'provider_name': None}}, 'user_id': 'user_2owTQ1VHzo8BHUr02hiCE1ivwbi'}",
+      "payment_justification": null
+    },
+    {
+      "request_id": "21",
+      "question": "We are in Mexico, and we had an alarm at our place, maybe there was a robbery. Will you reimburse the damage?",
+      "outcome": "Error",
+      "outcome_justification": "Error during OpenRouter API call: Error code: 429 - {'error': {'message': 'Rate limit exceeded: free-models-per-min. ', 'code': 429, 'metadata': {'headers': {'X-RateLimit-Limit': '20', 'X-RateLimit-Remaining': '0', 'X-RateLimit-Reset': '1752046140000'}, 'provider_name': None}}, 'user_id': 'user_2owTQ1VHzo8BHUr02hiCE1ivwbi'}",
+      "payment_justification": null
+    },
+    {
+      "request_id": "22",
+      "question": "I am traveing in India with my wife and two kids. My wife's uncle died yesteday, and we must wrap-up and go back (he was very close to us), will the company reimburse us for the expenses of changin tickets, so that we can be present to his burial?",
+      "outcome": "Error",
+      "outcome_justification": "Error during OpenRouter API call: Error code: 429 - {'error': {'message': 'Rate limit exceeded: free-models-per-min. ', 'code': 429, 'metadata': {'headers': {'X-RateLimit-Limit': '20', 'X-RateLimit-Remaining': '0', 'X-RateLimit-Reset': '1752046200000'}, 'provider_name': None}}, 'user_id': 'user_2owTQ1VHzo8BHUr02hiCE1ivwbi'}",
+      "payment_justification": null
+    },
+    {
+      "request_id": "23",
+      "question": "We are traveling in India, a massive flood has blocked us here, and we are supposed to take our flight back home tomorrow. Realistically, we won't be able to move before a couple of days. Will the insurance assume the additional costs? ",
+      "outcome": "Error",
+      "outcome_justification": "Error during OpenRouter API call: Error code: 429 - {'error': {'message': 'Rate limit exceeded: free-models-per-min. ', 'code': 429, 'metadata': {'headers': {'X-RateLimit-Limit': '20', 'X-RateLimit-Remaining': '0', 'X-RateLimit-Reset': '1752046260000'}, 'provider_name': None}}, 'user_id': 'user_2owTQ1VHzo8BHUr02hiCE1ivwbi'}",
+      "payment_justification": null
+    },
+    {
+      "request_id": "24",
+      "question": "(Cruise) My hausbad had a stroke during the cruise, we are now in Athens, in the hospital, but the ship has gone. Will you reimburse us and pay for the hospital and for the flights back to Rome?",
+      "outcome": "Error",
+      "outcome_justification": "Error during OpenRouter API call: Error code: 429 - {'error': {'message': 'Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day', 'code': 429, 'metadata': {'headers': {'X-RateLimit-Limit': '50', 'X-RateLimit-Remaining': '0', 'X-RateLimit-Reset': '1752105600000'}, 'provider_name': None}}, 'user_id': 'user_2owTQ1VHzo8BHUr02hiCE1ivwbi'}",
+      "payment_justification": null
+    },
+    {
+      "request_id": "25",
+      "question": "(Cruise) We are traveling in the Caraibe, but our neighbour called that there's a water leak in our appartment. We can't do much, but as we will be back in 5 days, it might be too late. Can you send someone?",
+      "outcome": "Error",
+      "outcome_justification": "Error during OpenRouter API call: Error code: 429 - {'error': {'message': 'Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day', 'code': 429, 'metadata': {'headers': {'X-RateLimit-Limit': '50', 'X-RateLimit-Remaining': '0', 'X-RateLimit-Reset': '1752105600000'}, 'provider_name': None}}, 'user_id': 'user_2owTQ1VHzo8BHUr02hiCE1ivwbi'}",
+      "payment_justification": null
+    },
+    {
+      "request_id": "26",
+      "question": "(Cruise) We are supposed to leave in two days, but my son broke his wrist playing basketball. We wish to move our reservation of one month, will you help us with the additional costs?",
+      "outcome": "Error",
+      "outcome_justification": "Error during OpenRouter API call: Error code: 429 - {'error': {'message': 'Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day', 'code': 429, 'metadata': {'headers': {'X-RateLimit-Limit': '50', 'X-RateLimit-Remaining': '0', 'X-RateLimit-Reset': '1752105600000'}, 'provider_name': None}}, 'user_id': 'user_2owTQ1VHzo8BHUr02hiCE1ivwbi'}",
+      "payment_justification": null
+    },
+    {
+      "request_id": "29",
+      "question": "I am at the airport in New York with my family and my bag was shipped to Dubai. Do I have the right to a refund from the insurance? ",
+      "outcome": "Error",
+      "outcome_justification": "Error during OpenRouter API call: Error code: 429 - {'error': {'message': 'Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day', 'code': 429, 'metadata': {'headers': {'X-RateLimit-Limit': '50', 'X-RateLimit-Remaining': '0', 'X-RateLimit-Reset': '1752105600000'}, 'provider_name': None}}, 'user_id': 'user_2owTQ1VHzo8BHUr02hiCE1ivwbi'}",
+      "payment_justification": null
+    },
+    {
+      "request_id": "30",
+      "question": "We are a group of 20, we have just landed in Sao Paulo, but one of our team didn't recieve the bag at the airport. Does he has the right to a reimbursement?",
+      "outcome": "Error",
+      "outcome_justification": "Error during OpenRouter API call: Error code: 429 - {'error': {'message': 'Rate limit exceeded: free-models-per-min. ', 'code': 429, 'metadata': {'headers': {'X-RateLimit-Limit': '20', 'X-RateLimit-Remaining': '0', 'X-RateLimit-Reset': '1752046620000'}, 'provider_name': None}}, 'user_id': 'user_2owTQ1VHzo8BHUr02hiCE1ivwbi'}",
+      "payment_justification": null
+    },
+    {
+      "request_id": "31",
+      "question": "We are a group of 20, we have just landed in Sao Paulo, but 4 of our team (two couples of coleauges) have to leave back due to urgent matters at work. Will the company reimburse their trip?",
+      "outcome": "Error",
+      "outcome_justification": "Error during OpenRouter API call: Error code: 429 - {'error': {'message': 'Rate limit exceeded: free-models-per-min. ', 'code': 429, 'metadata': {'headers': {'X-RateLimit-Limit': '20', 'X-RateLimit-Remaining': '0', 'X-RateLimit-Reset': '1752046680000'}, 'provider_name': None}}, 'user_id': 'user_2owTQ1VHzo8BHUr02hiCE1ivwbi'}",
+      "payment_justification": null
+    },
+    {
+      "request_id": "33",
+      "question": "I am traveling to Japan and had a stop in Dubai with my family of 4. Our flight arrived in Dubai 4 hours later. Although we didn't miss the conicidence with our flight to Tokyo, will the insurance contribute for the discomfort?",
+      "outcome": "Error",
+      "outcome_justification": "Error during OpenRouter API call: Error code: 429 - {'error': {'message': 'Rate limit exceeded: free-models-per-min. ', 'code': 429, 'metadata': {'headers': {'X-RateLimit-Limit': '20', 'X-RateLimit-Remaining': '0', 'X-RateLimit-Reset': '1752046740000'}, 'provider_name': None}}, 'user_id': 'user_2owTQ1VHzo8BHUr02hiCE1ivwbi'}",
+      "payment_justification": null
+    }
+  ]
+}

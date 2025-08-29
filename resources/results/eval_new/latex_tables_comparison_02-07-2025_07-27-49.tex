@@ -1,0 +1,41 @@
+% LaTeX Tables for Insurance Policy Analysis Evaluation
+% Generated on 2025-07-02 07:27:49
+% Models: phi-4, qwen3-235b-a22b
+
+% === COMPARISON TABLES ===
+
+\begin{table}[H]
+\centering
+\caption{Model Comparison: phi-4 vs qwen3-235b-a22b}
+\label{tab:model_comparison}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Metric} & \textbf{phi-4} & \textbf{qwen3-235b-a22b} \\
+\midrule
+Predicted Outcome (Accu.) & 60.19% & 68.52% \\
+Justification Outcome (SED) & 0.6067 & 0.1016 \\
+Justification Payment (SED) & 0.7774 & 0.7976 \\
+Justification Outcome (IoU) & 0.5995 & 0.0648 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Classification Metrics Comparison: phi-4 vs qwen3-235b-a22b}
+\label{tab:classification_comparison}
+\begin{tabular}{lcccccc}
+\toprule
+\multirow{2}{*}{\textbf{Outcome Category}} & \multicolumn{3}{c}{\textbf{phi-4}} & \multicolumn{3}{c}{\textbf{qwen3-235b-a22b}} \\
+\cmidrule(lr){2-4} \cmidrule(lr){5-7}
+ & \textbf{Prec.} & \textbf{Rec.} & \textbf{F1} & \textbf{Prec.} & \textbf{Rec.} & \textbf{F1} \\
+\midrule
+Yes & 0.500 & 0.250 & 0.333 & 0.571 & 0.333 & 0.421 \\
+No \- Unrelated event & 0.737 & 0.824 & 0.778 & 0.726 & 0.897 & 0.803 \\
+No \- condition(s) not met & 0.300 & 0.188 & 0.231 & 0.500 & 0.312 & 0.385 \\
+\midrule
+\textbf{Overall Accuracy} & \multicolumn{3}{c}{0.6019} & \multicolumn{3}{c}{0.6852} \\
+\bottomrule
+\end{tabular}
+\end{table}
+

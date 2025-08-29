@@ -1,0 +1,12 @@
+{
+  "policy_id": "20",
+  "questions": [
+    {
+      "request_id": "31",
+      "question": "We are a group of 20, we have just landed in Sao Paulo, but 4 of our team (two couples of coleauges) have to leave back due to urgent matters at work. Will the company reimburse their trip?",
+      "outcome": "Yes",
+      "outcome_justification": "Coverage includes additional accommodation expenses due to denied boarding",
+      "payment_justification": "subject to a daily limit of €100"
+    }
+  ]
+}

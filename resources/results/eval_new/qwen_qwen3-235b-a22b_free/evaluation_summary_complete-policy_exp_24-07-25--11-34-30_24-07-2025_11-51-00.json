@@ -1,0 +1,36 @@
+{
+  "model_name": "qwen_qwen3-235b-a22b_free",
+  "k_configuration": "complete-policy",
+  "experiment_timestamp": "24-07-25--11-34-30",
+  "total_output_questions": 108,
+  "total_evaluated_questions": 108,
+  "outcome_classification": {
+    "accuracy": 0.7962962962962963,
+    "category_metrics": {
+      "Yes": {
+        "precision": 0.8,
+        "recall": 0.6666666666666666,
+        "f1-score": 0.7272727272727273,
+        "support": 24.0
+      },
+      "No - Unrelated event": {
+        "precision": 0.8714285714285714,
+        "recall": 0.8970588235294118,
+        "f1-score": 0.8840579710144928,
+        "support": 68.0
+      },
+      "No - condition(s) not met": {
+        "precision": 0.5,
+        "recall": 0.5625,
+        "f1-score": 0.5294117647058824,
+        "support": 16.0
+      }
+    }
+  },
+  "exact_outcome_matches": 86,
+  "exact_outcome_match_percentage": 79.62962962962963,
+  "avg_justification_similarity": 0.6960423115909367,
+  "avg_justification_iou": 0.690798978473087,
+  "avg_payment_similarity": 0.8471302856124033,
+  "avg_combined_justification_similarity": 0.7715862986016702
+}
