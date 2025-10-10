@@ -80,7 +80,7 @@ uv pip install \
 2. **Start the MkDocs development server**:
 ```bash
 # From the project root directory
-mkdocs serve
+uv run mkdocs serve
 ```
 
 3. **For remote server access** (e.g., HPC cluster):
