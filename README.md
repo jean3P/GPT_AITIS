@@ -69,7 +69,12 @@ The project includes comprehensive MkDocs documentation covering installation, u
 
 1. **Install MkDocs** (if not already installed):
 ```bash
-uv pip install mkdocs mkdocs-material mkdocs-mermaid2-plugin
+# Install MkDocs + theme + plugins
+uv pip install \
+  mkdocs \
+  mkdocs-material \
+  mkdocs-mermaid2-plugin \
+  'mkdocstrings[python]'
 ```
 
 2. **Start the MkDocs development server**:
